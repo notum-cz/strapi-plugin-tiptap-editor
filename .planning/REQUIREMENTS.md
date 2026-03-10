@@ -45,9 +45,9 @@
 
 ### Content-Type Builder
 
-- [ ] **CTB-01**: `PresetSelect` dropdown component fetches preset names from `GET /tiptap-editor/presets` and renders them as options
-- [ ] **CTB-02**: The `preset` option is registered in `richTextField.options.advanced` in the admin field definition so it appears in Content-Type Builder field configuration
-- [ ] **CTB-03**: The selected preset name is persisted to `attribute.options.preset` in the content-type schema
+- [x] **CTB-01**: `PresetSelect` dropdown component fetches preset names from `GET /tiptap-editor/presets` and renders them as options
+- [x] **CTB-02**: The `preset` option is registered in `richTextField.options.advanced` in the admin field definition so it appears in Content-Type Builder field configuration
+- [x] **CTB-03**: The selected preset name is persisted to `attribute.options.preset` in the content-type schema
 
 ## v2 Requirements
 
@@ -103,9 +103,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EDITOR-03 | Phase 3 | Pending |
 | EDITOR-04 | Phase 3 | Pending |
 | EDITOR-05 | Phase 3 | Pending |
-| CTB-01 | Phase 3 | Pending |
-| CTB-02 | Phase 3 | Pending |
-| CTB-03 | Phase 3 | Pending |
+| CTB-01 | Phase 3 | Complete |
+| CTB-02 | Phase 3 | Complete |
+| CTB-03 | Phase 3 | Complete |
 
 **Coverage:**
 - v1 requirements: 26 total
