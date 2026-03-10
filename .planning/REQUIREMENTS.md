@@ -22,11 +22,11 @@
 
 ### Admin Utilities
 
-- [ ] **UTILS-01**: `buildExtensions(config: TiptapPresetConfig)` maps a preset config to a Tiptap `Extension[]` array
-- [ ] **UTILS-02**: `buildExtensions` always includes StarterKit — sub-features (bold, italic, etc.) disabled via `.configure()` never by omitting StarterKit
-- [ ] **UTILS-03**: `buildExtensions` adds `HeadingWithSEOTag` separately when heading is enabled (StarterKit's built-in heading is disabled to avoid duplication)
-- [ ] **UTILS-04**: `usePresetConfig(presetName: string | undefined)` hook fetches preset config once on mount using `useFetchClient` from `@strapi/admin`
-- [ ] **UTILS-05**: `usePresetConfig` returns `MINIMAL_PRESET_CONFIG` (`{ bold: true, italic: true }`) on any fetch failure, 404, or when preset name is empty/undefined
+- [x] **UTILS-01**: `buildExtensions(config: TiptapPresetConfig)` maps a preset config to a Tiptap `Extension[]` array
+- [x] **UTILS-02**: `buildExtensions` always includes StarterKit — sub-features (bold, italic, etc.) disabled via `.configure()` never by omitting StarterKit
+- [x] **UTILS-03**: `buildExtensions` adds `HeadingWithSEOTag` separately when heading is enabled (StarterKit's built-in heading is disabled to avoid duplication)
+- [x] **UTILS-04**: `usePresetConfig(presetName: string | undefined)` hook fetches preset config once on mount using `useFetchClient` from `@strapi/admin`
+- [x] **UTILS-05**: `usePresetConfig` returns `MINIMAL_PRESET_CONFIG` (`{ bold: true, italic: true }`) on any fetch failure, 404, or when preset name is empty/undefined
 
 ### Extension Hooks
 
@@ -89,11 +89,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SERVER-02 | Phase 1 | Complete |
 | SERVER-03 | Phase 1 | Complete |
 | SERVER-04 | Phase 1 | Complete |
-| UTILS-01 | Phase 2 | Pending |
-| UTILS-02 | Phase 2 | Pending |
-| UTILS-03 | Phase 2 | Pending |
-| UTILS-04 | Phase 2 | Pending |
-| UTILS-05 | Phase 2 | Pending |
+| UTILS-01 | Phase 2 | Complete |
+| UTILS-02 | Phase 2 | Complete |
+| UTILS-03 | Phase 2 | Complete |
+| UTILS-04 | Phase 2 | Complete |
+| UTILS-05 | Phase 2 | Complete |
 | HOOKS-01 | Phase 2 | Pending |
 | HOOKS-02 | Phase 2 | Pending |
 | HOOKS-03 | Phase 2 | Pending |
