@@ -37,11 +37,11 @@
 
 ### Editor Integration
 
-- [ ] **EDITOR-01**: `RichTextInput` reads `attribute.options.preset` to determine which preset to load
-- [ ] **EDITOR-02**: The extensions array passed to `useEditor` is memoized on the preset name string (not the config object) to prevent editor re-creation on re-render
-- [ ] **EDITOR-03**: `RichTextInput` shows a loading skeleton while the preset config is being fetched
-- [ ] **EDITOR-04**: `BaseTiptapInput` displays a "No editor preset configured — showing minimal editor" notice when no preset is set
-- [ ] **EDITOR-05**: Existing fields with no `options.preset` stored in schema continue to render correctly using `MINIMAL_PRESET_CONFIG` (backward compatibility)
+- [x] **EDITOR-01**: `RichTextInput` reads `attribute.options.preset` to determine which preset to load
+- [x] **EDITOR-02**: The extensions array passed to `useEditor` is memoized on the preset name string (not the config object) to prevent editor re-creation on re-render
+- [x] **EDITOR-03**: `RichTextInput` shows a loading skeleton while the preset config is being fetched
+- [x] **EDITOR-04**: `BaseTiptapInput` displays a "No editor preset configured — showing minimal editor" notice when no preset is set
+- [x] **EDITOR-05**: Existing fields with no `options.preset` stored in schema continue to render correctly using `MINIMAL_PRESET_CONFIG` (backward compatibility)
 
 ### Content-Type Builder
 
@@ -98,11 +98,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HOOKS-02 | Phase 2 | Complete |
 | HOOKS-03 | Phase 2 | Complete |
 | HOOKS-04 | Phase 2 | Complete |
-| EDITOR-01 | Phase 3 | Pending |
-| EDITOR-02 | Phase 3 | Pending |
-| EDITOR-03 | Phase 3 | Pending |
-| EDITOR-04 | Phase 3 | Pending |
-| EDITOR-05 | Phase 3 | Pending |
+| EDITOR-01 | Phase 3 | Complete |
+| EDITOR-02 | Phase 3 | Complete |
+| EDITOR-03 | Phase 3 | Complete |
+| EDITOR-04 | Phase 3 | Complete |
+| EDITOR-05 | Phase 3 | Complete |
 | CTB-01 | Phase 3 | Complete |
 | CTB-02 | Phase 3 | Complete |
 | CTB-03 | Phase 3 | Complete |

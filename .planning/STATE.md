@@ -5,13 +5,13 @@ milestone_name: milestone
 status: completed
 stopped_at: Completed 03-02-PLAN.md (PresetSelect + richTextField CTB registration)
 last_updated: "2026-03-10T16:30:01.492Z"
-last_activity: 2026-03-10 — Completed Plan 02-02 (FeatureGuard + EditorErrorBoundary)
+last_activity: 2026-03-10 — Completed Plan 03-01 (RichTextInput preset-aware integration)
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 6
   completed_plans: 5
-  percent: 100
+  percent: 83
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-03-10)
 
 ## Current Position
 
-Phase: 2 of 3 (Admin Foundation) - COMPLETE
-Plan: 2 of 2 complete in current phase
-Status: Phase 2 complete, ready for Phase 3
-Last activity: 2026-03-10 — Completed Plan 02-02 (FeatureGuard + EditorErrorBoundary)
+Phase: 3 of 3 (Editor Integration) - IN PROGRESS
+Plan: 1 of 2 complete in current phase
+Status: Phase 3 Plan 01 complete — preset-aware RichTextInput wired up
+Last activity: 2026-03-10 — Completed Plan 03-01 (RichTextInput preset-aware integration)
 
-Progress: [██████████] 100%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
@@ -57,7 +57,7 @@ Progress: [██████████] 100%
 | Phase 01 P02 | 2 min | 2 tasks | 11 files |
 | Phase 02-admin-foundation P01 | 2 min | 2 tasks | 5 files |
 | Phase 02-admin-foundation P02 | 2 min | 2 tasks | 4 files |
-| Phase 03-editor-integration P02 | 3 | 2 tasks | 4 files |
+| Phase 03-editor-integration P01 | 3 min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -79,6 +79,9 @@ Recent decisions affecting current work:
 - [Phase 02]: HOOKS-03 verified: all 33 useEditorState selector values across 6 hooks have ?? false guards — no modifications needed
 - [Phase 03-editor-integration]: type: 'select' with empty options[] used for CTB preset option — pragmatic first attempt; PresetSelect component exists as dynamic alternative if static type does not populate at runtime
 - [Phase 03-editor-integration]: JSX inspection test pattern: mock design-system components as string literals so React.createElement produces inspectable objects; assert on result.type and result.props in node environment
+- [Phase 03-01]: Extensions memoized on presetName string (not config object) — prevents re-creating editor when parent re-renders with same preset (EDITOR-02)
+- [Phase 03-01]: noPresetConfigured=!presetName, not !config — notice is about developer config intent, not transient loading state
+- [Phase 03-01]: FeatureGuard wraps feature groups WITH their trailing Spacer — prevents orphaned spacing gaps in toolbar
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-10T16:30:01.491Z
-Stopped at: Completed 03-02-PLAN.md (PresetSelect + richTextField CTB registration)
+Last session: 2026-03-10T16:30:00Z
+Stopped at: Completed 03-01-PLAN.md (preset-aware RichTextInput + BaseTiptapInput notice)
 Resume file: None

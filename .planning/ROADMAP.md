@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Server Foundation** - Shared types, feature-toggle utilities, server config validator, and preset API routes (completed 2026-03-10)
 - [x] **Phase 2: Admin Foundation** - Extension builder, preset-fetch hook, and extension hook refactors to accept config (completed 2026-03-10)
-- [ ] **Phase 3: Editor Integration** - Preset-aware RichTextInput and Content-Type Builder preset dropdown
+- [x] **Phase 3: Editor Integration** - Preset-aware RichTextInput and Content-Type Builder preset dropdown (completed 2026-03-10)
 
 ## Phase Details
 
@@ -75,4 +75,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Server Foundation | 2/2 | Complete   | 2026-03-10 |
 | 2. Admin Foundation | 2/2 | Complete | 2026-03-10 |
-| 3. Editor Integration | 0/2 | Not started | - |
+| 3. Editor Integration | 2/2 | Complete   | 2026-03-10 |
