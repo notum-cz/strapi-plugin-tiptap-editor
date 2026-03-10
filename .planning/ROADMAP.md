@@ -60,7 +60,11 @@ Plans:
   3. An editor field configured with a preset that excludes `table` renders no table button in the toolbar — no crash, no orphan button
   4. Opening an existing TipTap field that has no `preset` key in its schema options renders the minimal editor with a visible "No editor preset configured" notice rather than crashing
   5. The editor does not re-create (lose unsaved content) when the parent component re-renders — the extensions array is stable across renders for the same preset name
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Preset-aware RichTextInput with memoized extensions, FeatureGuard toolbar, loading state, and EditorErrorBoundary
+- [ ] 03-02-PLAN.md — PresetSelect dropdown component and richTextField CTB options registration
 
 ## Progress
 
@@ -71,4 +75,4 @@ Phases execute in numeric order: 1 → 2 → 3
 |-------|----------------|--------|-----------|
 | 1. Server Foundation | 2/2 | Complete   | 2026-03-10 |
 | 2. Admin Foundation | 2/2 | Complete | 2026-03-10 |
-| 3. Editor Integration | 0/TBD | Not started | - |
+| 3. Editor Integration | 0/2 | Not started | - |
