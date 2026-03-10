@@ -1,5 +1,5 @@
 import { type InputProps } from '@strapi/strapi/admin';
-import { Box, Field, Flex } from '@strapi/design-system';
+import { Box, Field, Flex, Status, Typography } from '@strapi/design-system';
 import { EditorContent } from '@tiptap/react';
 import { Editor } from '@tiptap/core';
 import { TiptapInputStyles } from './TiptapInputStyles';
@@ -11,11 +11,12 @@ type TiptapInputProps = InputProps & {
   editor: Editor;
   field: FieldValue;
   children?: React.ReactNode;
+  noPresetConfigured?: boolean;
 };
 
 const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
   (
-    { hint, disabled = false, labelAction, label, name, required = false, editor, field, children },
+    { hint, disabled = false, labelAction, label, name, required = false, editor, field, children, noPresetConfigured },
     forwardedRef
   ) => {
     const borderColor = field.error ? 'danger600' : 'neutral200';
@@ -36,6 +37,13 @@ const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
             paddingLeft={0}
             paddingRight={0}
           >
+            {noPresetConfigured && (
+              <Box paddingLeft={2} paddingRight={2} paddingTop={2}>
+                <Status variant="secondary" showBullet={false}>
+                  <Typography variant="pi">No editor preset configured — showing minimal editor</Typography>
+                </Status>
+              </Box>
+            )}
             <Box className="editor-toolbar" paddingLeft={2} paddingRight={2} paddingBottom={2}>
               <Flex gap={1} wrap="wrap">
                 {children}
