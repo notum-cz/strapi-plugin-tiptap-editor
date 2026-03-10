@@ -19,4 +19,26 @@ export const richTextField = {
   components: {
     Input: async () => import('../components/RichTextInput').then((m) => ({ default: m.default })),
   },
+  options: {
+    advanced: [
+      {
+        sectionTitle: null,
+        items: [
+          {
+            name: 'preset',
+            type: 'select',
+            intlLabel: {
+              id: 'tiptap-editor.preset.label',
+              defaultMessage: 'Editor Preset',
+            },
+            description: {
+              id: 'tiptap-editor.preset.description',
+              defaultMessage: 'Select the preset that configures available editing tools.',
+            },
+            options: [],
+          },
+        ],
+      },
+    ],
+  },
 };
