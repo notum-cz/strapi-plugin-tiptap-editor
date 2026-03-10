@@ -3,15 +3,18 @@ import { useEditorState } from '@tiptap/react';
 import Heading from '@tiptap/extension-heading';
 import { SingleSelect, SingleSelectOption } from '@strapi/design-system';
 
-// Extend Heading to add 'tag' attribute for semantic HTML tag choice for SEO purposes
-export const HeadingWithSEOTag = Heading.extend({
+// Base extension class (un-configured) — used by buildExtensions for dynamic levels
+export const BaseHeadingWithSEOTag = Heading.extend({
   addAttributes() {
     return {
       ...(this as any).parent?.(), // must cast to any to avoid TS error
       tag: { default: null },
     };
   },
-}).configure({ levels: [1, 2, 3, 4] });
+});
+
+// Pre-configured instance — backward compat, used by existing RichTextInput until Phase 3
+export const HeadingWithSEOTag = BaseHeadingWithSEOTag.configure({ levels: [1, 2, 3, 4] });
 
 export function useHeading(editor: Editor, props: { disabled?: boolean } = { disabled: false }) {
   const editorState = useEditorState({
