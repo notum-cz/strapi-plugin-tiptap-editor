@@ -30,10 +30,10 @@
 
 ### Extension Hooks
 
-- [ ] **HOOKS-01**: All extension hooks (`useStarterKit`, `useHeading`, `useLink`, `useTable`, `useTextAlign`, `useScript`) accept `config: TiptapPresetConfig` as a parameter
-- [ ] **HOOKS-02**: Each extension hook returns `null` for all toolbar buttons when its feature is disabled in the config
-- [ ] **HOOKS-03**: `useEditorState` selectors in each hook are guarded — they do not throw when their extension is absent from the editor
-- [ ] **HOOKS-04**: A React error boundary wraps `BaseTiptapInput` so editor crashes do not propagate to the Strapi admin panel
+- [x] **HOOKS-01**: All extension hooks (`useStarterKit`, `useHeading`, `useLink`, `useTable`, `useTextAlign`, `useScript`) accept `config: TiptapPresetConfig` as a parameter
+- [x] **HOOKS-02**: Each extension hook returns `null` for all toolbar buttons when its feature is disabled in the config
+- [x] **HOOKS-03**: `useEditorState` selectors in each hook are guarded — they do not throw when their extension is absent from the editor
+- [x] **HOOKS-04**: A React error boundary wraps `BaseTiptapInput` so editor crashes do not propagate to the Strapi admin panel
 
 ### Editor Integration
 
@@ -94,10 +94,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UTILS-03 | Phase 2 | Complete |
 | UTILS-04 | Phase 2 | Complete |
 | UTILS-05 | Phase 2 | Complete |
-| HOOKS-01 | Phase 2 | Pending |
-| HOOKS-02 | Phase 2 | Pending |
-| HOOKS-03 | Phase 2 | Pending |
-| HOOKS-04 | Phase 2 | Pending |
+| HOOKS-01 | Phase 2 | Complete |
+| HOOKS-02 | Phase 2 | Complete |
+| HOOKS-03 | Phase 2 | Complete |
+| HOOKS-04 | Phase 2 | Complete |
 | EDITOR-01 | Phase 3 | Pending |
 | EDITOR-02 | Phase 3 | Pending |
 | EDITOR-03 | Phase 3 | Pending |
