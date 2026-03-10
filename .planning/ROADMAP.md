@@ -12,7 +12,7 @@ This milestone adds a preset configuration system to an existing Strapi 5 + Tipt
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Server Foundation** - Shared types, feature-toggle utilities, server config validator, and preset API routes
+- [x] **Phase 1: Server Foundation** - Shared types, feature-toggle utilities, server config validator, and preset API routes (completed 2026-03-10)
 - [ ] **Phase 2: Admin Foundation** - Extension builder, preset-fetch hook, and extension hook refactors to accept config
 - [ ] **Phase 3: Editor Integration** - Preset-aware RichTextInput and Content-Type Builder preset dropdown
 
@@ -65,6 +65,6 @@ Phases execute in numeric order: 1 → 2 → 3
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Server Foundation | 1/2 | In Progress|  |
+| 1. Server Foundation | 2/2 | Complete   | 2026-03-10 |
 | 2. Admin Foundation | 0/TBD | Not started | - |
 | 3. Editor Integration | 0/TBD | Not started | - |
