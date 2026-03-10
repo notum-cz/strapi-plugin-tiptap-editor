@@ -44,7 +44,11 @@ Plans:
   3. `usePresetConfig('my-preset')` returns the full config object on success and `MINIMAL_PRESET_CONFIG` on any fetch failure or when called with `undefined`
   4. A toolbar hook called with a disabled feature returns `null` for all its buttons rather than throwing a `useEditorState` error
   5. Causing `BaseTiptapInput` to throw an error does not crash the Strapi admin panel page — the error boundary catches it and renders a fallback
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — buildExtensions utility, usePresetConfig hook, BaseHeadingWithSEOTag export, and tests
+- [ ] 02-02-PLAN.md — Refactor 6 extension hooks for config-gating and create EditorErrorBoundary
 
 ### Phase 3: Editor Integration
 **Goal**: Content managers can select a preset when configuring a TipTap field in Content-Type Builder; the editor loads that preset's extensions; and existing fields with no stored preset continue to work
@@ -66,5 +70,5 @@ Phases execute in numeric order: 1 → 2 → 3
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Server Foundation | 2/2 | Complete   | 2026-03-10 |
-| 2. Admin Foundation | 0/TBD | Not started | - |
+| 2. Admin Foundation | 0/2 | Not started | - |
 | 3. Editor Integration | 0/TBD | Not started | - |
