@@ -6,7 +6,7 @@
   <h1>TipTap Editor Plugin for Strapi V5</h1>
   <p>by<br />
   <a href="https://notum.tech">
-    <img style="margin-top: 0.5rem" src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/notum-logo.svg" />
+    <img style="margin-top: 0.5rem" src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/notum-logo.svg" alt="Notum Technologies" />
   </a>
   </p>
 
@@ -25,7 +25,7 @@
         alt="contributors"
       />
     </a>
-    <a href="">
+    <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/commits">
       <img
         src="https://img.shields.io/github/last-commit/notum-cz/strapi-plugin-tiptap-editor"
         alt="last update"
@@ -108,9 +108,9 @@
 ### Screenshots
 
 <div align="center"> 
-  <picture alt="Strapi Plugin TipTap Editor Interface">
+  <picture>
     <source srcset="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/tiptap-plugin-dark.png" media="(prefers-color-scheme: dark)">
-    <img src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/tiptap-plugin-light.png" />
+    <img src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/tiptap-plugin-light.png" alt="Strapi Plugin TipTap Editor Interface" />
   </picture>
 </div>
 
@@ -175,7 +175,7 @@ This plugin was originally developed by [Ivo Pisařovic](https://github.com/ivop
 #### Contributors
 
 <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=notum-cz/strapi-plugin-tiptap-editor" />
+  <img src="https://contrib.rocks/image?repo=notum-cz/strapi-plugin-tiptap-editor" alt="Contributors" />
 </a>
 
 ### Need help with your Strapi project?
