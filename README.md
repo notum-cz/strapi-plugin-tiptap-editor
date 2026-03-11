@@ -120,6 +120,10 @@
 
 This plugin is compatible with Strapi `v5.x.x` and has been tested on Strapi `v5.34.0`. We expect it should also work on older version of Strapi V5.
 
+| Plugin version | Strapi Version | Full Support |
+|----------------|----------------|--------------|
+| 1.0.0          | 5.34.0         |      ✅      |
+
 <!-- Getting Started -->
 
 ## Getting Started
