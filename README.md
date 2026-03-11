@@ -1,41 +1,64 @@
 <div align="center">
-
-  <picture >
-  <!-- User has no color preference: -->
-    <!-- <img src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/master/assets/notum-tiptap-icon.png" height="60" alt="Notum Tiptap Plugin Logo"/> -->
-    <img src="assets/notum-tiptap-icon.png" height="250" alt="Notum Tiptap Plugin Logo"/>
+  <picture>
+    <img src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/notum-tiptap-icon.png" height="250" alt="Notum Tiptap Plugin Logo"/>
   </picture>
 
   <h1>TipTap Editor Plugin for Strapi V5</h1>
-  <p>by<br /><img style="margin-top: 1rem;" src="assets/notum-logo.svg" /></p>
-  
-  <p>
-A drop-in TipTap WYSIWYG editor for Strapi v5. <br> Rich text, tables, images, and more, configured in minutes.
+  <p>by<br />
+  <a href="https://notum.tech">
+    <img style="margin-top: 0.5rem" src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/notum-logo.svg" />
+  </a>
   </p>
-  
-  
-<!-- Badges -->
-<p>
-  <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors/notum-cz/strapi-plugin-tiptap-editor" alt="contributors" />
-  </a>
-  <a href="">
-    <img src="https://img.shields.io/github/last-commit/notum-cz/strapi-plugin-tiptap-editor" alt="last update" />
-  </a>
-  <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues/">
-    <img src="https://img.shields.io/github/issues/notum-cz/strapi-plugin-tiptap-editor" alt="open issues" />
-  </a>
-  <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/notum-cz/strapi-plugin-tiptap-editor" alt="license" />
-  </a>
-  <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/stargazers">
-    <img src="https://img.shields.io/github/stars/notum-cz/strapi-plugin-tiptap-editor" alt="stars" />
-  </a>
-</p>
-   
-<h4>
-    <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues/">Report Bug or Request Feature</a>
-  
+
+  <p>
+    A drop-in TipTap WYSIWYG editor for Strapi v5. <br />
+    Rich text, tables, images, and more, configured in minutes.
+  </p>
+
+  <!-- Badges -->
+  <p>
+    <a
+      href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/graphs/contributors"
+    >
+      <img
+        src="https://img.shields.io/github/contributors/notum-cz/strapi-plugin-tiptap-editor"
+        alt="contributors"
+      />
+    </a>
+    <a href="">
+      <img
+        src="https://img.shields.io/github/last-commit/notum-cz/strapi-plugin-tiptap-editor"
+        alt="last update"
+      />
+    </a>
+    <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues/">
+      <img
+        src="https://img.shields.io/github/issues/notum-cz/strapi-plugin-tiptap-editor"
+        alt="open issues"
+      />
+    </a>
+    <a
+      href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/blob/main/LICENSE"
+    >
+      <img
+        src="https://img.shields.io/github/license/notum-cz/strapi-plugin-tiptap-editor"
+        alt="license"
+      />
+    </a>
+    <a
+      href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/stargazers"
+    >
+      <img
+        src="https://img.shields.io/github/stars/notum-cz/strapi-plugin-tiptap-editor"
+        alt="stars"
+      />
+    </a>
+  </p>
+
+  <h4>
+    <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues/"
+      >Report Bug or Request Feature</a
+    >
   </h4>
 </div>
 
@@ -50,14 +73,12 @@ A drop-in TipTap WYSIWYG editor for Strapi v5. <br> Rich text, tables, images, a
     - [Features](#features)
     - [Screenshots](#screenshots)
     - [Supported Versions](#supported-versions)
-  - [Getting Started](#-getting-started)
+  - [Getting Started](#getting-started)
     - [Installation](#installation)
-      - [1. Install the plugin via npm or yarn](#1-install-the-plugin-via-npm-or-yarn)
-      - [2. Rebuild Strapi and test the plugin](#2-rebuild-strapi-and-test-the-plugin)
-  - [Roadmap](#getting-started)
+  - [Roadmap](#roadmap)
   - [Community](#-community)
-      - [Current maintainer](#current-maintainer)
-      - [Contributors](#contributors)
+    - [Current maintainer](#current-maintainer)
+    - [Contributors](#contributors)
     - [Contributing](#contributing)
 
 <!-- About the Project -->
@@ -71,7 +92,7 @@ A drop-in TipTap WYSIWYG editor for Strapi v5. <br> Rich text, tables, images, a
 
 <!-- Features -->
 
-###  Features
+### Features
 
 - **Rich text editing** powered by [TipTap](https://tiptap.dev/) - a modern, extensible WYSIWYG editor built on ProseMirror
 - **Headings** (H1–H6), **bold**, **italic**, **underline**, **strikethrough**
@@ -88,10 +109,8 @@ A drop-in TipTap WYSIWYG editor for Strapi v5. <br> Rich text, tables, images, a
 
 <div align="center"> 
   <picture alt="Strapi Plugin TipTap Editor Interface">
-    <!-- <source srcset="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/master/assets/tiptap-plugin-dark.png" media="(prefers-color-scheme: dark)">
-    <img src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/master/assets/tiptap-plugin-light.png" /> -->
-    <source srcset="assets/tiptap-plugin-dark.png" media="(prefers-color-scheme: dark)">
-    <img src="assets/tiptap-plugin-light.png" />
+    <source srcset="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/tiptap-plugin-dark.png" media="(prefers-color-scheme: dark)">
+    <img src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/tiptap-plugin-light.png" />
   </picture>
 </div>
 
@@ -143,7 +162,7 @@ We're open to feedback and feature requests. Our current roadmap includes:
 
 Built and maintained by [Notum Technologies](https://notum.tech), a Czech-based Strapi Enterprise Partner with a passion for open-source tooling.
 
-This plugin is overseen by Ondřej Janošík and was originally developed by [Ivo Pisařovic](https://github.com/ivopisarovic) and [Dominik Juriga](https://github.com/dominik-juriga).
+This plugin was originally developed by [Ivo Pisařovic](https://github.com/ivopisarovic) and [Dominik Juriga](https://github.com/dominik-juriga).
 
 #### Current maintainer
 
@@ -163,3 +182,5 @@ This plugin is overseen by Ondřej Janošík and was originally developed by [Iv
 
 Contributions of all kinds are welcome: code, documentation, bug reports, and feature ideas.
 <br> <br> Browse the [open issues](https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues) to find something to work on, or open a new one to start a discussion. Pull requests are always appreciated!
+
+If you'd like to directly contribute, check our [Contributions document](https://github.com/notum-cz/strapi-plugin-tiptap-editor?tab=contributing-ov-file).
