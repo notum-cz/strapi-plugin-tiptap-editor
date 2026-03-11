@@ -2,12 +2,15 @@
 
   <picture >
   <!-- User has no color preference: -->
-  <img src="assets/notum-logo.svg" height="60" alt="Description of what the image shows"/>
-</picture>
+    <!-- <img src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/master/assets/notum-tiptap-icon.png" height="60" alt="Notum Tiptap Plugin Logo"/> -->
+    <img src="assets/notum-tiptap-icon.png" height="250" alt="Notum Tiptap Plugin Logo"/>
+  </picture>
+
   <h1>TipTap Editor Plugin for Strapi V5</h1>
+  <p>by<br /><img style="margin-top: 1rem;" src="assets/notum-logo.svg" /></p>
   
   <p>
-Enhance WYSIWYG experience in Strapi V5 with TipTap.
+A drop-in TipTap WYSIWYG editor for Strapi v5. <br> Rich text, tables, images, and more, configured in minutes.
   </p>
   
   
@@ -24,6 +27,9 @@ Enhance WYSIWYG experience in Strapi V5 with TipTap.
   </a>
   <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/notum-cz/strapi-plugin-tiptap-editor" alt="license" />
+  </a>
+  <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/stargazers">
+    <img src="https://img.shields.io/github/stars/notum-cz/strapi-plugin-tiptap-editor" alt="stars" />
   </a>
 </p>
    
@@ -44,16 +50,14 @@ Enhance WYSIWYG experience in Strapi V5 with TipTap.
     - [Features](#features)
     - [Screenshots](#screenshots)
     - [Supported Versions](#supported-versions)
-  - [Getting Started](#getting-started)
+  - [Getting Started](#-getting-started)
     - [Installation](#installation)
       - [1. Install the plugin via npm or yarn](#1-install-the-plugin-via-npm-or-yarn)
       - [2. Rebuild Strapi and test the plugin](#2-rebuild-strapi-and-test-the-plugin)
-  - [Roadmap](#roadmap)
-  - [Community](#community)
-    - [This plugin is maintained by Notum Technologies, a Czech-based Strapi Enterprise Partner.](#this-plugin-is-maintained-by-notum-technologies-a-czech-based-strapi-enterprise-partner)
+  - [Roadmap](#getting-started)
+  - [Community](#-community)
       - [Current maintainer](#current-maintainer)
       - [Contributors](#contributors)
-    - [How can Notum help you with your STRAPI project?](#how-can-notum-help-you-with-your-strapi-project)
     - [Contributing](#contributing)
 
 <!-- About the Project -->
@@ -67,17 +71,28 @@ Enhance WYSIWYG experience in Strapi V5 with TipTap.
 
 <!-- Features -->
 
-### Features
+###  Features
 
-- Rich text editing with TipTap, a modern and extensible WYSIWYG editor built on ProseMirror.
-- Seamless integration with Strapi's content management system.
+- **Rich text editing** powered by [TipTap](https://tiptap.dev/) - a modern, extensible WYSIWYG editor built on ProseMirror
+- **Headings** (H1–H6), **bold**, **italic**, **underline**, **strikethrough**
+- **Ordered & unordered lists**, task lists
+- **Links**, **images**, **tables**
+- **Code blocks** with syntax highlighting
+- **Blockquotes**, **horizontal rules**
+- Full **keyboard shortcut** support
+- Seamless integration with Strapi's content management system
 
 <!-- Screenshots -->
 
 ### Screenshots
 
 <div align="center"> 
-  <img src="./assets/tiptap.png" alt="screenshot" />
+  <picture alt="Strapi Plugin TipTap Editor Interface">
+    <!-- <source srcset="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/master/assets/tiptap-plugin-dark.png" media="(prefers-color-scheme: dark)">
+    <img src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/master/assets/tiptap-plugin-light.png" /> -->
+    <source srcset="assets/tiptap-plugin-dark.png" media="(prefers-color-scheme: dark)">
+    <img src="assets/tiptap-plugin-light.png" />
+  </picture>
 </div>
 
 <!-- Supported Versions -->
@@ -122,13 +137,13 @@ We're open to feedback and feature requests. Our current roadmap includes:
 
 <!-- Contributing -->
 
-## Community
+## 🤝 Community
 
-### This plugin is maintained by [Notum Technologies](https://notum.tech), a Czech-based Strapi Enterprise Partner.
+### Maintained by [Notum Technologies](https://notum.tech)
 
-We're a software agency specializing in custom solutions based on Strapi. We're passionate about sharing our expertise with the open-source community.
+Built and maintained by [Notum Technologies](https://notum.tech), a Czech-based Strapi Enterprise Partner with a passion for open-source tooling.
 
-This plugin is overseen by Ondřej Jánošík and it has been originally developed by [Ivo Pisařovic](https://github.com/ivopisarovic) and [Dominik Juriga](https://github.com/dominik-juriga).
+This plugin is overseen by Ondřej Janošík and was originally developed by [Ivo Pisařovic](https://github.com/ivopisarovic) and [Dominik Juriga](https://github.com/dominik-juriga).
 
 #### Current maintainer
 
@@ -136,25 +151,15 @@ This plugin is overseen by Ondřej Jánošík and it has been originally develop
 
 #### Contributors
 
-This plugin has been brought to you thanks to the following contributors:
-
 <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=notum-cz/strapi-plugin-tiptap-editor" />
 </a>
 
-### [How can Notum help you with your STRAPI project?](https://www.notum.tech/notum-and-strapi)
+### Need help with your Strapi project?
 
-✔️ We offer valuable assistance in developing custom STRAPI, web, and mobile apps to fulfill your requirements and goals.. <br>
-✔️ With a track record of 100+ projects, our open communication and exceptional project management skills provide us with the necessary tools to get your project across the finish line.<br>
-
-To initiate a discussion about your Strapi project, feel free to reach out to us via email at sales@notum.cz. We're here to assist you!
+[Notum Technologies](https://notum.tech) builds custom Strapi solutions for enterprise teams. If you'd like to work with us, [book a call](https://calendly.com/notum) or drop us a line at [sales@notum.cz](mailto:sales@notum.cz).
 
 ### Contributing
 
-Contributions are always welcome! Please follow these steps to contribute:
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+Contributions of all kinds are welcome: code, documentation, bug reports, and feature ideas.
+<br> <br> Browse the [open issues](https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues) to find something to work on, or open a new one to start a discussion. Pull requests are always appreciated!
