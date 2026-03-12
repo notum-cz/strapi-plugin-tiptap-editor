@@ -74,15 +74,17 @@ export const TiptapInputStyles = styled.div`
   }
 
   .ProseMirror blockquote {
-    border-left: 3px solid #222;
+    border-left: 3px solid ${({ theme }) => theme.colors.neutral500};
     margin: 1em 0;
     padding: 0.25em 1rem;
     font-style: italic;
-    background: #fafafa;
+    background: ${({ theme }) => theme.colors.neutral150};
+    color: ${({ theme }) => theme.colors.neutral800};
   }
 
   .ProseMirror code {
-    background: #f3f3f3;
+    background: ${({ theme }) => theme.colors.neutral150};
+    color: ${({ theme }) => theme.colors.neutral800};
     padding: 2px 4px;
     border-radius: 4px;
     font-family:
