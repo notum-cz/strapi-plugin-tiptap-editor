@@ -37,11 +37,11 @@ describe('buildExtensions', () => {
     expect(hasHeading).toBe(true);
   });
 
-  it('configures HeadingWithSEOTag with default levels [1,2,3,4] when heading is true', () => {
+  it('configures HeadingWithSEOTag with default levels [1,2,3,4,5,6] when heading is true', () => {
     const extensions = buildExtensions({ heading: true });
     const heading = extensions.find((ext: any) => ext.name === 'heading');
     expect(heading).toBeDefined();
-    expect((heading as any).options.levels).toEqual([1, 2, 3, 4]);
+    expect((heading as any).options.levels).toEqual([1, 2, 3, 4, 5, 6]);
   });
 
   it('configures HeadingWithSEOTag with custom levels when heading has levels', () => {

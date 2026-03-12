@@ -13,7 +13,7 @@ import { useTable } from '../extensions/Table';
 import { useTextAlign } from '../extensions/TextAlign';
 import { usePresetConfig } from '../hooks/usePresetConfig';
 import { buildExtensions } from '../utils/buildExtensions';
-import { TiptapPresetConfig, MINIMAL_PRESET_CONFIG } from '../../../shared/types';
+import { TiptapPresetConfig, MINIMAL_PRESET_CONFIG, getFeatureOptions } from '../../../shared/types';
 
 // ─── Inner editor ────────────────────────────────────────────────────────────
 // Mounted only AFTER preset config is resolved, so useEditor receives the
@@ -34,7 +34,8 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
     const { editor, field } = useTiptapEditor(props.name, '', extensions);
 
     const starterKit = useStarterKit(editor!, { disabled: props.disabled });
-    const heading = useHeading(editor!, { disabled: props.disabled });
+    const headingOptions = getFeatureOptions(config.heading, { levels: [1, 2, 3, 4, 5, 6] });
+    const heading = useHeading(editor!, { disabled: props.disabled, levels: headingOptions?.levels });
     const link = useLink(editor!, { disabled: props.disabled });
     const script = useScript(editor!, { disabled: props.disabled });
     const table = useTable(editor!, { disabled: props.disabled });
@@ -59,6 +60,9 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           </FeatureGuard>
           <FeatureGuard featureValue={config?.italic}>
             {starterKit.italicButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.underline}>
+            {starterKit.underlineButton}
           </FeatureGuard>
           <FeatureGuard featureValue={config?.strike}>
             {starterKit.strikeButton}

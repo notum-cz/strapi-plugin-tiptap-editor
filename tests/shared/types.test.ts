@@ -7,12 +7,13 @@ import {
 } from '../../shared/types';
 
 describe('PRESET_FEATURE_KEYS (TYPES-03)', () => {
-  it('contains exactly 17 keys', () => {
-    expect(PRESET_FEATURE_KEYS).toHaveLength(17);
+  it('contains exactly 18 keys', () => {
+    expect(PRESET_FEATURE_KEYS).toHaveLength(18);
   });
   it('contains all expected feature names', () => {
     expect(PRESET_FEATURE_KEYS).toContain('bold');
     expect(PRESET_FEATURE_KEYS).toContain('italic');
+    expect(PRESET_FEATURE_KEYS).toContain('underline');
     expect(PRESET_FEATURE_KEYS).toContain('heading');
     expect(PRESET_FEATURE_KEYS).toContain('table');
     expect(PRESET_FEATURE_KEYS).toContain('textAlign');
@@ -28,8 +29,8 @@ describe('MINIMAL_PRESET_CONFIG', () => {
 });
 
 describe('isFeatureEnabled (TYPES-04)', () => {
-  it('returns true for undefined (absent key = enabled by default)', () => {
-    expect(isFeatureEnabled(undefined)).toBe(true);
+  it('returns false for undefined (absent key = disabled)', () => {
+    expect(isFeatureEnabled(undefined)).toBe(false);
   });
   it('returns true for true', () => {
     expect(isFeatureEnabled(true)).toBe(true);

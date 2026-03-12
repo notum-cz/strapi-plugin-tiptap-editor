@@ -2,15 +2,12 @@ import { Extensions } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import Superscript from '@tiptap/extension-superscript';
 import Subscript from '@tiptap/extension-subscript';
+import Underline from '@tiptap/extension-underline';
 import { TableKit } from '@tiptap/extension-table';
 import TextAlign from '@tiptap/extension-text-align';
 import { Gapcursor } from '@tiptap/extensions';
 import { BaseHeadingWithSEOTag } from '../extensions/Heading';
-import {
-  TiptapPresetConfig,
-  isFeatureEnabled,
-  getFeatureOptions,
-} from '../../../shared/types';
+import { TiptapPresetConfig, isFeatureEnabled, getFeatureOptions } from '../../../shared/types';
 
 // Helper: converts a preset feature value to StarterKit's expected format
 // false = disable the sub-extension, {} = enable with defaults
@@ -45,16 +42,18 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
         },
   };
 
-  const extensions: Extensions = [
-    StarterKit.configure(starterKitConfig),
-  ];
+  const extensions: Extensions = [StarterKit.configure(starterKitConfig)];
 
   if (isFeatureEnabled(config.heading)) {
     const headingConfig = getFeatureOptions(config.heading, {
-      levels: [1, 2, 3, 4] as const,
+      levels: [1, 2, 3, 4, 5, 6] as const,
     });
-    const levels = headingConfig?.levels || [1, 2, 3, 4];
+    const levels = headingConfig?.levels || [1, 2, 3, 4, 5, 6];
     extensions.push(BaseHeadingWithSEOTag.configure({ levels }));
+  }
+
+  if (isFeatureEnabled(config.underline)) {
+    extensions.push(Underline);
   }
 
   if (isFeatureEnabled(config.superscript)) {
@@ -84,12 +83,7 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
     extensions.push(
       TextAlign.configure({
         types: textAlignConfig?.types || ['heading', 'paragraph'],
-        alignments: textAlignConfig?.alignments || [
-          'left',
-          'center',
-          'right',
-          'justify',
-        ],
+        alignments: textAlignConfig?.alignments || ['left', 'center', 'right', 'justify'],
       })
     );
   }

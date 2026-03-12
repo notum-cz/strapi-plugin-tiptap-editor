@@ -28,6 +28,7 @@ export interface TiptapPresetConfig {
   bold?: boolean | Record<string, unknown>;
   italic?: boolean | Record<string, unknown>;
   strike?: boolean | Record<string, unknown>;
+  underline?: boolean | Record<string, unknown>;
   code?: boolean | Record<string, unknown>;
   codeBlock?: boolean | Record<string, unknown>;
   blockquote?: boolean | Record<string, unknown>;
@@ -51,9 +52,24 @@ export interface TiptapPluginConfig {
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 export const PRESET_FEATURE_KEYS: Array<keyof TiptapPresetConfig> = [
-  'bold', 'italic', 'strike', 'code', 'codeBlock', 'blockquote',
-  'bulletList', 'orderedList', 'hardBreak', 'horizontalRule', 'history',
-  'heading', 'link', 'table', 'textAlign', 'superscript', 'subscript',
+  'bold',
+  'italic',
+  'strike',
+  'underline',
+  'code',
+  'codeBlock',
+  'blockquote',
+  'bulletList',
+  'orderedList',
+  'hardBreak',
+  'horizontalRule',
+  'history',
+  'heading',
+  'link',
+  'table',
+  'textAlign',
+  'superscript',
+  'subscript',
 ];
 
 // Fallback for unconfigured fields — deliberately minimal to prompt developers to configure
@@ -74,14 +90,11 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
 
 /**
  * Returns true when a preset feature value is enabled.
- * NOTE: undefined (absent key) returns true — absent key = feature enabled by default.
- * This DIVERGES from dist where undefined returns false.
+ * undefined (absent key) returns false — a preset defines what's ON, everything else is OFF.
  */
-export const isFeatureEnabled = (
-  value: TiptapPresetConfig[keyof TiptapPresetConfig]
-): boolean => {
+export const isFeatureEnabled = (value: TiptapPresetConfig[keyof TiptapPresetConfig]): boolean => {
   if (value === undefined) {
-    return true; // TYPES-04: absent key = enabled
+    return false; // absent key = disabled
   }
   if (typeof value === 'boolean') {
     return value;

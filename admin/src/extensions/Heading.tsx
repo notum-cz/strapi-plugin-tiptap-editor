@@ -14,9 +14,10 @@ export const BaseHeadingWithSEOTag = Heading.extend({
 });
 
 // Pre-configured instance — backward compat, used by existing RichTextInput until Phase 3
-export const HeadingWithSEOTag = BaseHeadingWithSEOTag.configure({ levels: [1, 2, 3, 4] });
+export const HeadingWithSEOTag = BaseHeadingWithSEOTag.configure({ levels: [1, 2, 3, 4, 5, 6] });
 
-export function useHeading(editor: Editor, props: { disabled?: boolean } = { disabled: false }) {
+export function useHeading(editor: Editor, props: { disabled?: boolean; levels?: number[] } = { disabled: false }) {
+  const levels = props.levels ?? [1, 2, 3, 4, 5, 6];
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -37,7 +38,7 @@ export function useHeading(editor: Editor, props: { disabled?: boolean } = { dis
       return;
     }
 
-    const level = Number(value[1]) as 1 | 2 | 3 | 4; // value format: h1, h2, h3, h4
+    const level = Number(value[1]) as 1 | 2 | 3 | 4 | 5 | 6; // value format: h1–h6
     editor.chain().focus().setHeading({ level }).run();
 
     // automatically set the 'tag' attribute to match the heading level if not already set
@@ -67,10 +68,11 @@ export function useHeading(editor: Editor, props: { disabled?: boolean } = { dis
         size="S"
       >
         <SingleSelectOption value="p">Paragraph</SingleSelectOption>
-        <SingleSelectOption value="h1">Heading 1</SingleSelectOption>
-        <SingleSelectOption value="h2">Heading 2</SingleSelectOption>
-        <SingleSelectOption value="h3">Heading 3</SingleSelectOption>
-        <SingleSelectOption value="h4">Heading 4</SingleSelectOption>
+        {levels.map((level) => (
+          <SingleSelectOption key={`h${level}`} value={`h${level}`}>
+            Heading {level}
+          </SingleSelectOption>
+        ))}
       </SingleSelect>
     ),
     headingTagSelect: (
