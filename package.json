@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1",
-  "keywords": [],
+  "version": "1.0.2",
+  "keywords": ["strapi", "plugin", "tiptap", "editor", "rich-text", "wysiwyg"],
   "type": "commonjs",
   "exports": {
     "./package.json": "./package.json",
@@ -76,5 +76,13 @@
   "maintainers": [
     "Notum Technologies s.r.o. <sales@notum.cz>",
     "Dominik Juriga <dominik.juriga@notum.cz>"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notum-cz/strapi-plugin-tiptap-editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues"
+  },
+  "homepage": "https://github.com/notum-cz/strapi-plugin-tiptap-editor#readme"
 }
