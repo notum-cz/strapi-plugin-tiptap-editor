@@ -5,7 +5,7 @@
 
   <h1>TipTap Editor Plugin for Strapi V5</h1>
   <p>by<br />
-  <a href="https://notum.tech">
+  <a href="https://notum.tech/?utm_source=strapi-plugin&utm_medium=github&utm_campaign=tiptap-readme">
     <img style="margin-top: 0.5rem" src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/notum-logo.svg" alt="Notum Technologies" />
   </a>
   </p>
@@ -162,9 +162,9 @@ We're open to feedback and feature requests. Our current roadmap includes:
 
 ## 🤝 Community
 
-### Maintained by [Notum Technologies](https://notum.tech)
+### Maintained by [Notum Technologies](https://notum.tech/?utm_source=strapi-plugin&utm_medium=github&utm_campaign=tiptap-readme)
 
-Built and maintained by [Notum Technologies](https://notum.tech), a Czech-based Strapi Enterprise Partner with a passion for open-source tooling.
+Built and maintained by [Notum Technologies](https://notum.tech/?utm_source=strapi-plugin&utm_medium=github&utm_campaign=tiptap-readme), a Czech-based Strapi Enterprise Partner with a passion for open-source tooling.
 
 This plugin was originally developed by [Ivo Pisařovic](https://github.com/ivopisarovic) and [Dominik Juriga](https://github.com/dominik-juriga).
 
@@ -180,7 +180,7 @@ This plugin was originally developed by [Ivo Pisařovic](https://github.com/ivop
 
 ### Need help with your Strapi project?
 
-[Notum Technologies](https://notum.tech) builds custom Strapi solutions for enterprise teams. If you'd like to work with us, [book a call](https://calendly.com/notum) or drop us a line at [sales@notum.cz](mailto:sales@notum.cz).
+[Notum Technologies](https://notum.tech/?utm_source=strapi-plugin&utm_medium=github&utm_campaign=tiptap-readme) builds custom Strapi solutions for enterprise teams. If you'd like to work with us, [book a call](https://calendly.com/notum) or drop us a line at [sales@notum.cz](mailto:sales@notum.cz).
 
 ### Contributing
 
