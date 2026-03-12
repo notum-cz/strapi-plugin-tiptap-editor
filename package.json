@@ -1,6 +1,13 @@
 {
-  "version": "1.0.1",
-  "keywords": ["strapi", "plugin", "tiptap", "editor", "rich-text", "wysiwyg"],
+  "version": "1.0.2",
+  "keywords": [
+    "strapi",
+    "plugin",
+    "tiptap",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ],
   "type": "commonjs",
   "exports": {
     "./package.json": "./package.json",
