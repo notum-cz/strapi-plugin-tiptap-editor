@@ -33,6 +33,9 @@ jobs:
 
       - name: Build plugin
         run: yarn build
-      
+
       - name: Verify plugin
         run: yarn verify
+
+      - name: Run tests
+        run: yarn test
