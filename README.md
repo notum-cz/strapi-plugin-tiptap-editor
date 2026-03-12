@@ -390,7 +390,7 @@ export default () => ({
           bulletList: true,
           orderedList: true,
 
-          // Headings — only h1 through h6
+          // Headings — all levels (same as heading: true)
           heading: {
             levels: [1, 2, 3, 4, 5, 6],
           },
