@@ -58,6 +58,11 @@ export function useTiptapEditor(
   const editor = useEditor({
     extensions: extensions,
     content: parseJSONContent(field.value, defaultValue),
+    editorProps: {
+      attributes: {
+        spellcheck: 'false',
+      },
+    },
     onUpdate: ({ editor }) => {
       const json = editor.getJSON();
       field.onChange(name, JSON.stringify(json));

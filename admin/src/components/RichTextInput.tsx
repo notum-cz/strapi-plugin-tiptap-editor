@@ -46,15 +46,10 @@ const RichTextInput = forwardRef<HTMLDivElement, TiptapInputProps>((props, forwa
   const table = useTable(editor, { disabled: props.disabled });
   const textAlign = useTextAlign(editor, { disabled: props.disabled });
 
-  return (
-    <BaseTiptapInput editor={editor} field={field} {...props} ref={forwardedRef}>
-      {heading.headingSelect}
+  const secondaryToolbar = (
+    <>
       {heading.headingTagSelect}
       <Spacer width={8} />
-      {starterKit.boldButton}
-      {starterKit.italicButton}
-      {starterKit.underlineButton}
-      {starterKit.strikeButton}
       {script.superscriptButton}
       {script.subscriptButton}
       <Spacer width={8} />
@@ -63,6 +58,30 @@ const RichTextInput = forwardRef<HTMLDivElement, TiptapInputProps>((props, forwa
       {textAlign.textAlignRightButton}
       {textAlign.textAlignJustifyButton}
       <Spacer width={8} />
+      {table.tableButton}
+      {table.addColumnButton}
+      {table.removeColumnButton}
+      {table.addRowButton}
+      {table.removeRowButton}
+      {table.tableDialog}
+    </>
+  );
+
+  return (
+    <BaseTiptapInput
+      editor={editor}
+      field={field}
+      {...props}
+      ref={forwardedRef}
+      secondaryToolbar={secondaryToolbar}
+    >
+      {heading.headingSelect}
+      <Spacer width={8} />
+      {starterKit.boldButton}
+      {starterKit.italicButton}
+      {starterKit.underlineButton}
+      {starterKit.strikeButton}
+      <Spacer width={8} />
       {starterKit.bulletButton}
       {starterKit.orderedButton}
       <Spacer width={8} />
@@ -70,13 +89,6 @@ const RichTextInput = forwardRef<HTMLDivElement, TiptapInputProps>((props, forwa
       {starterKit.blockquoteButton}
       {link.linkButton}
       {link.linkDialog}
-      <Spacer width={8} />
-      {table.tableButton}
-      {table.addColumnButton}
-      {table.removeColumnButton}
-      {table.addRowButton}
-      {table.removeRowButton}
-      {table.tableDialog}
     </BaseTiptapInput>
   );
 });

@@ -2,8 +2,74 @@ import styled from 'styled-components';
 
 export const TiptapInputStyles = styled.div`
   .editor-toolbar {
-    margin-bottom: 0.25rem;
-    padding-bottom: 0.25rem;
+    margin-bottom: 0;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eaeaef;
+
+    /* Style toolbar buttons */
+    button {
+      min-width: 40px;
+      height: 40px;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: #666687;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+
+      &:hover:not(:disabled) {
+        background: #f6f6f9;
+        color: #32324d;
+      }
+
+      &.toolbar-btn-active {
+        background: #dcdce4;
+        color: #32324d;
+      }
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .toolbar-more-btn {
+      min-width: 40px;
+      height: 40px;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: #666687;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      transition: background 0.15s, color 0.15s;
+      margin-left: auto;
+
+      &:hover {
+        background: #f6f6f9;
+        color: #32324d;
+      }
+
+      &.toolbar-btn-active {
+        background: #f0f0f5;
+        color: #4a4a6a;
+      }
+    }
   }
 
   .ProseMirror {
@@ -81,13 +147,43 @@ export const TiptapInputStyles = styled.div`
     background: #fafafa;
   }
 
+  .ProseMirror pre {
+    background: #f6f6f9;
+    border-radius: 6px;
+    padding: 1rem 1.25rem;
+    margin: 1em 0;
+    overflow-x: auto;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+    font-size: 0.85em;
+    line-height: 1.7;
+    color: #32324d;
+
+    code {
+      background: none;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      color: inherit;
+      font-size: inherit;
+      text-decoration: none;
+    }
+
+    * {
+      border: none;
+      text-decoration: none;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
   .ProseMirror code {
-    background: #f3f3f3;
-    padding: 2px 4px;
+    background: #f6f6f9;
+    padding: 2px 6px;
     border-radius: 4px;
     font-family:
       ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
-    font-size: 0.9em;
+    font-size: 0.85em;
   }
 
   .ProseMirror a {
