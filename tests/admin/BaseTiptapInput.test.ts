@@ -40,6 +40,13 @@ vi.mock('@strapi/strapi/admin', () => ({
   useField: vi.fn(() => ({ value: '', onChange: vi.fn() })),
 }));
 
+// ─── Mock react-intl ─────────────────────────────────────────────────────────
+vi.mock('react-intl', () => ({
+  useIntl: () => ({
+    formatMessage: ({ defaultMessage }: { id: string; defaultMessage: string }) => defaultMessage,
+  }),
+}));
+
 // ─── Mock TiptapInputStyles ────────────────────────────────────────────────────
 vi.mock('../../admin/src/components/TiptapInputStyles', () => ({
   TiptapInputStyles: 'TiptapInputStyles',

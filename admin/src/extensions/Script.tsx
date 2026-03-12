@@ -1,8 +1,10 @@
 import { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import { ToolbarButton } from '../components/ToolbarButton';
+import { useIntl } from 'react-intl';
 
 export function useScript(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
+  const { formatMessage } = useIntl();
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -38,7 +40,7 @@ export function useScript(editor: Editor | null, props: { disabled?: boolean } =
         }
         active={editorState?.isSuperscript ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleSuperscript}
-        tooltip="Superscript"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.superscript', defaultMessage: 'Superscript' })}
       />
     ),
     subscriptButton: (
@@ -51,7 +53,7 @@ export function useScript(editor: Editor | null, props: { disabled?: boolean } =
         }
         active={editorState?.isSubscript ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleSubscript}
-        tooltip="Subscript"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.subscript', defaultMessage: 'Subscript' })}
       />
     ),
   };

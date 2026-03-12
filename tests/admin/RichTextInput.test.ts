@@ -22,6 +22,11 @@ vi.mock('react', async () => {
   };
 });
 
+// ─── Mock react-intl ──────────────────────────────────────────────────────────
+vi.mock('react-intl', () => ({
+  useIntl: () => ({ formatMessage: (descriptor: { defaultMessage?: string }) => descriptor.defaultMessage ?? '' }),
+}));
+
 // ─── Mock usePresetConfig ─────────────────────────────────────────────────────
 const mockUsePresetConfig = vi.fn();
 vi.mock('../../admin/src/hooks/usePresetConfig', () => ({

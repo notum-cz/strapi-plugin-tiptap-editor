@@ -6,10 +6,12 @@ import { TextAlignJustify } from '../icons/TextAlignJustify';
 import { TextAlignRight } from '../icons/TextAlignRight';
 import { TextAlignCenter } from '../icons/TextAlignCenter';
 import { ToolbarButton } from '../components/ToolbarButton';
+import { useIntl } from 'react-intl';
 
 type TextAlign = 'left' | 'center' | 'right' | 'justify';
 
 export function useTextAlign(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
+  const { formatMessage } = useIntl();
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -37,7 +39,7 @@ export function useTextAlign(editor: Editor | null, props: { disabled?: boolean 
         icon={<TextAlignLeft />}
         active={editorState?.isTextAlignLeft ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleAlign}
-        tooltip={'Text Align Left'}
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.textAlignLeft', defaultMessage: 'Text Align Left' })}
       />
     ),
     textAlignCenterButton: (
@@ -46,7 +48,7 @@ export function useTextAlign(editor: Editor | null, props: { disabled?: boolean 
         icon={<TextAlignCenter />}
         active={editorState?.isTextAlignCenter ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleAlign}
-        tooltip={'Text Align Center'}
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.textAlignCenter', defaultMessage: 'Text Align Center' })}
       />
     ),
     textAlignRightButton: (
@@ -55,7 +57,7 @@ export function useTextAlign(editor: Editor | null, props: { disabled?: boolean 
         icon={<TextAlignRight />}
         active={editorState?.isTextAlignRight ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleAlign}
-        tooltip={'Text Align Right'}
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.textAlignRight', defaultMessage: 'Text Align Right' })}
       />
     ),
     textAlignJustifyButton: (
@@ -64,7 +66,7 @@ export function useTextAlign(editor: Editor | null, props: { disabled?: boolean 
         icon={<TextAlignJustify />}
         active={editorState?.isTextAlignJustify ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleAlign}
-        tooltip={'Text Align Justify'}
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.textAlignJustify', defaultMessage: 'Text Align Justify' })}
       />
     ),
   };

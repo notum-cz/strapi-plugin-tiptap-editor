@@ -5,6 +5,7 @@ import { Editor } from '@tiptap/core';
 import { TiptapInputStyles } from './TiptapInputStyles';
 import { FieldValue } from '../utils/tiptapUtils';
 import { forwardRef } from 'react';
+import { useIntl } from 'react-intl';
 
 type TiptapInputProps = InputProps & {
   labelAction?: React.ReactNode;
@@ -19,6 +20,7 @@ const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
     { hint, disabled = false, labelAction, label, name, required = false, editor, field, children, noPresetConfigured },
     forwardedRef
   ) => {
+    const { formatMessage } = useIntl();
     const borderColor = field.error ? 'danger600' : 'neutral200';
     const background = disabled ? 'neutral200' : 'neutral100';
 
@@ -40,7 +42,12 @@ const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
             {noPresetConfigured && (
               <Box paddingLeft={2} paddingRight={2} paddingTop={2}>
                 <Status variant="secondary" showBullet={false}>
-                  <Typography variant="pi">No editor preset configured — showing minimal editor</Typography>
+                  <Typography variant="pi">
+                    {formatMessage({
+                      id: 'tiptap-editor.noPreset.message',
+                      defaultMessage: 'No editor preset configured — showing minimal editor',
+                    })}
+                  </Typography>
                 </Status>
               </Box>
             )}

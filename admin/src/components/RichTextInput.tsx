@@ -1,4 +1,5 @@
 import { forwardRef, useMemo } from 'react';
+import { useIntl } from 'react-intl';
 import { Box } from '@strapi/design-system';
 import BaseTiptapInput from './BaseTiptapInput';
 import { EditorErrorBoundary } from './EditorErrorBoundary';
@@ -118,16 +119,21 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
 // ─── Outer wrapper ───────────────────────────────────────────────────────────
 // Handles async preset fetching; renders loading state until config is ready.
 
-const RichTextInput = forwardRef<HTMLDivElement, TiptapInputProps>((props, forwardedRef) => {
-  const attribute = (props as any).attribute as { options?: { preset?: string } } | undefined;
-  const presetName = attribute?.options?.preset;
+type RichTextInputProps = TiptapInputProps & {
+  attribute?: { options?: { preset?: string } };
+};
 
-  const { config, isLoading } = usePresetConfig(presetName);
+const RichTextInput = forwardRef<HTMLDivElement, RichTextInputProps>((props, forwardedRef) => {
+  const { formatMessage } = useIntl();
+  const rawPresetName = props.attribute?.options?.preset;
+  const normalizedPresetName = rawPresetName?.trim() || undefined;
+
+  const { config, isLoading } = usePresetConfig(normalizedPresetName);
 
   if (isLoading) {
     return (
       <Box padding={4}>
-        Loading editor...
+        {formatMessage({ id: 'tiptap-editor.loading', defaultMessage: 'Loading editor...' })}
       </Box>
     );
   }
@@ -136,7 +142,7 @@ const RichTextInput = forwardRef<HTMLDivElement, TiptapInputProps>((props, forwa
     <InnerEditor
       ref={forwardedRef}
       config={config ?? MINIMAL_PRESET_CONFIG}
-      presetName={presetName}
+      presetName={normalizedPresetName}
       {...props}
     />
   );

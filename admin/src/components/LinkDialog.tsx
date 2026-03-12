@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Dialog, Field, TextInput } from '@strapi/design-system';
+import { useIntl } from 'react-intl';
 
 export type LinkDialogPayload = { url: string };
 
@@ -21,6 +22,7 @@ export const LinkDialog: React.FC<LinkDialogProps> = ({
   onSave,
   onRemove,
 }) => {
+  const { formatMessage } = useIntl();
   const [value, setValue] = React.useState(url || '');
 
   React.useEffect(() => {
@@ -44,13 +46,16 @@ export const LinkDialog: React.FC<LinkDialogProps> = ({
     >
       {open && (
         <Dialog.Content>
-          <Dialog.Header>{mode === 'add' ? 'Add link' : 'Edit link'}</Dialog.Header>
+          <Dialog.Header>{mode === 'add'
+            ? formatMessage({ id: 'tiptap-editor.link.addLink', defaultMessage: 'Add link' })
+            : formatMessage({ id: 'tiptap-editor.link.editLink', defaultMessage: 'Edit link' })
+          }</Dialog.Header>
           <Dialog.Body>
             <Field.Root width="100%">
-              <Field.Label>URL</Field.Label>
+              <Field.Label>{formatMessage({ id: 'tiptap-editor.link.urlLabel', defaultMessage: 'URL' })}</Field.Label>
               <TextInput
                 name="link-url"
-                placeholder="https://example.com"
+                placeholder={formatMessage({ id: 'tiptap-editor.link.urlPlaceholder', defaultMessage: 'https://example.com' })}
                 value={value}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
               />
@@ -59,12 +64,12 @@ export const LinkDialog: React.FC<LinkDialogProps> = ({
           <Dialog.Footer>
             <Dialog.Cancel>
               <Button variant="tertiary" fullWidth onClick={onClose}>
-                Cancel
+                {formatMessage({ id: 'tiptap-editor.link.cancel', defaultMessage: 'Cancel' })}
               </Button>
             </Dialog.Cancel>
             {mode === 'edit' && (
               <Button variant="danger-light" fullWidth onClick={onRemove}>
-                Remove link
+                {formatMessage({ id: 'tiptap-editor.link.removeLink', defaultMessage: 'Remove link' })}
               </Button>
             )}
             <Dialog.Action>
@@ -74,7 +79,7 @@ export const LinkDialog: React.FC<LinkDialogProps> = ({
                 onClick={handleSave}
                 disabled={isSaveDisabled}
               >
-                Save
+                {formatMessage({ id: 'tiptap-editor.link.save', defaultMessage: 'Save' })}
               </Button>
             </Dialog.Action>
           </Dialog.Footer>

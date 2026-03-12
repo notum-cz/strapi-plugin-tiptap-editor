@@ -1,5 +1,6 @@
-import { Component, ErrorInfo, ReactNode } from 'react';
+import { Component, ErrorInfo, FC, ReactNode } from 'react';
 import { Box, Typography, Button } from '@strapi/design-system';
+import { useIntl } from 'react-intl';
 
 interface Props {
   children: ReactNode;
@@ -9,6 +10,22 @@ interface State {
   hasError: boolean;
   error: Error | null;
 }
+
+const ErrorFallback: FC<{ onRetry: () => void }> = ({ onRetry }) => {
+  const { formatMessage } = useIntl();
+  return (
+    <Box padding={4} background="danger100" hasRadius>
+      <Typography variant="omega" textColor="danger700">
+        {formatMessage({ id: 'tiptap-editor.error.message', defaultMessage: 'The editor encountered an error and could not render.' })}
+      </Typography>
+      <Box marginTop={2}>
+        <Button variant="secondary" size="S" onClick={onRetry}>
+          {formatMessage({ id: 'tiptap-editor.error.retry', defaultMessage: 'Retry' })}
+        </Button>
+      </Box>
+    </Box>
+  );
+};
 
 /**
  * Error boundary that wraps the editor content area.
@@ -32,18 +49,7 @@ export class EditorErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.hasError) {
-      return (
-        <Box padding={4} background="danger100" hasRadius>
-          <Typography variant="omega" textColor="danger700">
-            The editor encountered an error and could not render.
-          </Typography>
-          <Box marginTop={2}>
-            <Button variant="secondary" size="S" onClick={this.handleRetry}>
-              Retry
-            </Button>
-          </Box>
-        </Box>
-      );
+      return <ErrorFallback onRetry={this.handleRetry} />;
     }
 
     return this.props.children;

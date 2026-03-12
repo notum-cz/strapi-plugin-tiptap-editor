@@ -7,6 +7,7 @@ import Document from '@tiptap/extension-document';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import { forwardRef } from 'react';
+import { useIntl } from 'react-intl';
 
 // Custom extension for accent-cursive text
 const AccentCursive = Mark.create({
@@ -71,6 +72,7 @@ type TiptapInputProps = InputProps & {
 
 const TiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
   ({ hint, disabled = false, labelAction, label, name, required = false }, forwardedRef) => {
+    const { formatMessage } = useIntl();
     const field = useField(name);
 
     // Parse JSON if string is provided, or use default content
@@ -142,7 +144,7 @@ const TiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
 
         <Box className="editor-toolbar">
           <Flex>
-            <Tooltip description="Accent Cursive">
+            <Tooltip description={formatMessage({ id: 'tiptap-editor.toolbar.accentCursive', defaultMessage: 'Accent Cursive' })}>
               <Button
                 onClick={toggleAccentCursive}
                 variant="tertiary"

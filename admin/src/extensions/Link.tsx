@@ -5,8 +5,10 @@ import { Link as LinkIcon } from '@strapi/icons';
 import LinkDialog, { LinkDialogPayload } from '../components/LinkDialog';
 import { useRef, useState } from 'react';
 import { ToolbarButton } from '../components/ToolbarButton';
+import { useIntl } from 'react-intl';
 
 export function useLink(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
+  const { formatMessage } = useIntl();
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -94,7 +96,10 @@ export function useLink(editor: Editor | null, props: { disabled?: boolean } = {
         icon={<LinkIcon />}
         active={editorState?.isLink ?? false}
         disabled={props.disabled || !editor || !editorState?.canSetLink}
-        tooltip={editorState?.isLink ? 'Edit or remove link' : 'Add link'}
+        tooltip={editorState?.isLink
+          ? formatMessage({ id: 'tiptap-editor.toolbar.editOrRemoveLink', defaultMessage: 'Edit or remove link' })
+          : formatMessage({ id: 'tiptap-editor.toolbar.addLink', defaultMessage: 'Add link' })
+        }
       />
     ),
     linkDialog: (

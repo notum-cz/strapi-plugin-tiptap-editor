@@ -12,8 +12,10 @@ import {
   Underline as UnderlineIcon,
 } from '@strapi/icons';
 import { ToolbarButton } from '../components/ToolbarButton';
+import { useIntl } from 'react-intl';
 
 export function useStarterKit(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
+  const { formatMessage } = useIntl();
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -63,7 +65,7 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<BoldIcon />}
         active={editorState?.isBold ?? false}
         disabled={props.disabled || !editor || !editorState?.canBold}
-        tooltip="Bold"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.bold', defaultMessage: 'Bold' })}
       />
     ),
     italicButton: (
@@ -72,7 +74,7 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<ItalicIcon />}
         active={editorState?.isItalic ?? false}
         disabled={props.disabled || !editor || !editorState?.canItalic}
-        tooltip="Italic"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.italic', defaultMessage: 'Italic' })}
       />
     ),
     underlineButton: (
@@ -81,7 +83,7 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<UnderlineIcon />}
         active={editorState?.isUnderline ?? false}
         disabled={props.disabled || !editor || !editorState?.canUnderline}
-        tooltip="Underline"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.underline', defaultMessage: 'Underline' })}
       />
     ),
     strikeButton: (
@@ -90,7 +92,7 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<StrikeThroughIcon />}
         active={editorState?.isStrike ?? false}
         disabled={props.disabled || !editor || !editorState?.canStrike}
-        tooltip="Strikethrough"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.strikethrough', defaultMessage: 'Strikethrough' })}
       />
     ),
     bulletButton: (
@@ -99,7 +101,7 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<BulletListIcon />}
         active={editorState?.isBulletList ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleBulletList}
-        tooltip="Bullet list"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.bulletList', defaultMessage: 'Bullet list' })}
       />
     ),
     orderedButton: (
@@ -108,7 +110,7 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<NumberListIcon />}
         active={editorState?.isOrderedList ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleOrderedList}
-        tooltip="Numbered list"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.numberedList', defaultMessage: 'Numbered list' })}
       />
     ),
     codeButton: (
@@ -117,7 +119,7 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<CodeIcon />}
         active={editorState?.isCode ?? false}
         disabled={props.disabled || !editor || !editorState?.canCode}
-        tooltip="Inline code"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.inlineCode', defaultMessage: 'Inline code' })}
       />
     ),
     blockquoteButton: (
@@ -126,7 +128,7 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<QuotesIcon />}
         active={editorState?.isBlockquote ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleBlockquote}
-        tooltip="Quote"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.quote', defaultMessage: 'Quote' })}
       />
     ),
   };

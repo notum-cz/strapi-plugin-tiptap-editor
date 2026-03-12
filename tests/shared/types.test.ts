@@ -44,6 +44,12 @@ describe('isFeatureEnabled (TYPES-04)', () => {
   it('returns false for an object with enabled: false', () => {
     expect(isFeatureEnabled({ enabled: false })).toBe(false);
   });
+  it('returns false for an object with disabled: true', () => {
+    expect(isFeatureEnabled({ disabled: true })).toBe(false);
+  });
+  it('returns true for an object with disabled: false', () => {
+    expect(isFeatureEnabled({ disabled: false })).toBe(true);
+  });
 });
 
 describe('getFeatureOptions (TYPES-05)', () => {

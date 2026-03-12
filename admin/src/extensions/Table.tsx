@@ -5,8 +5,10 @@ import { GridNine } from '@strapi/icons';
 import TableSizeDialog from '../components/TableSizeDialog';
 import { useState } from 'react';
 import { ToolbarButton } from '../components/ToolbarButton';
+import { useIntl } from 'react-intl';
 
 export function useTable(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
+  const { formatMessage } = useIntl();
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -50,7 +52,7 @@ export function useTable(editor: Editor | null, props: { disabled?: boolean } = 
         icon={<GridNine />}
         active={editorState?.isTable ?? false}
         disabled={props.disabled || !editor || !editorState?.canInsertTable}
-        tooltip="Table"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.table', defaultMessage: 'Table' })}
       />
     ),
     addColumnButton: (
@@ -59,7 +61,7 @@ export function useTable(editor: Editor | null, props: { disabled?: boolean } = 
         icon={<>+Col</>}
         active={false}
         hidden={props.disabled || !editor || !editorState?.canAddColumn}
-        tooltip="Add column (to the right)"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.addColumn', defaultMessage: 'Add column (to the right)' })}
       />
     ),
     removeColumnButton: (
@@ -68,7 +70,7 @@ export function useTable(editor: Editor | null, props: { disabled?: boolean } = 
         icon={<>-Col</>}
         active={false}
         hidden={props.disabled || !editor || !editorState?.canDeleteColumn}
-        tooltip="Remove column"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.removeColumn', defaultMessage: 'Remove column' })}
       />
     ),
     addRowButton: (
@@ -77,7 +79,7 @@ export function useTable(editor: Editor | null, props: { disabled?: boolean } = 
         icon={<>+Row</>}
         active={false}
         hidden={props.disabled || !editor || !editorState?.canAddRow}
-        tooltip="Add row (below)"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.addRow', defaultMessage: 'Add row (below)' })}
       />
     ),
     removeRowButton: (
@@ -86,7 +88,7 @@ export function useTable(editor: Editor | null, props: { disabled?: boolean } = 
         icon={<>-Row</>}
         active={false}
         hidden={props.disabled || !editor || !editorState?.canDeleteRow}
-        tooltip="Remove row"
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.removeRow', defaultMessage: 'Remove row' })}
       />
     ),
     tableDialog: (

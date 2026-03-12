@@ -15,6 +15,11 @@ vi.mock('react', () => ({
   },
 }));
 
+// Mock react-intl
+vi.mock('react-intl', () => ({
+  useIntl: () => ({ formatMessage: (descriptor: { defaultMessage?: string }) => descriptor.defaultMessage ?? '' }),
+}));
+
 // Mock useFetchClient
 const mockGet = vi.fn();
 vi.mock('@strapi/strapi/admin', () => ({
