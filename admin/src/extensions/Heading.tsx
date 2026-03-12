@@ -13,14 +13,17 @@ export const BaseHeadingWithSEOTag = Heading.extend({
   },
 });
 
-// Pre-configured instance — backward compat, used by existing RichTextInput until Phase 3
+// Pre-configured instance with all heading levels
 export const HeadingWithSEOTag = BaseHeadingWithSEOTag.configure({ levels: [1, 2, 3, 4, 5, 6] });
 
-export function useHeading(editor: Editor, props: { disabled?: boolean; levels?: number[] } = { disabled: false }) {
+export function useHeading(editor: Editor | null, props: { disabled?: boolean; levels?: number[] } = { disabled: false }) {
   const levels = props.levels ?? [1, 2, 3, 4, 5, 6];
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor) {
+        return { headingLevel: undefined, headingTag: undefined, isParagraph: false };
+      }
       return {
         headingLevel: ctx.editor.getAttributes('heading').level as number | undefined,
         headingTag: ctx.editor.getAttributes('heading').tag as string | undefined,
@@ -31,7 +34,6 @@ export function useHeading(editor: Editor, props: { disabled?: boolean; levels?:
 
   const onChangeHeading = (value: string) => {
     if (!editor) return;
-    editor.chain().focus();
 
     if (value === 'p') {
       editor.chain().focus().setParagraph().run();
@@ -42,7 +44,7 @@ export function useHeading(editor: Editor, props: { disabled?: boolean; levels?:
     editor.chain().focus().setHeading({ level }).run();
 
     // automatically set the 'tag' attribute to match the heading level if not already set
-    if (!editorState.headingTag) {
+    if (!editorState?.headingTag) {
       editor
         .chain()
         .focus()
@@ -53,7 +55,7 @@ export function useHeading(editor: Editor, props: { disabled?: boolean; levels?:
 
   const onChangeHeadingTag = (value: string) => {
     if (!editor) return;
-    if (!editorState.headingLevel) return;
+    if (!editorState?.headingLevel) return;
     editor.chain().focus().updateAttributes('heading', { tag: value }).run();
   };
 
@@ -62,7 +64,7 @@ export function useHeading(editor: Editor, props: { disabled?: boolean; levels?:
       <SingleSelect
         placeholder="Style"
         aria-label="Text style"
-        value={editorState.headingLevel ? `h${editorState.headingLevel}` : 'p'}
+        value={editorState?.headingLevel ? `h${editorState.headingLevel}` : 'p'}
         onChange={(v: string | undefined) => v && onChangeHeading(v)}
         disabled={!editor || props.disabled}
         size="S"
@@ -79,9 +81,9 @@ export function useHeading(editor: Editor, props: { disabled?: boolean; levels?:
       <SingleSelect
         placeholder="SEO Tag"
         aria-label="Heading's HTML tag for SEO purposes"
-        value={editorState.headingTag}
+        value={editorState?.headingTag}
         onChange={(v: string | undefined) => v && onChangeHeadingTag(v)}
-        disabled={!editor || props.disabled || !editorState.headingLevel}
+        disabled={!editor || props.disabled || !editorState?.headingLevel}
         size="S"
       >
         <SingleSelectOption value="h1">h1</SingleSelectOption>

@@ -13,10 +13,18 @@ import {
 } from '@strapi/icons';
 import { ToolbarButton } from '../components/ToolbarButton';
 
-export function useStarterKit(editor: Editor, props: { disabled?: boolean } = { disabled: false }) {
+export function useStarterKit(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor) {
+        return {
+          isBold: false, canBold: false, isItalic: false, canItalic: false,
+          isUnderline: false, canUnderline: false, isStrike: false, canStrike: false,
+          isCode: false, canCode: false, isBulletList: false, canToggleBulletList: false,
+          isOrderedList: false, canToggleOrderedList: false, isBlockquote: false, canToggleBlockquote: false,
+        };
+      }
       const chain = ctx.editor.can().chain();
       return {
         isBold: ctx.editor.isActive('bold') ?? false,
@@ -51,81 +59,73 @@ export function useStarterKit(editor: Editor, props: { disabled?: boolean } = { 
   return {
     boldButton: (
       <ToolbarButton
-        key="bold"
         onClick={toggleBold}
         icon={<BoldIcon />}
-        active={editorState.isBold}
-        disabled={props.disabled || !editor || !editorState.canBold}
+        active={editorState?.isBold ?? false}
+        disabled={props.disabled || !editor || !editorState?.canBold}
         tooltip="Bold"
       />
     ),
     italicButton: (
       <ToolbarButton
-        key="italic"
         onClick={toggleItalic}
         icon={<ItalicIcon />}
-        active={editorState.isItalic}
-        disabled={props.disabled || !editor || !editorState.canItalic}
+        active={editorState?.isItalic ?? false}
+        disabled={props.disabled || !editor || !editorState?.canItalic}
         tooltip="Italic"
       />
     ),
     underlineButton: (
       <ToolbarButton
-        key="underline"
         onClick={toggleUnderline}
         icon={<UnderlineIcon />}
-        active={editorState.isUnderline}
-        disabled={props.disabled || !editor || !editorState.canUnderline}
+        active={editorState?.isUnderline ?? false}
+        disabled={props.disabled || !editor || !editorState?.canUnderline}
         tooltip="Underline"
       />
     ),
     strikeButton: (
       <ToolbarButton
-        key="strike"
         onClick={toggleStrike}
         icon={<StrikeThroughIcon />}
-        active={editorState.isStrike}
-        disabled={props.disabled || !editor || !editorState.canStrike}
+        active={editorState?.isStrike ?? false}
+        disabled={props.disabled || !editor || !editorState?.canStrike}
         tooltip="Strikethrough"
       />
     ),
     bulletButton: (
       <ToolbarButton
-        key="bullet"
         onClick={toggleBulletList}
         icon={<BulletListIcon />}
-        active={editorState.isBulletList}
-        disabled={props.disabled || !editor || !editorState.canToggleBulletList}
+        active={editorState?.isBulletList ?? false}
+        disabled={props.disabled || !editor || !editorState?.canToggleBulletList}
         tooltip="Bullet list"
       />
     ),
     orderedButton: (
       <ToolbarButton
-        key="ordered"
         onClick={toggleOrderedList}
         icon={<NumberListIcon />}
-        active={editorState.isOrderedList}
-        disabled={props.disabled || !editor || !editorState.canToggleOrderedList}
+        active={editorState?.isOrderedList ?? false}
+        disabled={props.disabled || !editor || !editorState?.canToggleOrderedList}
         tooltip="Numbered list"
       />
     ),
     codeButton: (
       <ToolbarButton
-        key="code"
         onClick={toggleCode}
         icon={<CodeIcon />}
-        active={editorState.isCode}
-        disabled={props.disabled || !editor || !editorState.canCode}
+        active={editorState?.isCode ?? false}
+        disabled={props.disabled || !editor || !editorState?.canCode}
         tooltip="Inline code"
       />
     ),
     blockquoteButton: (
       <ToolbarButton
-        key="blockquote"
         onClick={toggleBlockquote}
         icon={<QuotesIcon />}
-        active={editorState.isBlockquote}
-        disabled={props.disabled || !editor || !editorState.canToggleBlockquote}
+        active={editorState?.isBlockquote ?? false}
+        disabled={props.disabled || !editor || !editorState?.canToggleBlockquote}
         tooltip="Quote"
       />
     ),

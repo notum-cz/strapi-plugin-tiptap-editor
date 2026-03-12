@@ -6,10 +6,13 @@ import TableSizeDialog from '../components/TableSizeDialog';
 import { useState } from 'react';
 import { ToolbarButton } from '../components/ToolbarButton';
 
-export function useTable(editor: Editor, props: { disabled?: boolean } = { disabled: false }) {
+export function useTable(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor) {
+        return { isTable: false, canInsertTable: false, canAddColumn: false, canDeleteColumn: false, canAddRow: false, canDeleteRow: false };
+      }
       const chain = ctx.editor.can().chain();
       return {
         isTable: ctx.editor.isActive('table') ?? false,
@@ -43,52 +46,46 @@ export function useTable(editor: Editor, props: { disabled?: boolean } = { disab
   return {
     tableButton: (
       <ToolbarButton
-        key="table"
         onClick={handleOpenDialog}
         icon={<GridNine />}
-        active={editorState.isTable}
-        disabled={props.disabled || !editor || !editorState.canInsertTable}
+        active={editorState?.isTable ?? false}
+        disabled={props.disabled || !editor || !editorState?.canInsertTable}
         tooltip="Table"
       />
     ),
-    // Adding table manipulation buttons
     addColumnButton: (
       <ToolbarButton
-        key="tableAddColumn"
         onClick={addColumn}
         icon={<>+Col</>}
         active={false}
-        hidden={props.disabled || !editor || !editorState.canAddColumn}
+        hidden={props.disabled || !editor || !editorState?.canAddColumn}
         tooltip="Add column (to the right)"
       />
     ),
     removeColumnButton: (
       <ToolbarButton
-        key="tableRemoveColumn"
         onClick={removeColumn}
         icon={<>-Col</>}
         active={false}
-        hidden={props.disabled || !editor || !editorState.canDeleteColumn}
+        hidden={props.disabled || !editor || !editorState?.canDeleteColumn}
         tooltip="Remove column"
       />
     ),
     addRowButton: (
       <ToolbarButton
-        key="tableAddRow"
         onClick={addRow}
         icon={<>+Row</>}
         active={false}
-        hidden={props.disabled || !editor || !editorState.canAddRow}
+        hidden={props.disabled || !editor || !editorState?.canAddRow}
         tooltip="Add row (below)"
       />
     ),
     removeRowButton: (
       <ToolbarButton
-        key="tableRemoveRow"
         onClick={removeRow}
         icon={<>-Row</>}
         active={false}
-        hidden={props.disabled || !editor || !editorState.canDeleteRow}
+        hidden={props.disabled || !editor || !editorState?.canDeleteRow}
         tooltip="Remove row"
       />
     ),

@@ -2,10 +2,13 @@ import { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import { ToolbarButton } from '../components/ToolbarButton';
 
-export function useScript(editor: Editor, props: { disabled?: boolean } = { disabled: false }) {
+export function useScript(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor) {
+        return { isSuperscript: false, canToggleSuperscript: false, isSubscript: false, canToggleSubscript: false };
+      }
       const chain = ctx.editor.can().chain();
       return {
         isSuperscript: ctx.editor.isActive('superscript') ?? false,
@@ -27,29 +30,27 @@ export function useScript(editor: Editor, props: { disabled?: boolean } = { disa
   return {
     superscriptButton: (
       <ToolbarButton
-        key="superscript"
         onClick={toggleSuperscript}
         icon={
           <>
             x<sup>2</sup>
           </>
         }
-        active={editorState.isSuperscript}
-        disabled={props.disabled || !editor || !editorState.canToggleSuperscript}
+        active={editorState?.isSuperscript ?? false}
+        disabled={props.disabled || !editor || !editorState?.canToggleSuperscript}
         tooltip="Superscript"
       />
     ),
     subscriptButton: (
       <ToolbarButton
-        key="subscript"
         onClick={toggleSubscript}
         icon={
           <>
             x<sub>2</sub>
           </>
         }
-        active={editorState.isSubscript}
-        disabled={props.disabled || !editor || !editorState.canToggleSubscript}
+        active={editorState?.isSubscript ?? false}
+        disabled={props.disabled || !editor || !editorState?.canToggleSubscript}
         tooltip="Subscript"
       />
     ),

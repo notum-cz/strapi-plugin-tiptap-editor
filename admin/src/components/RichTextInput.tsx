@@ -26,25 +26,27 @@ type InnerEditorProps = TiptapInputProps & {
 
 const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
   ({ config, presetName, ...props }, forwardedRef) => {
-    // Memoize on presetName string — stable across parent re-renders — EDITOR-02
+    // Memoize on presetName string — stable across parent re-renders
     const extensions = useMemo(() => {
       return buildExtensions(config);
     }, [presetName]); // eslint-disable-line react-hooks/exhaustive-deps
 
     const { editor, field } = useTiptapEditor(props.name, '', extensions);
 
-    const starterKit = useStarterKit(editor!, { disabled: props.disabled });
+    const starterKit = useStarterKit(editor, { disabled: props.disabled });
     const headingOptions = getFeatureOptions(config.heading, { levels: [1, 2, 3, 4, 5, 6] });
-    const heading = useHeading(editor!, { disabled: props.disabled, levels: headingOptions?.levels });
-    const link = useLink(editor!, { disabled: props.disabled });
-    const script = useScript(editor!, { disabled: props.disabled });
-    const table = useTable(editor!, { disabled: props.disabled });
-    const textAlign = useTextAlign(editor!, { disabled: props.disabled });
+    const heading = useHeading(editor, { disabled: props.disabled, levels: headingOptions?.levels });
+    const link = useLink(editor, { disabled: props.disabled });
+    const script = useScript(editor, { disabled: props.disabled });
+    const table = useTable(editor, { disabled: props.disabled });
+    const textAlign = useTextAlign(editor, { disabled: props.disabled });
+
+    if (!editor) return null;
 
     return (
       <EditorErrorBoundary>
         <BaseTiptapInput
-          editor={editor!}
+          editor={editor}
           field={field}
           {...props}
           ref={forwardedRef}

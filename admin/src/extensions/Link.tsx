@@ -6,10 +6,13 @@ import LinkDialog, { LinkDialogPayload } from '../components/LinkDialog';
 import { useRef, useState } from 'react';
 import { ToolbarButton } from '../components/ToolbarButton';
 
-export function useLink(editor: Editor, props: { disabled?: boolean } = { disabled: false }) {
+export function useLink(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor) {
+        return { isLink: false, canSetLink: false };
+      }
       return {
         isLink: ctx.editor.isActive('link') ?? false,
         canSetLink: ctx.editor.can().setLink?.({ href: 'https://example.com' }) ?? true,
@@ -43,7 +46,7 @@ export function useLink(editor: Editor, props: { disabled?: boolean } = { disabl
 
   const toggleLink = () => {
     if (!editor) return;
-    if (editorState.isLink) {
+    if (editorState?.isLink) {
       openEditLinkDialog();
     } else {
       openAddLinkDialog();
@@ -65,7 +68,6 @@ export function useLink(editor: Editor, props: { disabled?: boolean } = { disabl
     if (url === '') {
       chain.unsetLink().run();
     } else {
-      // updateAttributes ensures existing link mark is updated instead of creating a new one
       chain.updateAttributes('link', { href: url }).run();
     }
     setShowLinkDialog(false);
@@ -88,12 +90,11 @@ export function useLink(editor: Editor, props: { disabled?: boolean } = { disabl
   return {
     linkButton: (
       <ToolbarButton
-        key="link"
         onClick={toggleLink}
         icon={<LinkIcon />}
-        active={editorState.isLink}
-        disabled={props.disabled || !editor || !editorState.canSetLink}
-        tooltip={editorState.isLink ? 'Edit or remove link' : 'Add link'}
+        active={editorState?.isLink ?? false}
+        disabled={props.disabled || !editor || !editorState?.canSetLink}
+        tooltip={editorState?.isLink ? 'Edit or remove link' : 'Add link'}
       />
     ),
     linkDialog: (

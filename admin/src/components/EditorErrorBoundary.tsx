@@ -14,8 +14,6 @@ interface State {
  * Error boundary that wraps the editor content area.
  * Catches render errors in children and displays a fallback UI with a retry button.
  * Logs errors with [TiptapEditor] prefix for debugging.
- *
- * Created in Phase 2 but wired into RichTextInput in Phase 3.
  */
 export class EditorErrorBoundary extends Component<Props, State> {
   state: State = { hasError: false, error: null };
