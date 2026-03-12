@@ -25,13 +25,10 @@ export function ToolbarButton({
         onClick={onClick}
         variant="tertiary"
         size="S"
-        paddingLeft={2}
-        paddingRight={2}
-        marginLeft={marginLeft ?? 1}
         disabled={disabled}
+        className={active ? 'toolbar-btn-active' : undefined}
         style={{
-          color: active ? 'black' : undefined,
-          backgroundColor: active ? '#d9d8ff' : undefined,
+          marginLeft: marginLeft ? `${marginLeft}px` : undefined,
           display: hidden ? 'none' : undefined,
         }}
       >
