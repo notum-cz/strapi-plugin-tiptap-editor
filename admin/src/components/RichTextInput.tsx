@@ -13,35 +13,111 @@ import { useTable } from '../extensions/Table';
 import { useTextAlign } from '../extensions/TextAlign';
 import { usePresetConfig } from '../hooks/usePresetConfig';
 import { buildExtensions } from '../utils/buildExtensions';
-import { MINIMAL_PRESET_CONFIG } from '../../../shared/types';
+import { TiptapPresetConfig, MINIMAL_PRESET_CONFIG } from '../../../shared/types';
+
+// ─── Inner editor ────────────────────────────────────────────────────────────
+// Mounted only AFTER preset config is resolved, so useEditor receives the
+// correct extensions on first render and never needs to swap them.
+
+type InnerEditorProps = TiptapInputProps & {
+  config: TiptapPresetConfig;
+  presetName: string | undefined;
+};
+
+const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
+  ({ config, presetName, ...props }, forwardedRef) => {
+    // Memoize on presetName string — stable across parent re-renders — EDITOR-02
+    const extensions = useMemo(() => {
+      return buildExtensions(config);
+    }, [presetName]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const { editor, field } = useTiptapEditor(props.name, '', extensions);
+
+    const starterKit = useStarterKit(editor!, { disabled: props.disabled });
+    const heading = useHeading(editor!, { disabled: props.disabled });
+    const link = useLink(editor!, { disabled: props.disabled });
+    const script = useScript(editor!, { disabled: props.disabled });
+    const table = useTable(editor!, { disabled: props.disabled });
+    const textAlign = useTextAlign(editor!, { disabled: props.disabled });
+
+    return (
+      <EditorErrorBoundary>
+        <BaseTiptapInput
+          editor={editor!}
+          field={field}
+          {...props}
+          ref={forwardedRef}
+          noPresetConfigured={!presetName}
+        >
+          <FeatureGuard featureValue={config?.heading}>
+            {heading.headingSelect}
+            {heading.headingTagSelect}
+            <Spacer width={8} />
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.bold}>
+            {starterKit.boldButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.italic}>
+            {starterKit.italicButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.strike}>
+            {starterKit.strikeButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.superscript}>
+            {script.superscriptButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.subscript}>
+            {script.subscriptButton}
+          </FeatureGuard>
+          <Spacer width={8} />
+          <FeatureGuard featureValue={config?.textAlign}>
+            {textAlign.textAlignLeftButton}
+            {textAlign.textAlignCenterButton}
+            {textAlign.textAlignRightButton}
+            {textAlign.textAlignJustifyButton}
+            <Spacer width={8} />
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.bulletList}>
+            {starterKit.bulletButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.orderedList}>
+            {starterKit.orderedButton}
+          </FeatureGuard>
+          <Spacer width={8} />
+          <FeatureGuard featureValue={config?.code}>
+            {starterKit.codeButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.blockquote}>
+            {starterKit.blockquoteButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.link}>
+            {link.linkButton}
+            {link.linkDialog}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.table}>
+            <Spacer width={8} />
+            {table.tableButton}
+            {table.addColumnButton}
+            {table.removeColumnButton}
+            {table.addRowButton}
+            {table.removeRowButton}
+            {table.tableDialog}
+          </FeatureGuard>
+        </BaseTiptapInput>
+      </EditorErrorBoundary>
+    );
+  }
+);
+
+// ─── Outer wrapper ───────────────────────────────────────────────────────────
+// Handles async preset fetching; renders loading state until config is ready.
 
 const RichTextInput = forwardRef<HTMLDivElement, TiptapInputProps>((props, forwardedRef) => {
-  // Extract preset name from Strapi attribute options
   const attribute = (props as any).attribute as { options?: { preset?: string } } | undefined;
   const presetName = attribute?.options?.preset;
 
-  // Fetch preset config (shows loading state while fetching)
   const { config, isLoading } = usePresetConfig(presetName);
 
-  // Memoize extensions on presetName (string) — NOT on config (object reference) — EDITOR-02
-  // This prevents re-creating extensions (and losing content) when parent re-renders with same preset
-  const extensions = useMemo(() => {
-    if (!config) return [];
-    return buildExtensions(config);
-  }, [presetName]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // All hooks MUST be called unconditionally (React rules — no hooks after early return)
-  const { editor, field } = useTiptapEditor(props.name, '', extensions);
-
-  const starterKit = useStarterKit(editor!, { disabled: props.disabled });
-  const heading = useHeading(editor!, { disabled: props.disabled });
-  const link = useLink(editor!, { disabled: props.disabled });
-  const script = useScript(editor!, { disabled: props.disabled });
-  const table = useTable(editor!, { disabled: props.disabled });
-  const textAlign = useTextAlign(editor!, { disabled: props.disabled });
-
-  // Early return for loading state — EDITOR-03
-  // (after all hooks above, which must run unconditionally)
   if (isLoading) {
     return (
       <Box padding={4}>
@@ -51,51 +127,12 @@ const RichTextInput = forwardRef<HTMLDivElement, TiptapInputProps>((props, forwa
   }
 
   return (
-    <EditorErrorBoundary>
-      <BaseTiptapInput
-        editor={editor!}
-        field={field}
-        {...props}
-        ref={forwardedRef}
-        noPresetConfigured={!presetName}
-      >
-        <FeatureGuard featureValue={config?.heading}>
-          {heading.headingSelect}
-          {heading.headingTagSelect}
-          <Spacer width={8} />
-        </FeatureGuard>
-        {starterKit.boldButton}
-        {starterKit.italicButton}
-        {starterKit.underlineButton}
-        {starterKit.strikeButton}
-        {script.superscriptButton}
-        {script.subscriptButton}
-        <Spacer width={8} />
-        <FeatureGuard featureValue={config?.textAlign}>
-          {textAlign.textAlignLeftButton}
-          {textAlign.textAlignCenterButton}
-          {textAlign.textAlignRightButton}
-          {textAlign.textAlignJustifyButton}
-          <Spacer width={8} />
-        </FeatureGuard>
-        {starterKit.bulletButton}
-        {starterKit.orderedButton}
-        <Spacer width={8} />
-        {starterKit.codeButton}
-        {starterKit.blockquoteButton}
-        {link.linkButton}
-        {link.linkDialog}
-        <FeatureGuard featureValue={config?.table}>
-          <Spacer width={8} />
-          {table.tableButton}
-          {table.addColumnButton}
-          {table.removeColumnButton}
-          {table.addRowButton}
-          {table.removeRowButton}
-          {table.tableDialog}
-        </FeatureGuard>
-      </BaseTiptapInput>
-    </EditorErrorBoundary>
+    <InnerEditor
+      ref={forwardedRef}
+      config={config ?? MINIMAL_PRESET_CONFIG}
+      presetName={presetName}
+      {...props}
+    />
   );
 });
 

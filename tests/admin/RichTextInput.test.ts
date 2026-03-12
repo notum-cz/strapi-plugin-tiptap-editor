@@ -114,11 +114,25 @@ vi.mock('@tiptap/extension-text-align', () => ({ default: { configure: vi.fn(() 
 import RichTextInput from '../../admin/src/components/RichTextInput';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
+
+// Shallow-render an element: if its type is a function (component), call it to
+// get the actual rendered tree. This lets us traverse through InnerEditor.
+function shallowRender(element: any): any {
+  if (!element || typeof element !== 'object') return element;
+  if (typeof element.type === 'function') {
+    return shallowRender(element.type(element.props, null));
+  }
+  return element;
+}
+
 function findElements(element: any, type: any): any[] {
   if (!element || typeof element !== 'object') return [];
+  // Render through function components so we can inspect their output
+  const rendered = shallowRender(element);
+  if (!rendered || typeof rendered !== 'object') return [];
   const results: any[] = [];
-  if (element.type === type) results.push(element);
-  const children = element.props?.children;
+  if (rendered.type === type) results.push(rendered);
+  const children = rendered.props?.children;
   if (children) {
     const childArray = Array.isArray(children) ? children : [children];
     for (const child of childArray) {
@@ -177,7 +191,6 @@ describe('RichTextInput', () => {
   it('passes noPresetConfigured=true to BaseTiptapInput when presetName is undefined', () => {
     const props = { name: 'content' };
     const result = RichTextInput(props as any, null) as any;
-    // Find BaseTiptapInput in the tree
     const baseTiptapInputs = findElements(result, 'BaseTiptapInput');
     expect(baseTiptapInputs.length).toBeGreaterThan(0);
     expect(baseTiptapInputs[0].props.noPresetConfigured).toBe(true);
@@ -193,7 +206,8 @@ describe('RichTextInput', () => {
 
   it('memoizes extensions on presetName string (not config object)', () => {
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
-    RichTextInput(props as any, null);
+    // Render through InnerEditor so useMemo runs
+    shallowRender(RichTextInput(props as any, null));
     // The useMemo dependency array should contain the presetName string, not a config object
     expect(capturedUseMemoDeps).not.toBeNull();
     expect(capturedUseMemoDeps).toContain('blog');
@@ -204,14 +218,16 @@ describe('RichTextInput', () => {
 
   it('memoizes extensions on undefined when no presetName', () => {
     const props = { name: 'content' };
-    RichTextInput(props as any, null);
+    // Render through InnerEditor so useMemo runs
+    shallowRender(RichTextInput(props as any, null));
     expect(capturedUseMemoDeps).toEqual([undefined]);
   });
 
-  it('wraps output in EditorErrorBoundary', () => {
+  it('wraps output in EditorErrorBoundary (rendered through InnerEditor)', () => {
     const props = { name: 'content' };
     const result = RichTextInput(props as any, null) as any;
-    expect(result.type).toBe('EditorErrorBoundary');
+    const rendered = shallowRender(result);
+    expect(rendered.type).toBe('EditorErrorBoundary');
   });
 
   it('uses FeatureGuard for heading group with config.heading as featureValue', () => {
