@@ -22,11 +22,14 @@ export const richTextField = {
   options: {
     advanced: [
       {
-        sectionTitle: null,
+        sectionTitle: {
+          id: 'tiptap-editor.section.preset.label',
+          defaultMessage: 'Preset',
+        },
         items: [
           {
             name: 'options.preset',
-            type: 'select',
+            type: 'preset-select',
             intlLabel: {
               id: 'tiptap-editor.preset.label',
               defaultMessage: 'Editor Preset',
@@ -35,7 +38,6 @@ export const richTextField = {
               id: 'tiptap-editor.preset.description',
               defaultMessage: 'Select the preset that configures available editing tools.',
             },
-            options: [],
           },
         ],
       },

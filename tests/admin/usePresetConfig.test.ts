@@ -77,7 +77,7 @@ describe('usePresetConfig', () => {
 
     // Wait for async operations
     await vi.waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith('/api/tiptap-editor/presets/my-preset');
+      expect(mockGet).toHaveBeenCalledWith('/tiptap-editor/presets/my-preset');
     });
   });
 

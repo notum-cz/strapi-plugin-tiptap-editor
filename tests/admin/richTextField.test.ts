@@ -53,14 +53,14 @@ describe('richTextField', () => {
     expect(advanced.length).toBeGreaterThan(0);
   });
 
-  it('advanced section contains an item named "options.preset"', () => {
+  it('advanced section contains an item named "options.preset" with type "preset-select"', () => {
     const advanced = (richTextField as any).options.advanced;
-    // Find the item named 'preset' anywhere in sections
     const presetItem = advanced
       .flatMap((section: any) => (section.items || [section]))
       .find((item: any) => item.name === 'options.preset');
 
     expect(presetItem).toBeDefined();
+    expect(presetItem.type).toBe('preset-select');
   });
 
   it('"options.preset" item has correct intlLabel id and defaultMessage', () => {

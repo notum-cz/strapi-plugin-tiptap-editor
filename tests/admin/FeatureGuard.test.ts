@@ -16,9 +16,9 @@ describe('FeatureGuard', () => {
     expect(result).toBeNull();
   });
 
-  it('renders children when featureValue is undefined (absent key = enabled)', () => {
+  it('renders null when featureValue is undefined (absent key = disabled)', () => {
     const result = FeatureGuard({ featureValue: undefined, children: 'test-child' });
-    expect(result).toBe('test-child');
+    expect(result).toBeNull();
   });
 
   it('renders children when featureValue is an object config', () => {

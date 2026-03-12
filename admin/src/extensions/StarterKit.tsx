@@ -17,23 +17,24 @@ export function useStarterKit(editor: Editor, props: { disabled?: boolean } = { 
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      const chain = ctx.editor.can().chain();
       return {
         isBold: ctx.editor.isActive('bold') ?? false,
-        canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
+        canBold: typeof chain.toggleBold === 'function' ? chain.toggleBold().run() : false,
         isItalic: ctx.editor.isActive('italic') ?? false,
-        canItalic: ctx.editor.can().chain().toggleItalic().run() ?? false,
+        canItalic: typeof chain.toggleItalic === 'function' ? chain.toggleItalic().run() : false,
         isUnderline: ctx.editor.isActive('underline') ?? false,
-        canUnderline: ctx.editor.can().chain().toggleUnderline().run() ?? false,
+        canUnderline: typeof chain.toggleUnderline === 'function' ? chain.toggleUnderline().run() : false,
         isStrike: ctx.editor.isActive('strike') ?? false,
-        canStrike: ctx.editor.can().chain().toggleStrike().run() ?? false,
+        canStrike: typeof chain.toggleStrike === 'function' ? chain.toggleStrike().run() : false,
         isCode: ctx.editor.isActive('code') ?? false,
-        canCode: ctx.editor.can().chain().toggleCode().run() ?? false,
+        canCode: typeof chain.toggleCode === 'function' ? chain.toggleCode().run() : false,
         isBulletList: ctx.editor.isActive('bulletList') ?? false,
-        canToggleBulletList: ctx.editor.can().chain().toggleBulletList().run() ?? false,
+        canToggleBulletList: typeof chain.toggleBulletList === 'function' ? chain.toggleBulletList().run() : false,
         isOrderedList: ctx.editor.isActive('orderedList') ?? false,
-        canToggleOrderedList: ctx.editor.can().chain().toggleOrderedList().run() ?? false,
+        canToggleOrderedList: typeof chain.toggleOrderedList === 'function' ? chain.toggleOrderedList().run() : false,
         isBlockquote: ctx.editor.isActive('blockquote') ?? false,
-        canToggleBlockquote: ctx.editor.can().chain().toggleBlockquote().run() ?? false,
+        canToggleBlockquote: typeof chain.toggleBlockquote === 'function' ? chain.toggleBlockquote().run() : false,
       };
     },
   });

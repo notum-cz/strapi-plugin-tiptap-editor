@@ -18,7 +18,7 @@ export function useTextAlign(editor: Editor, props: { disabled?: boolean } = { d
         isTextAlignRight: ctx.editor.isActive({ textAlign: 'right' }) ?? false,
         isTextAlignCenter: ctx.editor.isActive({ textAlign: 'center' }) ?? false,
         isTextAlignJustify: ctx.editor.isActive({ textAlign: 'justify' }) ?? false,
-        canToggleAlign: ctx.editor.can().chain().setTextAlign('left').run() ?? false,
+        canToggleAlign: typeof ctx.editor.can().chain().setTextAlign === 'function' ? ctx.editor.can().chain().setTextAlign('left').run() : false,
       };
     },
   });

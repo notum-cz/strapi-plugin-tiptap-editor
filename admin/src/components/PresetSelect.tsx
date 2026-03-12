@@ -4,8 +4,10 @@ import { SingleSelect, SingleSelectOption } from '@strapi/design-system';
 
 interface PresetSelectProps {
   value?: string;
-  onChange: (value: string) => void;
-  name?: string;
+  onChange: (payload: { target: { name: string; value: string; type?: string } }) => void;
+  name: string;
+  intlLabel?: { id: string; defaultMessage: string };
+  description?: { id: string; defaultMessage: string };
 }
 
 export function PresetSelect({ value, onChange, name }: PresetSelectProps) {
@@ -14,8 +16,8 @@ export function PresetSelect({ value, onChange, name }: PresetSelectProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    get('/api/tiptap-editor/presets')
-      .then((res: any) => setPresets(res.data ?? []))
+    get('/tiptap-editor/presets')
+      .then((res: any) => setPresets(res.data?.presets ?? []))
       .catch(() => setPresets([]))
       .finally(() => setIsLoading(false));
   }, [get]);
@@ -24,7 +26,9 @@ export function PresetSelect({ value, onChange, name }: PresetSelectProps) {
     <SingleSelect
       name={name}
       value={value || ''}
-      onChange={(val: string) => onChange(val)}
+      onChange={(val: string) => {
+        onChange({ target: { name, value: val, type: 'select' } });
+      }}
       placeholder={presets.length === 0 ? 'No presets available' : 'Select a preset'}
       disabled={isLoading || presets.length === 0}
     >

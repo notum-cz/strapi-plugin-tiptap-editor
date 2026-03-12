@@ -6,11 +6,12 @@ export function useScript(editor: Editor, props: { disabled?: boolean } = { disa
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      const chain = ctx.editor.can().chain();
       return {
         isSuperscript: ctx.editor.isActive('superscript') ?? false,
-        canToggleSuperscript: ctx.editor.can().chain().toggleSuperscript().run() ?? false,
+        canToggleSuperscript: typeof chain.toggleSuperscript === 'function' ? chain.toggleSuperscript().run() : false,
         isSubscript: ctx.editor.isActive('subscript') ?? false,
-        canToggleSubscript: ctx.editor.can().chain().toggleSubscript().run() ?? false,
+        canToggleSubscript: typeof chain.toggleSubscript === 'function' ? chain.toggleSubscript().run() : false,
       };
     },
   });

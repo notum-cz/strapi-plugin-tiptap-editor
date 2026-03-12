@@ -10,13 +10,14 @@ export function useTable(editor: Editor, props: { disabled?: boolean } = { disab
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      const chain = ctx.editor.can().chain();
       return {
         isTable: ctx.editor.isActive('table') ?? false,
-        canInsertTable: ctx.editor.can().chain().insertTable().run() ?? false,
-        canAddColumn: ctx.editor.can().chain().addColumnAfter().run() ?? false,
-        canDeleteColumn: ctx.editor.can().chain().deleteColumn().run() ?? false,
-        canAddRow: ctx.editor.can().chain().addRowAfter().run() ?? false,
-        canDeleteRow: ctx.editor.can().chain().deleteRow().run() ?? false,
+        canInsertTable: typeof chain.insertTable === 'function' ? chain.insertTable().run() : false,
+        canAddColumn: typeof chain.addColumnAfter === 'function' ? chain.addColumnAfter().run() : false,
+        canDeleteColumn: typeof chain.deleteColumn === 'function' ? chain.deleteColumn().run() : false,
+        canAddRow: typeof chain.addRowAfter === 'function' ? chain.addRowAfter().run() : false,
+        canDeleteRow: typeof chain.deleteRow === 'function' ? chain.deleteRow().run() : false,
       };
     },
   });

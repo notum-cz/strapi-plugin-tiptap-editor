@@ -40,8 +40,8 @@ describe('PresetSelect', () => {
     expect(typeof PresetSelect).toBe('function');
   });
 
-  it('registers a useEffect that calls get("/api/tiptap-editor/presets") on mount', async () => {
-    mockGet.mockResolvedValue({ data: ['blog', 'minimal'] });
+  it('registers a useEffect that calls get("/tiptap-editor/presets") on mount', async () => {
+    mockGet.mockResolvedValue({ data: { presets: ['blog', 'minimal'] } });
 
     const onChange = vi.fn();
     PresetSelect({ value: undefined, onChange });
@@ -52,7 +52,7 @@ describe('PresetSelect', () => {
     useEffectCallback!();
 
     await vi.waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith('/api/tiptap-editor/presets');
+      expect(mockGet).toHaveBeenCalledWith('/tiptap-editor/presets');
     });
   });
 
@@ -82,17 +82,19 @@ describe('PresetSelect', () => {
     expect(result.props.placeholder).toBe('No presets available');
   });
 
-  it('onChange prop on SingleSelect calls the provided onChange callback', () => {
+  it('onChange prop on SingleSelect calls the provided onChange with CTB-compatible payload', () => {
     mockGet.mockReturnValue(new Promise(() => {}));
     const onChange = vi.fn();
-    const result: any = PresetSelect({ value: undefined, onChange });
+    const result: any = PresetSelect({ value: undefined, onChange, name: 'options.preset' });
     // Invoke the onChange prop of the rendered SingleSelect element
     result.props.onChange('blog');
-    expect(onChange).toHaveBeenCalledWith('blog');
+    expect(onChange).toHaveBeenCalledWith({
+      target: { name: 'options.preset', value: 'blog', type: 'select' },
+    });
   });
 
   it('calls setPresets with fetch response data on successful fetch', async () => {
-    mockGet.mockResolvedValue({ data: ['blog', 'minimal'] });
+    mockGet.mockResolvedValue({ data: { presets: ['blog', 'minimal'] } });
     const onChange = vi.fn();
 
     PresetSelect({ value: undefined, onChange });
@@ -102,7 +104,7 @@ describe('PresetSelect', () => {
     }
 
     await vi.waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith('/api/tiptap-editor/presets');
+      expect(mockGet).toHaveBeenCalledWith('/tiptap-editor/presets');
     });
 
     // setPresets should have been called with ['blog', 'minimal']
@@ -122,7 +124,7 @@ describe('PresetSelect', () => {
     }
 
     await vi.waitFor(() => {
-      expect(mockGet).toHaveBeenCalledWith('/api/tiptap-editor/presets');
+      expect(mockGet).toHaveBeenCalledWith('/tiptap-editor/presets');
     });
 
     // On error, setPresets([]) should be called
