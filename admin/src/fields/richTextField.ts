@@ -25,7 +25,7 @@ export const richTextField = {
         sectionTitle: null,
         items: [
           {
-            name: 'preset',
+            name: 'options.preset',
             type: 'select',
             intlLabel: {
               id: 'tiptap-editor.preset.label',

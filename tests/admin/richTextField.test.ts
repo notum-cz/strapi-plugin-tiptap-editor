@@ -53,21 +53,21 @@ describe('richTextField', () => {
     expect(advanced.length).toBeGreaterThan(0);
   });
 
-  it('advanced section contains an item named "preset"', () => {
+  it('advanced section contains an item named "options.preset"', () => {
     const advanced = (richTextField as any).options.advanced;
     // Find the item named 'preset' anywhere in sections
     const presetItem = advanced
       .flatMap((section: any) => (section.items || [section]))
-      .find((item: any) => item.name === 'preset');
+      .find((item: any) => item.name === 'options.preset');
 
     expect(presetItem).toBeDefined();
   });
 
-  it('"preset" item has correct intlLabel id and defaultMessage', () => {
+  it('"options.preset" item has correct intlLabel id and defaultMessage', () => {
     const advanced = (richTextField as any).options.advanced;
     const presetItem = advanced
       .flatMap((section: any) => (section.items || [section]))
-      .find((item: any) => item.name === 'preset');
+      .find((item: any) => item.name === 'options.preset');
 
     expect(presetItem.intlLabel).toEqual({
       id: 'tiptap-editor.preset.label',
@@ -75,17 +75,17 @@ describe('richTextField', () => {
     });
   });
 
-  it('"preset" item has a description with correct id', () => {
+  it('"options.preset" item has a description with correct id', () => {
     const advanced = (richTextField as any).options.advanced;
     const presetItem = advanced
       .flatMap((section: any) => (section.items || [section]))
-      .find((item: any) => item.name === 'preset');
+      .find((item: any) => item.name === 'options.preset');
 
     expect(presetItem.description).toHaveProperty('id', 'tiptap-editor.preset.description');
   });
 
-  it('"preset" name is NOT in the Strapi reserved names list', () => {
-    expect(STRAPI_RESERVED_NAMES).not.toContain('preset');
+  it('"options.preset" name is NOT in the Strapi reserved names list', () => {
+    expect(STRAPI_RESERVED_NAMES).not.toContain('options.preset');
   });
 
   it('richTextField.name matches the RICH_TEXT_FIELD_NAME constant', () => {
