@@ -458,7 +458,7 @@ export default () => ({
 
 The plugin validates your configuration at startup. If a preset contains an invalid feature key, Strapi will throw an error with a message listing the invalid keys and all allowed keys. This prevents typos from silently disabling features.
 
-```
+```ts
 // This will throw an error at startup:
 {
   presets: {
