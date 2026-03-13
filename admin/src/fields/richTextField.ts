@@ -1,6 +1,7 @@
 import { Paragraph } from '@strapi/icons';
 import { RICH_TEXT_FIELD_NAME } from '../../../shared/fields';
 import { PLUGIN_ID } from '../../../shared/pluginId';
+import { ComponentType } from 'react';
 
 export const richTextField = {
   name: RICH_TEXT_FIELD_NAME,
@@ -14,7 +15,7 @@ export const richTextField = {
     id: 'tiptap-editor.richText.description',
     defaultMessage: 'Use this field to create formatted text via Tiptap editor.',
   },
-  icon: Paragraph,
+  icon: Paragraph as ComponentType<any>,
   components: {
     Input: async () => import('../components/RichTextInput').then((m) => ({ default: m.default })),
   },
