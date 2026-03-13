@@ -27,4 +27,22 @@ describe('config validator (SERVER-01)', () => {
   it('throws when config is not a plain object', () => {
     expect(() => config.validator('not-an-object')).toThrow();
   });
+
+  it('throws when a preset value is a boolean instead of a plain object', () => {
+    expect(() =>
+      config.validator({ presets: { basic: true } })
+    ).toThrowError(/presets\.basic must be a plain object, got boolean/);
+  });
+
+  it('throws when a preset value is an array instead of a plain object', () => {
+    expect(() =>
+      config.validator({ presets: { basic: ['bold'] } })
+    ).toThrowError(/presets\.basic must be a plain object, got object/);
+  });
+
+  it('throws when a preset value is a string instead of a plain object', () => {
+    expect(() =>
+      config.validator({ presets: { basic: 'minimal' } })
+    ).toThrowError(/presets\.basic must be a plain object, got string/);
+  });
 });

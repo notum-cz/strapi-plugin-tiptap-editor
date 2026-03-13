@@ -43,6 +43,11 @@ const config = {
     for (const [presetName, presetConfig] of Object.entries(
       presets as Record<string, unknown>
     )) {
+      if (!isPlainObject(presetConfig)) {
+        throw new Error(
+          `tiptap-editor config.presets.${presetName} must be a plain object, got ${typeof presetConfig}`
+        );
+      }
       const invalidKeys = getInvalidKeys(presetConfig);
       if (invalidKeys.length > 0) {
         allInvalidKeys.push(...invalidKeys);
