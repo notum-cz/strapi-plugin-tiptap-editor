@@ -1,0 +1,25 @@
+{
+  "presets": {
+    "full": {
+      "bold": true,
+      "italic": true,
+      "strike": true,
+      "underline": true,
+      "code": true,
+      "codeBlock": true,
+      "blockquote": true,
+      "bulletList": true,
+      "orderedList": true,
+      "history": true,
+      "heading": { "levels": [1, 2, 3, 4, 5, 6] },
+      "link": true,
+      "table": { "resizable": true },
+      "textAlign": {
+        "types": ["heading", "paragraph"],
+        "alignments": ["left", "center", "right", "justify"]
+      },
+      "superscript": true,
+      "subscript": true
+    }
+  }
+}

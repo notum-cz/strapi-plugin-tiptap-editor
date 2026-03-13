@@ -21,9 +21,9 @@ export default {
 
   bootstrap(app: StrapiApp) {
     const ctbPlugin = app.getPlugin('content-type-builder') as Record<string, any> | undefined;
-    const addComponent = ctbPlugin?.apis?.forms?.components?.add;
-    if (typeof addComponent === 'function') {
-      addComponent({
+    const components = ctbPlugin?.apis?.forms?.components;
+    if (components && typeof components.add === 'function') {
+      components.add({
         id: 'preset-select',
         component: PresetSelect,
       });
