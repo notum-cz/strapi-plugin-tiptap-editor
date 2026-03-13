@@ -14,37 +14,56 @@ import {
 import { ToolbarButton } from '../components/ToolbarButton';
 import { useIntl } from 'react-intl';
 
-export function useStarterKit(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
+export function useStarterKit(
+  editor: Editor | null,
+  props: { disabled?: boolean } = { disabled: false }
+) {
   const { formatMessage } = useIntl();
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
       if (!ctx.editor) {
         return {
-          isBold: false, canBold: false, isItalic: false, canItalic: false,
-          isUnderline: false, canUnderline: false, isStrike: false, canStrike: false,
-          isCode: false, canCode: false, isBulletList: false, canToggleBulletList: false,
-          isOrderedList: false, canToggleOrderedList: false, isBlockquote: false, canToggleBlockquote: false,
+          isBold: false,
+          canBold: false,
+          isItalic: false,
+          canItalic: false,
+          isUnderline: false,
+          canUnderline: false,
+          isStrike: false,
+          canStrike: false,
+          isCode: false,
+          canCode: false,
+          isBulletList: false,
+          canToggleBulletList: false,
+          isOrderedList: false,
+          canToggleOrderedList: false,
+          isBlockquote: false,
+          canToggleBlockquote: false,
         };
       }
-      const chain = ctx.editor.can().chain();
+      const ed = ctx.editor;
+      const canPerformAction = (cmd: string): boolean => {
+        const chain = ed.can().chain() as Record<string, any>;
+        return typeof chain[cmd] === 'function' ? chain[cmd]().run() : false;
+      };
       return {
         isBold: ctx.editor.isActive('bold') ?? false,
-        canBold: typeof chain.toggleBold === 'function' ? chain.toggleBold().run() : false,
+        canBold: canPerformAction('toggleBold'),
         isItalic: ctx.editor.isActive('italic') ?? false,
-        canItalic: typeof chain.toggleItalic === 'function' ? chain.toggleItalic().run() : false,
+        canItalic: canPerformAction('toggleItalic'),
         isUnderline: ctx.editor.isActive('underline') ?? false,
-        canUnderline: typeof chain.toggleUnderline === 'function' ? chain.toggleUnderline().run() : false,
+        canUnderline: canPerformAction('toggleUnderline'),
         isStrike: ctx.editor.isActive('strike') ?? false,
-        canStrike: typeof chain.toggleStrike === 'function' ? chain.toggleStrike().run() : false,
+        canStrike: canPerformAction('toggleStrike'),
         isCode: ctx.editor.isActive('code') ?? false,
-        canCode: typeof chain.toggleCode === 'function' ? chain.toggleCode().run() : false,
+        canCode: canPerformAction('toggleCode'),
         isBulletList: ctx.editor.isActive('bulletList') ?? false,
-        canToggleBulletList: typeof chain.toggleBulletList === 'function' ? chain.toggleBulletList().run() : false,
+        canToggleBulletList: canPerformAction('toggleBulletList'),
         isOrderedList: ctx.editor.isActive('orderedList') ?? false,
-        canToggleOrderedList: typeof chain.toggleOrderedList === 'function' ? chain.toggleOrderedList().run() : false,
+        canToggleOrderedList: canPerformAction('toggleOrderedList'),
         isBlockquote: ctx.editor.isActive('blockquote') ?? false,
-        canToggleBlockquote: typeof chain.toggleBlockquote === 'function' ? chain.toggleBlockquote().run() : false,
+        canToggleBlockquote: canPerformAction('toggleBlockquote'),
       };
     },
   });
@@ -83,7 +102,10 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<UnderlineIcon />}
         active={editorState?.isUnderline ?? false}
         disabled={props.disabled || !editor || !editorState?.canUnderline}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.underline', defaultMessage: 'Underline' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.underline',
+          defaultMessage: 'Underline',
+        })}
       />
     ),
     strikeButton: (
@@ -92,7 +114,10 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<StrikeThroughIcon />}
         active={editorState?.isStrike ?? false}
         disabled={props.disabled || !editor || !editorState?.canStrike}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.strikethrough', defaultMessage: 'Strikethrough' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.strikethrough',
+          defaultMessage: 'Strikethrough',
+        })}
       />
     ),
     bulletButton: (
@@ -101,7 +126,10 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<BulletListIcon />}
         active={editorState?.isBulletList ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleBulletList}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.bulletList', defaultMessage: 'Bullet list' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.bulletList',
+          defaultMessage: 'Bullet list',
+        })}
       />
     ),
     orderedButton: (
@@ -110,7 +138,10 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<NumberListIcon />}
         active={editorState?.isOrderedList ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleOrderedList}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.numberedList', defaultMessage: 'Numbered list' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.numberedList',
+          defaultMessage: 'Numbered list',
+        })}
       />
     ),
     codeButton: (
@@ -119,7 +150,10 @@ export function useStarterKit(editor: Editor | null, props: { disabled?: boolean
         icon={<CodeIcon />}
         active={editorState?.isCode ?? false}
         disabled={props.disabled || !editor || !editorState?.canCode}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.inlineCode', defaultMessage: 'Inline code' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.inlineCode',
+          defaultMessage: 'Inline code',
+        })}
       />
     ),
     blockquoteButton: (

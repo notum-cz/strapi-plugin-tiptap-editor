@@ -71,8 +71,9 @@ function findElements(element: any, type: any): any[] {
 }
 
 function findTextContent(element: any, text: string): boolean {
-  if (!element || typeof element !== 'object') return false;
+  if (!element) return false;
   if (typeof element === 'string') return element.includes(text);
+  if (typeof element !== 'object') return false;
   const children = element.props?.children;
   if (!children) return false;
   if (typeof children === 'string') return children.includes(text);

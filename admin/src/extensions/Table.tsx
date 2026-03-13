@@ -1,28 +1,41 @@
 import { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
-
 import { GridNine } from '@strapi/icons';
 import TableSizeDialog from '../components/TableSizeDialog';
 import { useState } from 'react';
 import { ToolbarButton } from '../components/ToolbarButton';
 import { useIntl } from 'react-intl';
 
-export function useTable(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
+export function useTable(
+  editor: Editor | null,
+  props: { disabled?: boolean } = { disabled: false }
+) {
   const { formatMessage } = useIntl();
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
       if (!ctx.editor) {
-        return { isTable: false, canInsertTable: false, canAddColumn: false, canDeleteColumn: false, canAddRow: false, canDeleteRow: false };
+        return {
+          isTable: false,
+          canInsertTable: false,
+          canAddColumn: false,
+          canDeleteColumn: false,
+          canAddRow: false,
+          canDeleteRow: false,
+        };
       }
-      const chain = ctx.editor.can().chain();
+      const ed = ctx.editor;
+      const canPerformTableAction = (cmd: string): boolean => {
+        const chain = ed.can().chain() as Record<string, any>;
+        return typeof chain[cmd] === 'function' ? chain[cmd]().run() : false;
+      };
       return {
         isTable: ctx.editor.isActive('table') ?? false,
-        canInsertTable: typeof chain.insertTable === 'function' ? chain.insertTable().run() : false,
-        canAddColumn: typeof chain.addColumnAfter === 'function' ? chain.addColumnAfter().run() : false,
-        canDeleteColumn: typeof chain.deleteColumn === 'function' ? chain.deleteColumn().run() : false,
-        canAddRow: typeof chain.addRowAfter === 'function' ? chain.addRowAfter().run() : false,
-        canDeleteRow: typeof chain.deleteRow === 'function' ? chain.deleteRow().run() : false,
+        canInsertTable: canPerformTableAction('insertTable'),
+        canAddColumn: canPerformTableAction('addColumnAfter'),
+        canDeleteColumn: canPerformTableAction('deleteColumn'),
+        canAddRow: canPerformTableAction('addRowAfter'),
+        canDeleteRow: canPerformTableAction('deleteRow'),
       };
     },
   });
@@ -61,7 +74,10 @@ export function useTable(editor: Editor | null, props: { disabled?: boolean } = 
         icon={<>+Col</>}
         active={false}
         hidden={props.disabled || !editor || !editorState?.canAddColumn}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.addColumn', defaultMessage: 'Add column (to the right)' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.addColumn',
+          defaultMessage: 'Add column (to the right)',
+        })}
       />
     ),
     removeColumnButton: (
@@ -70,7 +86,10 @@ export function useTable(editor: Editor | null, props: { disabled?: boolean } = 
         icon={<>-Col</>}
         active={false}
         hidden={props.disabled || !editor || !editorState?.canDeleteColumn}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.removeColumn', defaultMessage: 'Remove column' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.removeColumn',
+          defaultMessage: 'Remove column',
+        })}
       />
     ),
     addRowButton: (
@@ -79,7 +98,10 @@ export function useTable(editor: Editor | null, props: { disabled?: boolean } = 
         icon={<>+Row</>}
         active={false}
         hidden={props.disabled || !editor || !editorState?.canAddRow}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.addRow', defaultMessage: 'Add row (below)' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.addRow',
+          defaultMessage: 'Add row (below)',
+        })}
       />
     ),
     removeRowButton: (
@@ -88,7 +110,10 @@ export function useTable(editor: Editor | null, props: { disabled?: boolean } = 
         icon={<>-Row</>}
         active={false}
         hidden={props.disabled || !editor || !editorState?.canDeleteRow}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.removeRow', defaultMessage: 'Remove row' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.removeRow',
+          defaultMessage: 'Remove row',
+        })}
       />
     ),
     tableDialog: (

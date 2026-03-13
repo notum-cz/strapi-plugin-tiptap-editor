@@ -3,20 +3,32 @@ import { useEditorState } from '@tiptap/react';
 import { ToolbarButton } from '../components/ToolbarButton';
 import { useIntl } from 'react-intl';
 
-export function useScript(editor: Editor | null, props: { disabled?: boolean } = { disabled: false }) {
+export function useScript(
+  editor: Editor | null,
+  props: { disabled?: boolean } = { disabled: false }
+) {
   const { formatMessage } = useIntl();
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
       if (!ctx.editor) {
-        return { isSuperscript: false, canToggleSuperscript: false, isSubscript: false, canToggleSubscript: false };
+        return {
+          isSuperscript: false,
+          canToggleSuperscript: false,
+          isSubscript: false,
+          canToggleSubscript: false,
+        };
       }
-      const chain = ctx.editor.can().chain();
+      const ed = ctx.editor;
+      const canPerformAction = (cmd: string): boolean => {
+        const chain = ed.can().chain() as Record<string, any>;
+        return typeof chain[cmd] === 'function' ? chain[cmd]().run() : false;
+      };
       return {
         isSuperscript: ctx.editor.isActive('superscript') ?? false,
-        canToggleSuperscript: typeof chain.toggleSuperscript === 'function' ? chain.toggleSuperscript().run() : false,
+        canToggleSuperscript: canPerformAction('toggleSuperscript'),
         isSubscript: ctx.editor.isActive('subscript') ?? false,
-        canToggleSubscript: typeof chain.toggleSubscript === 'function' ? chain.toggleSubscript().run() : false,
+        canToggleSubscript: canPerformAction('toggleSubscript'),
       };
     },
   });
@@ -40,7 +52,10 @@ export function useScript(editor: Editor | null, props: { disabled?: boolean } =
         }
         active={editorState?.isSuperscript ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleSuperscript}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.superscript', defaultMessage: 'Superscript' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.superscript',
+          defaultMessage: 'Superscript',
+        })}
       />
     ),
     subscriptButton: (
@@ -53,7 +68,10 @@ export function useScript(editor: Editor | null, props: { disabled?: boolean } =
         }
         active={editorState?.isSubscript ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleSubscript}
-        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.subscript', defaultMessage: 'Subscript' })}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.subscript',
+          defaultMessage: 'Subscript',
+        })}
       />
     ),
   };

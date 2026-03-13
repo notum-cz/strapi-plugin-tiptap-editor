@@ -42,7 +42,9 @@ export function useHeading(editor: Editor | null, props: { disabled?: boolean; l
       return;
     }
 
-    const level = Number(value[1]) as 1 | 2 | 3 | 4 | 5 | 6; // value format: h1–h6
+    const parsed = Number(value.slice(1));
+    if (isNaN(parsed) || parsed < 1 || parsed > 6) return;
+    const level = parsed as 1 | 2 | 3 | 4 | 5 | 6;
     editor.chain().focus().setHeading({ level }).run();
 
     // automatically set the 'tag' attribute to match the heading level if not already set
