@@ -1,10 +1,10 @@
 import type { Core } from '@strapi/strapi';
 import type { Context } from 'koa';
-import { MINIMAL_PRESET_CONFIG } from '../../../shared/types';
+import { MINIMAL_PRESET_CONFIG, TiptapPresetConfig } from '../../../shared/types';
 
 interface PresetService {
   listPresetNames(): string[];
-  getPreset(name: string): Record<string, unknown> | null;
+  getPreset(name: string): TiptapPresetConfig | null;
 }
 
 const createPresetController = ({ strapi }: { strapi: Core.Strapi }) => ({

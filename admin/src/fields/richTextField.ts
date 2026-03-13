@@ -14,7 +14,7 @@ export const richTextField = {
     id: 'tiptap-editor.richText.description',
     defaultMessage: 'Use this field to create formatted text via Tiptap editor.',
   },
-  icon: Paragraph as any,
+  icon: Paragraph,
   components: {
     Input: async () => import('../components/RichTextInput').then((m) => ({ default: m.default })),
   },
