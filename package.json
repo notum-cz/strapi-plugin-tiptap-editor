@@ -40,8 +40,8 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@strapi/design-system": "^2.0.0-rc.30",
-    "@strapi/icons": "^2.0.0-rc.30",
+    "@strapi/design-system": "2.2.0",
+    "@strapi/icons": "2.2.0",
     "@tiptap/extension-subscript": "3.20.1",
     "@tiptap/extension-superscript": "3.20.1",
     "@tiptap/extension-table": "3.20.1",
@@ -53,8 +53,8 @@
   },
   "devDependencies": {
     "@strapi/sdk-plugin": "^5.4.0",
-    "@strapi/strapi": "^5.35.0",
-    "@strapi/typescript-utils": "^5.35.0",
+    "@strapi/strapi": "5.39.0",
+    "@strapi/typescript-utils": "5.39.0",
     "@types/react": "^19.2.13",
     "@types/react-dom": "^19.2.3",
     "prettier": "^3.8.1",
