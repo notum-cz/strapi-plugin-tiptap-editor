@@ -16,7 +16,7 @@ describe('routes (SERVER-04)', () => {
       (r) => r.method === 'GET' && r.path === '/presets'
     );
     expect(listRoute).toBeDefined();
-    expect(listRoute.config.auth).toBe(false);
+    expect(listRoute.config.auth).toBeUndefined();
   });
 
   it('includes GET /presets/:name route', () => {
@@ -25,6 +25,6 @@ describe('routes (SERVER-04)', () => {
       (r) => r.method === 'GET' && r.path === '/presets/:name'
     );
     expect(detailRoute).toBeDefined();
-    expect(detailRoute.config.auth).toBe(false);
+    expect(detailRoute.config.auth).toBeUndefined();
   });
 });
