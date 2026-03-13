@@ -30,12 +30,15 @@ describe('EditorErrorBoundary', () => {
 
   it('componentDidCatch logs with [TiptapEditor] prefix', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const instance = new EditorErrorBoundary({ children: null });
-    const error = new Error('render crash');
-    const errorInfo = { componentStack: 'at Foo' } as any;
-    instance.componentDidCatch(error, errorInfo);
-    expect(consoleSpy).toHaveBeenCalledWith('[TiptapEditor] Editor crashed:', error, errorInfo);
-    consoleSpy.mockRestore();
+    try {
+      const instance = new EditorErrorBoundary({ children: null });
+      const error = new Error('render crash');
+      const errorInfo = { componentStack: 'at Foo' } as any;
+      instance.componentDidCatch(error, errorInfo);
+      expect(consoleSpy).toHaveBeenCalledWith('[TiptapEditor] Editor crashed:', error, errorInfo);
+    } finally {
+      consoleSpy.mockRestore();
+    }
   });
 
   it('has initial state with hasError: false and error: null', () => {
