@@ -52,7 +52,7 @@ Plans:
 ### Phase 5: Image Insertion
 **Goal**: Content managers can open the Strapi Media Library picker from the editor toolbar, select an image, and see it appear in the editor canvas with alt text prefilled and the asset ID stored in the JSON output
 **Depends on**: Phase 4
-**Requirements**: IMG-01, IMG-02, IMG-03, IMG-04, IMG-05, ALT-01
+**Requirements**: IMG-01, IMG-02, IMG-03, IMG-05, ALT-01
 **Success Criteria** (what must be TRUE):
   1. A toolbar button labeled with an image icon appears in the editor when the preset has `mediaLibrary: true` and is absent when `mediaLibrary` is not set
   2. Clicking the toolbar button opens the Strapi Media Library dialog filtered to images only
@@ -60,11 +60,11 @@ Plans:
   4. The alt text field on insertion is prefilled with the asset's `alternativeText` from Media Library metadata (falling back to asset name, then empty string)
   5. The Tiptap JSON output for the image node contains both `src` (URL) and `assetId` (Strapi numeric ID); editing and re-saving a field with an image preserves `assetId`
   6. A user can click a selected image and edit its alt text inline without re-inserting the image
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 05-01: Implement `MediaLibraryWrapper` component (useStrapiApp, null guard, allowedTypes, MIME guard)
-- [ ] 05-02: Implement `useImage` hook and wire into `RichTextInput` with `FeatureGuard`; verify insertion data flow end-to-end
+- [ ] 05-01-PLAN.md — Create MediaLibraryWrapper, ImageNodeView, and useImage hook with toolbar button and insertion logic
+- [ ] 05-02-PLAN.md — Wire useImage into RichTextInput with FeatureGuard; add image CSS and translations; human-verify full flow
 
 ### Phase 6: Alignment
 **Goal**: Content managers can align a selected image left, center, or right using dedicated toolbar buttons, and the chosen alignment is reflected visually in the editor and preserved in the JSON output
@@ -87,6 +87,6 @@ Plans:
 | 1. Server Foundation | v1.0 | 2/2 | Complete | 2026-03-10 |
 | 2. Admin Foundation | v1.0 | 2/2 | Complete | 2026-03-10 |
 | 3. Editor Integration | v1.0 | 2/2 | Complete | 2026-03-10 |
-| 4. Image Schema Foundation | 2/2 | Complete   | 2026-03-16 | - |
+| 4. Image Schema Foundation | v1.1 | 2/2 | Complete | 2026-03-16 |
 | 5. Image Insertion | v1.1 | 0/2 | Not started | - |
 | 6. Alignment | v1.1 | 0/1 | Not started | - |
