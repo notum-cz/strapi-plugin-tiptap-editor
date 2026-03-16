@@ -17,9 +17,9 @@ Requirements for Media Library Images milestone. Each maps to roadmap phases.
 
 ### Image Alignment
 
-- [ ] **ALIGN-01**: User can align an image left via a toolbar button
-- [ ] **ALIGN-02**: User can align an image center via a toolbar button
-- [ ] **ALIGN-03**: User can align an image right via a toolbar button
+- [x] **ALIGN-01**: User can align an image left via a toolbar button
+- [x] **ALIGN-02**: User can align an image center via a toolbar button
+- [x] **ALIGN-03**: User can align an image right via a toolbar button
 
 ### Alt Text Editing
 
@@ -62,9 +62,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | IMG-03 | Phase 5 | Complete |
 | IMG-04 | Phase 4 | Complete |
 | IMG-05 | Phase 5 | Complete |
-| ALIGN-01 | Phase 6 | Pending |
-| ALIGN-02 | Phase 6 | Pending |
-| ALIGN-03 | Phase 6 | Pending |
+| ALIGN-01 | Phase 6 | Complete |
+| ALIGN-02 | Phase 6 | Complete |
+| ALIGN-03 | Phase 6 | Complete |
 | ALT-01 | Phase 5 | Complete |
 | PRESET-01 | Phase 4 | Complete |
 | PRESET-02 | Phase 4 | Complete |

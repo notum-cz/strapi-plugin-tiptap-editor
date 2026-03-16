@@ -30,7 +30,7 @@
 
 #### Phase 6: Alignment
 
-- [ ] **Phase 6: Alignment** — Left/center/right alignment toolbar buttons with CSS rules; content-safety guard against silent image deletion on preset reconfiguration
+- [x] **Phase 6: Alignment** — Left/center/right alignment toolbar buttons with CSS rules; content-safety guard against silent image deletion on preset reconfiguration (completed 2026-03-16)
 
 ## Phase Details
 
@@ -43,7 +43,7 @@
   2. `PRESET_FEATURE_KEYS` includes `'mediaLibrary'` and `isFeatureEnabled(config.mediaLibrary)` returns `true` only when the key is explicitly set
   3. `StrapiImageNode` serializes and parses a round-trip through Tiptap JSON preserving `assetId` (as `data-asset-id`) and `alignment` (as `data-align`) without stripping either attribute
   4. `fixtures/all-features-payload.json` contains a `strapiImage` node exercising all custom attributes
-**Plans:** 2/2 plans complete
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 04-01-PLAN.md — Add `mediaLibrary` to shared types, PRESET_FEATURE_KEYS, and fixtures
@@ -89,4 +89,4 @@ Plans:
 | 3. Editor Integration | v1.0 | 2/2 | Complete | 2026-03-10 |
 | 4. Image Schema Foundation | v1.1 | 2/2 | Complete | 2026-03-16 |
 | 5. Image Insertion | 2/2 | Complete   | 2026-03-16 | - |
-| 6. Alignment | v1.1 | 0/1 | Not started | - |
+| 6. Alignment | 1/1 | Complete   | 2026-03-16 | - |
