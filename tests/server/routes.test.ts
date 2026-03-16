@@ -28,3 +28,22 @@ describe('routes (SERVER-04)', () => {
     expect(detailRoute.config.auth).toBeUndefined();
   });
 });
+
+describe('theme routes (THEME-03)', () => {
+  it('exports theme-routes group', () => {
+    expect(routes).toHaveProperty('theme-routes');
+  });
+
+  it('theme-routes has type: admin', () => {
+    expect((routes as any)['theme-routes'].type).toBe('admin');
+  });
+
+  it('includes GET /theme route with handler theme.find', () => {
+    const routeList = (routes as any)['theme-routes'].routes as any[];
+    const themeRoute = routeList.find(
+      (r) => r.method === 'GET' && r.path === '/theme'
+    );
+    expect(themeRoute).toBeDefined();
+    expect(themeRoute.handler).toBe('theme.find');
+  });
+});
