@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Media Library Images
 status: executing
-stopped_at: Completed 05-01-PLAN.md
-last_updated: "2026-03-16T15:41:20.208Z"
+stopped_at: "Checkpoint: 05-02 Task 2 human-verify"
+last_updated: "2026-03-16T15:44:27.323Z"
 last_activity: "2026-03-16 — Phase 4 Plan 01 complete: mediaLibrary key added to types and fixtures"
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 50
 ---
 
@@ -65,6 +65,7 @@ Progress: [█████░░░░░] 50%
 - [Phase 05-image-insertion]: @strapi/design-system CJS/ESM conflict requires vi.mock stubs in all test files importing Strapi UI components
 - [Phase 05-image-insertion]: setImage custom attrs typed as any — SetImageOptions does not include extension attrs; runtime schema validates correctly
 - [Phase 05-image-insertion]: createParagraphNear chained after setImage to prevent cursor trap at end of doc
+- [Phase Phase 05-image-insertion]: Image FeatureGuard uses config?.mediaLibrary, positioned after link and before table in toolbar
 
 ### Pending Todos
 
@@ -77,6 +78,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T15:41:20.207Z
-Stopped at: Completed 05-01-PLAN.md
+Last session: 2026-03-16T15:44:23.932Z
+Stopped at: Checkpoint: 05-02 Task 2 human-verify
 Resume file: None

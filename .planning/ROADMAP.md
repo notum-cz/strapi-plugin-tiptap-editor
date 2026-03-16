@@ -26,7 +26,7 @@
 
 #### Phase 5: Image Insertion
 
-- [ ] **Phase 5: Image Insertion** — Full insert flow: Media Library picker, alt text prefill and editing, asset ID storage, image visible in editor
+- [x] **Phase 5: Image Insertion** — Full insert flow: Media Library picker, alt text prefill and editing, asset ID storage, image visible in editor (completed 2026-03-16)
 
 #### Phase 6: Alignment
 
@@ -43,7 +43,7 @@
   2. `PRESET_FEATURE_KEYS` includes `'mediaLibrary'` and `isFeatureEnabled(config.mediaLibrary)` returns `true` only when the key is explicitly set
   3. `StrapiImageNode` serializes and parses a round-trip through Tiptap JSON preserving `assetId` (as `data-asset-id`) and `alignment` (as `data-align`) without stripping either attribute
   4. `fixtures/all-features-payload.json` contains a `strapiImage` node exercising all custom attributes
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 04-01-PLAN.md — Add `mediaLibrary` to shared types, PRESET_FEATURE_KEYS, and fixtures
@@ -88,5 +88,5 @@ Plans:
 | 2. Admin Foundation | v1.0 | 2/2 | Complete | 2026-03-10 |
 | 3. Editor Integration | v1.0 | 2/2 | Complete | 2026-03-10 |
 | 4. Image Schema Foundation | v1.1 | 2/2 | Complete | 2026-03-16 |
-| 5. Image Insertion | 1/2 | In Progress|  | - |
+| 5. Image Insertion | 2/2 | Complete   | 2026-03-16 | - |
 | 6. Alignment | v1.1 | 0/1 | Not started | - |
