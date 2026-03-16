@@ -91,6 +91,8 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
 
   if (isFeatureEnabled(config.mediaLibrary)) {
     extensions.push(StrapiImage);
+  } else {
+    extensions.push(StrapiImage.configure({ enableContentCheck: true }));
   }
 
   extensions.push(Gapcursor);

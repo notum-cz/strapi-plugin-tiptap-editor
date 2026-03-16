@@ -19,11 +19,21 @@ vi.mock('react-intl', () => ({
 }));
 vi.mock('@strapi/admin/strapi-admin', () => ({ useStrapiApp: vi.fn() }));
 
-import { StrapiImage } from '../../admin/src/extensions/Image';
+import { StrapiImage, ImageNodeViewReadOnly } from '../../admin/src/extensions/Image';
 
 describe('StrapiImage extension', () => {
   it("extension name is 'image'", () => {
     expect(StrapiImage.name).toBe('image');
+  });
+
+  it('enableContentCheck defaults to false', () => {
+    // StrapiImage.configure returns a new extension instance with options applied
+    const configured = StrapiImage.configure({ enableContentCheck: true });
+    expect((configured as any).options.enableContentCheck).toBe(true);
+  });
+
+  it('exports ImageNodeViewReadOnly', () => {
+    expect(typeof ImageNodeViewReadOnly).toBe('function');
   });
 
   describe('addAttributes', () => {

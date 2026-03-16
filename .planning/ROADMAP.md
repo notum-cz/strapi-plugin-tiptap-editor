@@ -75,10 +75,10 @@ Plans:
   2. Clicking an alignment button immediately repositions the image in the editor canvas using margin-based layout (left: right-auto, center: auto both sides, right: left-auto)
   3. The `alignment` attribute is persisted in the Tiptap JSON output and survives a full save/reload cycle; the image renders in the correct position on reload
   4. Removing `mediaLibrary` from a preset and loading a field that contains image nodes does not silently delete those nodes on the next save (content-safety guard active)
-**Plans**: TBD
+**Plans:** 1 plan
 
 Plans:
-- [ ] 06-01: Add alignment CSS to `TiptapInputStyles.ts`; add alignment buttons to `useImage`; add `enableContentCheck` content-safety guard
+- [ ] 06-01-PLAN.md — Add alignment buttons to image popover, CSS rules, enableContentCheck content-safety guard, translations, fixture update
 
 ## Progress
 

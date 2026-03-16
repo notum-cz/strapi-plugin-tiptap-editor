@@ -148,16 +148,25 @@ describe('buildExtensions', () => {
     expect(hasImage).toBe(true);
   });
 
-  it('does not include image extension when mediaLibrary is false', () => {
+  it('includes image extension with enableContentCheck: true when mediaLibrary is false', () => {
     const extensions = buildExtensions({ mediaLibrary: false });
-    const hasImage = extensions.some((ext: any) => ext.name === 'image');
-    expect(hasImage).toBe(false);
+    const imageExt = extensions.find((ext: any) => ext.name === 'image');
+    expect(imageExt).toBeDefined();
+    expect((imageExt as any).options.enableContentCheck).toBe(true);
   });
 
-  it('does not include image extension when mediaLibrary is absent', () => {
+  it('includes image extension with enableContentCheck: true when mediaLibrary is absent', () => {
     const extensions = buildExtensions({});
-    const hasImage = extensions.some((ext: any) => ext.name === 'image');
-    expect(hasImage).toBe(false);
+    const imageExt = extensions.find((ext: any) => ext.name === 'image');
+    expect(imageExt).toBeDefined();
+    expect((imageExt as any).options.enableContentCheck).toBe(true);
+  });
+
+  it('includes image extension without enableContentCheck when mediaLibrary is true', () => {
+    const extensions = buildExtensions({ mediaLibrary: true });
+    const imageExt = extensions.find((ext: any) => ext.name === 'image');
+    expect(imageExt).toBeDefined();
+    expect((imageExt as any).options.enableContentCheck).toBeFalsy();
   });
 
   it('with all features enabled includes StarterKit, heading, superscript, subscript, tableKit, textAlign, image, gapcursor', () => {
@@ -225,6 +234,9 @@ describe('buildExtensions', () => {
     expect(names).not.toContain('subscript');
     expect(names).not.toContain('tableKit');
     expect(names).not.toContain('textAlign');
-    expect(names).not.toContain('image');
+    // image is always present (content-safety guard); with mediaLibrary: false it uses enableContentCheck: true
+    expect(names).toContain('image');
+    const imageExt = extensions.find((ext: any) => ext.name === 'image');
+    expect((imageExt as any).options.enableContentCheck).toBe(true);
   });
 });

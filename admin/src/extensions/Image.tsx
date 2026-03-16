@@ -1,14 +1,34 @@
 import React, { useState } from 'react';
 import Image from '@tiptap/extension-image';
-import { ReactNodeViewRenderer, useEditorState } from '@tiptap/react';
-import type { Editor } from '@tiptap/core';
+import { ReactNodeViewRenderer, NodeViewWrapper, useEditorState } from '@tiptap/react';
+import type { NodeViewProps, Editor } from '@tiptap/react';
 import { useIntl } from 'react-intl';
 import { Image as ImageIcon } from '@strapi/icons';
 import { ToolbarButton } from '../components/ToolbarButton';
 import { MediaLibraryWrapper, StrapiFile } from '../components/MediaLibraryWrapper';
 import { ImageNodeView } from '../components/ImageAltPopover';
 
+export function ImageNodeViewReadOnly({ node }: NodeViewProps) {
+  return (
+    <NodeViewWrapper data-drag-handle>
+      <img
+        src={node.attrs.src}
+        alt={node.attrs.alt ?? ''}
+        style={{ maxWidth: '100%', display: 'block' }}
+        draggable={false}
+      />
+    </NodeViewWrapper>
+  );
+}
+
 export const StrapiImage = Image.extend({
+  addOptions() {
+    return {
+      ...(this as any).parent?.(),
+      enableContentCheck: false,
+    };
+  },
+
   addAttributes() {
     return {
       ...(this as any).parent?.(),
@@ -39,6 +59,9 @@ export const StrapiImage = Image.extend({
   },
 
   addNodeView() {
+    if ((this.options as any).enableContentCheck) {
+      return ReactNodeViewRenderer(ImageNodeViewReadOnly);
+    }
     return ReactNodeViewRenderer(ImageNodeView);
   },
 });
