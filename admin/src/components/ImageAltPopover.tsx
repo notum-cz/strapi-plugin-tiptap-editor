@@ -15,6 +15,14 @@ export function ImageNodeView({ node, updateAttributes, deleteNode }: NodeViewPr
     setAltText(node.attrs.alt ?? '');
   }, [node.attrs.alt]);
 
+  // Close popover when any ancestor scrolls so it doesn't float over other components
+  useEffect(() => {
+    if (!isPopoverOpen) return;
+    const handleScroll = () => setIsPopoverOpen(false);
+    document.addEventListener('scroll', handleScroll, true);
+    return () => document.removeEventListener('scroll', handleScroll, true);
+  }, [isPopoverOpen]);
+
   function handleCommit() {
     updateAttributes({ alt: altText });
     // Do not close popover — user may want to continue editing
