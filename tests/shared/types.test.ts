@@ -7,8 +7,8 @@ import {
 } from '../../shared/types';
 
 describe('PRESET_FEATURE_KEYS (TYPES-03)', () => {
-  it('contains exactly 18 keys', () => {
-    expect(PRESET_FEATURE_KEYS).toHaveLength(18);
+  it('contains exactly 19 keys', () => {
+    expect(PRESET_FEATURE_KEYS).toHaveLength(19);
   });
   it('contains all expected feature names', () => {
     expect(PRESET_FEATURE_KEYS).toContain('bold');
@@ -19,6 +19,7 @@ describe('PRESET_FEATURE_KEYS (TYPES-03)', () => {
     expect(PRESET_FEATURE_KEYS).toContain('textAlign');
     expect(PRESET_FEATURE_KEYS).toContain('superscript');
     expect(PRESET_FEATURE_KEYS).toContain('subscript');
+    expect(PRESET_FEATURE_KEYS).toContain('mediaLibrary');
   });
 });
 
