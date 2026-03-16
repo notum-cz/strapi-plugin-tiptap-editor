@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import Image from '@tiptap/extension-image';
+import Image, { type ImageOptions } from '@tiptap/extension-image';
+
+interface StrapiImageOptions extends ImageOptions {
+  enableContentCheck: boolean;
+}
 import { ReactNodeViewRenderer, NodeViewWrapper, useEditorState } from '@tiptap/react';
 import type { NodeViewProps, Editor } from '@tiptap/react';
 import { useIntl } from 'react-intl';
@@ -21,7 +25,7 @@ export function ImageNodeViewReadOnly({ node }: NodeViewProps) {
   );
 }
 
-export const StrapiImage = Image.extend({
+export const StrapiImage = Image.extend<StrapiImageOptions>({
   addOptions() {
     return {
       ...(this as any).parent?.(),
@@ -59,7 +63,7 @@ export const StrapiImage = Image.extend({
   },
 
   addNodeView() {
-    if ((this.options as any).enableContentCheck) {
+    if (this.options.enableContentCheck) {
       return ReactNodeViewRenderer(ImageNodeViewReadOnly);
     }
     return ReactNodeViewRenderer(ImageNodeView);
