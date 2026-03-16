@@ -32,9 +32,9 @@ Requirements for text color, highlight color, and theme configuration. Each maps
 
 - [ ] **INFR-01**: Shared `ColorPickerPopover` component renders theme swatches with accessible labels
 - [ ] **INFR-02**: Color picker preserves editor selection when opening/closing (selectionRef pattern)
-- [ ] **INFR-03**: Pasted content stripped of inherited inline styles when TextStyle is active
+- [x] **INFR-03**: Pasted content stripped of inherited inline styles when TextStyle is active
 - [ ] **INFR-04**: Colors round-trip through Tiptap JSON as concrete values
-- [ ] **INFR-05**: Stylesheet injection is idempotent (survives HMR without duplicate `<link>` tags)
+- [x] **INFR-05**: Stylesheet injection is idempotent (survives HMR without duplicate `<link>` tags)
 
 ## Future Requirements
 
@@ -61,9 +61,9 @@ Requirements for text color, highlight color, and theme configuration. Each maps
 | THEME-02 | Phase 7 | Complete |
 | THEME-03 | Phase 7 | Complete |
 | THEME-04 | Phase 7 | Complete |
-| INFR-03 | Phase 8 | Pending |
+| INFR-03 | Phase 8 | Complete |
 | INFR-04 | Phase 8 | Pending |
-| INFR-05 | Phase 8 | Pending |
+| INFR-05 | Phase 8 | Complete |
 | TXTC-01 | Phase 9 | Pending |
 | TXTC-02 | Phase 9 | Pending |
 | TXTC-03 | Phase 9 | Pending |

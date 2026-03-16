@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Text & Highlight Colors
 status: planning
-stopped_at: Completed 07-02-PLAN.md
-last_updated: "2026-03-16T19:48:04.682Z"
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-03-16T20:17:09.673Z"
 last_activity: 2026-03-16 — v1.2 roadmap created
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
   percent: 0
 ---
 
@@ -48,6 +48,7 @@ Progress: [░░░░░░░░░░] 0%
 ## Accumulated Context
 | Phase 07-types-config-and-server P01 | 3 | 2 tasks | 6 files |
 | Phase 07-types-config-and-server P02 | 2min | 2 tasks | 9 files |
+| Phase 08-extension-registration-and-theme-hook P01 | 2 | 2 tasks | 7 files |
 
 ### Decisions
 
@@ -61,6 +62,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 07-01]: COLOR_VALUE_RE rejects named colors — only structural color formats accepted (hex, rgb/rgba, hsl/hsla, var())
 - [Phase 07-02]: Theme controller returns {} (not undefined) when no theme configured — admin panel always receives JSON object
 - [Phase 07-02]: ThemeService interface inlined in controller to avoid cross-module dependency between controller and service
+- [Phase 08-01]: PasteStripper uses transformPastedHTML config property (not addProseMirrorPlugins) per Tiptap Extension.create API
+- [Phase 08-01]: useThemeConfig is thin wrapper over getThemeCache() — reactivity addable later without changing consumers
 
 ### Pending Todos
 
@@ -74,6 +77,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-16T19:48:04.680Z
-Stopped at: Completed 07-02-PLAN.md
+Last session: 2026-03-16T20:17:09.671Z
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None
