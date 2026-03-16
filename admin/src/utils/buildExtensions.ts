@@ -7,6 +7,7 @@ import { TableKit } from '@tiptap/extension-table';
 import TextAlign from '@tiptap/extension-text-align';
 import { Gapcursor } from '@tiptap/extensions';
 import { BaseHeadingWithSEOTag } from '../extensions/Heading';
+import { StrapiImage } from '../extensions/Image';
 import { TiptapPresetConfig, isFeatureEnabled, getFeatureOptions } from '../../../shared/types';
 
 // Helper: converts a preset feature value to StarterKit's expected format
@@ -86,6 +87,12 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
         alignments: textAlignConfig?.alignments || ['left', 'center', 'right', 'justify'],
       })
     );
+  }
+
+  if (isFeatureEnabled(config.mediaLibrary)) {
+    extensions.push(StrapiImage);
+  } else {
+    extensions.push(StrapiImage.configure({ enableContentCheck: true }));
   }
 
   extensions.push(Gapcursor);

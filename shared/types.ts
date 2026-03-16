@@ -43,6 +43,7 @@ export interface TiptapPresetConfig {
   textAlign?: boolean | TextAlignConfig;
   superscript?: boolean | Record<string, unknown>;
   subscript?: boolean | Record<string, unknown>;
+  mediaLibrary?: boolean | Record<string, unknown>;
 }
 
 export interface TiptapPluginConfig {
@@ -70,6 +71,7 @@ export const PRESET_FEATURE_KEYS: Array<keyof TiptapPresetConfig> = [
   'textAlign',
   'superscript',
   'subscript',
+  'mediaLibrary',
 ];
 
 // Fallback for unconfigured fields — deliberately minimal to prompt developers to configure
