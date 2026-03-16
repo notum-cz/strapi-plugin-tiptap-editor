@@ -1,5 +1,6 @@
 import { Button, Dialog, Field, Flex, TextInput } from '@strapi/design-system';
 import { ChangeEvent, FC, useEffect, useState } from 'react';
+import { useIntl } from 'react-intl';
 
 interface TableSizeDialogProps {
   open: boolean;
@@ -23,6 +24,7 @@ export const TableSizeDialog: FC<TableSizeDialogProps> = ({
   onClose,
   onSave,
 }) => {
+  const { formatMessage } = useIntl();
   const [rows, setRows] = useState<number>(defaultRows);
   const [cols, setCols] = useState<number>(defaultCols);
 
@@ -52,11 +54,11 @@ export const TableSizeDialog: FC<TableSizeDialogProps> = ({
     >
       {open && (
         <Dialog.Content>
-          <Dialog.Header>Insert table</Dialog.Header>
+          <Dialog.Header>{formatMessage({ id: 'tiptap-editor.table.insertTable', defaultMessage: 'Insert table' })}</Dialog.Header>
           <Dialog.Body>
             <Flex gap={4} alignItems="flex-end">
               <Field.Root width="100%">
-                <Field.Label>Rows</Field.Label>
+                <Field.Label>{formatMessage({ id: 'tiptap-editor.table.rows', defaultMessage: 'Rows' })}</Field.Label>
                 <TextInput
                   name="table-rows"
                   type="number"
@@ -67,11 +69,11 @@ export const TableSizeDialog: FC<TableSizeDialogProps> = ({
                   placeholder={String(defaultRows)}
                 />
                 <Field.Hint>
-                  Min {min}, max {max}
+                  {formatMessage({ id: 'tiptap-editor.table.minMax', defaultMessage: 'Min {min}, max {max}' }, { min, max })}
                 </Field.Hint>
               </Field.Root>
               <Field.Root width="100%">
-                <Field.Label>Columns</Field.Label>
+                <Field.Label>{formatMessage({ id: 'tiptap-editor.table.columns', defaultMessage: 'Columns' })}</Field.Label>
                 <TextInput
                   name="table-cols"
                   type="number"
@@ -82,7 +84,7 @@ export const TableSizeDialog: FC<TableSizeDialogProps> = ({
                   placeholder={String(defaultCols)}
                 />
                 <Field.Hint>
-                  Min {min}, max {max}
+                  {formatMessage({ id: 'tiptap-editor.table.minMax', defaultMessage: 'Min {min}, max {max}' }, { min, max })}
                 </Field.Hint>
               </Field.Root>
             </Flex>
@@ -90,12 +92,12 @@ export const TableSizeDialog: FC<TableSizeDialogProps> = ({
           <Dialog.Footer>
             <Dialog.Cancel>
               <Button variant="tertiary" fullWidth onClick={onClose}>
-                Cancel
+                {formatMessage({ id: 'tiptap-editor.table.cancel', defaultMessage: 'Cancel' })}
               </Button>
             </Dialog.Cancel>
             <Dialog.Action>
               <Button fullWidth variant="success-light" onClick={handleSave} disabled={!isValid}>
-                Insert
+                {formatMessage({ id: 'tiptap-editor.table.insert', defaultMessage: 'Insert' })}
               </Button>
             </Dialog.Action>
           </Dialog.Footer>

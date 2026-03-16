@@ -1,7 +1,6 @@
 import { Tooltip, Button } from '@strapi/design-system';
 
 export function ToolbarButton({
-  key,
   onClick,
   icon,
   active,
@@ -10,7 +9,6 @@ export function ToolbarButton({
   marginLeft,
   hidden,
 }: {
-  key: string;
   onClick: () => void;
   icon: React.ReactNode;
   active?: boolean;
@@ -20,7 +18,7 @@ export function ToolbarButton({
   hidden?: boolean;
 }) {
   return (
-    <Tooltip key={key} description={tooltip}>
+    <Tooltip description={tooltip}>
       <Button
         onClick={onClick}
         variant="tertiary"

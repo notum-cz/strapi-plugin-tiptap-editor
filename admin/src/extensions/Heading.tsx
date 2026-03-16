@@ -2,21 +2,30 @@ import { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import Heading from '@tiptap/extension-heading';
 import { SingleSelect, SingleSelectOption } from '@strapi/design-system';
+import { useIntl } from 'react-intl';
 
-// Extend Heading to add 'tag' attribute for semantic HTML tag choice for SEO purposes
-export const HeadingWithSEOTag = Heading.extend({
+// Base extension class (un-configured) — used by buildExtensions for dynamic levels
+export const BaseHeadingWithSEOTag = Heading.extend({
   addAttributes() {
     return {
       ...(this as any).parent?.(), // must cast to any to avoid TS error
       tag: { default: null },
     };
   },
-}).configure({ levels: [1, 2, 3, 4] });
+});
 
-export function useHeading(editor: Editor, props: { disabled?: boolean } = { disabled: false }) {
+// Pre-configured instance with all heading levels
+export const HeadingWithSEOTag = BaseHeadingWithSEOTag.configure({ levels: [1, 2, 3, 4, 5, 6] });
+
+export function useHeading(editor: Editor | null, props: { disabled?: boolean; levels?: number[] } = { disabled: false }) {
+  const { formatMessage } = useIntl();
+  const levels = props.levels ?? [1, 2, 3, 4, 5, 6];
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor) {
+        return { headingLevel: undefined, headingTag: undefined, isParagraph: false };
+      }
       return {
         headingLevel: ctx.editor.getAttributes('heading').level as number | undefined,
         headingTag: ctx.editor.getAttributes('heading').tag as string | undefined,
@@ -27,18 +36,19 @@ export function useHeading(editor: Editor, props: { disabled?: boolean } = { dis
 
   const onChangeHeading = (value: string) => {
     if (!editor) return;
-    editor.chain().focus();
 
     if (value === 'p') {
       editor.chain().focus().setParagraph().run();
       return;
     }
 
-    const level = Number(value[1]) as 1 | 2 | 3 | 4; // value format: h1, h2, h3, h4
+    const parsed = Number(value.slice(1));
+    if (isNaN(parsed) || parsed < 1 || parsed > 6) return;
+    const level = parsed as 1 | 2 | 3 | 4 | 5 | 6;
     editor.chain().focus().setHeading({ level }).run();
 
     // automatically set the 'tag' attribute to match the heading level if not already set
-    if (!editorState.headingTag) {
+    if (!editorState?.headingTag) {
       editor
         .chain()
         .focus()
@@ -49,34 +59,35 @@ export function useHeading(editor: Editor, props: { disabled?: boolean } = { dis
 
   const onChangeHeadingTag = (value: string) => {
     if (!editor) return;
-    if (!editorState.headingLevel) return;
+    if (!editorState?.headingLevel) return;
     editor.chain().focus().updateAttributes('heading', { tag: value }).run();
   };
 
   return {
     headingSelect: (
       <SingleSelect
-        placeholder="Style"
-        aria-label="Text style"
-        value={editorState.headingLevel ? `h${editorState.headingLevel}` : 'p'}
+        placeholder={formatMessage({ id: 'tiptap-editor.heading.style', defaultMessage: 'Style' })}
+        aria-label={formatMessage({ id: 'tiptap-editor.heading.textStyle', defaultMessage: 'Text style' })}
+        value={editorState?.headingLevel ? `h${editorState.headingLevel}` : 'p'}
         onChange={(v: string | undefined) => v && onChangeHeading(v)}
         disabled={!editor || props.disabled}
         size="S"
       >
-        <SingleSelectOption value="p">Paragraph</SingleSelectOption>
-        <SingleSelectOption value="h1">Heading 1</SingleSelectOption>
-        <SingleSelectOption value="h2">Heading 2</SingleSelectOption>
-        <SingleSelectOption value="h3">Heading 3</SingleSelectOption>
-        <SingleSelectOption value="h4">Heading 4</SingleSelectOption>
+        <SingleSelectOption value="p">{formatMessage({ id: 'tiptap-editor.heading.paragraph', defaultMessage: 'Paragraph' })}</SingleSelectOption>
+        {levels.map((level) => (
+          <SingleSelectOption key={`h${level}`} value={`h${level}`}>
+            {formatMessage({ id: 'tiptap-editor.heading.heading', defaultMessage: 'Heading {level}' }, { level })}
+          </SingleSelectOption>
+        ))}
       </SingleSelect>
     ),
     headingTagSelect: (
       <SingleSelect
-        placeholder="SEO Tag"
-        aria-label="Heading's HTML tag for SEO purposes"
-        value={editorState.headingTag}
+        placeholder={formatMessage({ id: 'tiptap-editor.heading.seoTag', defaultMessage: 'SEO Tag' })}
+        aria-label={formatMessage({ id: 'tiptap-editor.heading.seoTagAriaLabel', defaultMessage: "Heading's HTML tag for SEO purposes" })}
+        value={editorState?.headingTag}
         onChange={(v: string | undefined) => v && onChangeHeadingTag(v)}
-        disabled={!editor || props.disabled || !editorState.headingLevel}
+        disabled={!editor || props.disabled || !editorState?.headingLevel}
         size="S"
       >
         <SingleSelectOption value="h1">h1</SingleSelectOption>

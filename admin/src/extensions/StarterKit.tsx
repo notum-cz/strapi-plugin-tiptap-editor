@@ -12,28 +12,58 @@ import {
   Underline as UnderlineIcon,
 } from '@strapi/icons';
 import { ToolbarButton } from '../components/ToolbarButton';
+import { useIntl } from 'react-intl';
 
-export function useStarterKit(editor: Editor, props: { disabled?: boolean } = { disabled: false }) {
+export function useStarterKit(
+  editor: Editor | null,
+  props: { disabled?: boolean } = { disabled: false }
+) {
+  const { formatMessage } = useIntl();
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
+      if (!ctx.editor) {
+        return {
+          isBold: false,
+          canBold: false,
+          isItalic: false,
+          canItalic: false,
+          isUnderline: false,
+          canUnderline: false,
+          isStrike: false,
+          canStrike: false,
+          isCode: false,
+          canCode: false,
+          isBulletList: false,
+          canToggleBulletList: false,
+          isOrderedList: false,
+          canToggleOrderedList: false,
+          isBlockquote: false,
+          canToggleBlockquote: false,
+        };
+      }
+      const ed = ctx.editor;
+      const canPerformAction = (cmd: string): boolean => {
+        const chain = ed.can().chain() as Record<string, any>;
+        return typeof chain[cmd] === 'function' ? chain[cmd]().run() : false;
+      };
       return {
         isBold: ctx.editor.isActive('bold') ?? false,
-        canBold: ctx.editor.can().chain().toggleBold().run() ?? false,
+        canBold: canPerformAction('toggleBold'),
         isItalic: ctx.editor.isActive('italic') ?? false,
-        canItalic: ctx.editor.can().chain().toggleItalic().run() ?? false,
+        canItalic: canPerformAction('toggleItalic'),
         isUnderline: ctx.editor.isActive('underline') ?? false,
-        canUnderline: ctx.editor.can().chain().toggleUnderline().run() ?? false,
+        canUnderline: canPerformAction('toggleUnderline'),
         isStrike: ctx.editor.isActive('strike') ?? false,
-        canStrike: ctx.editor.can().chain().toggleStrike().run() ?? false,
+        canStrike: canPerformAction('toggleStrike'),
         isCode: ctx.editor.isActive('code') ?? false,
-        canCode: ctx.editor.can().chain().toggleCode().run() ?? false,
+        canCode: canPerformAction('toggleCode'),
         isBulletList: ctx.editor.isActive('bulletList') ?? false,
-        canToggleBulletList: ctx.editor.can().chain().toggleBulletList().run() ?? false,
+        canToggleBulletList: canPerformAction('toggleBulletList'),
         isOrderedList: ctx.editor.isActive('orderedList') ?? false,
-        canToggleOrderedList: ctx.editor.can().chain().toggleOrderedList().run() ?? false,
+        canToggleOrderedList: canPerformAction('toggleOrderedList'),
         isBlockquote: ctx.editor.isActive('blockquote') ?? false,
-        canToggleBlockquote: ctx.editor.can().chain().toggleBlockquote().run() ?? false,
+        canToggleBlockquote: canPerformAction('toggleBlockquote'),
       };
     },
   });
@@ -50,82 +80,89 @@ export function useStarterKit(editor: Editor, props: { disabled?: boolean } = { 
   return {
     boldButton: (
       <ToolbarButton
-        key="bold"
         onClick={toggleBold}
         icon={<BoldIcon />}
-        active={editorState.isBold}
-        disabled={props.disabled || !editor || !editorState.canBold}
-        tooltip="Bold"
+        active={editorState?.isBold ?? false}
+        disabled={props.disabled || !editor || !editorState?.canBold}
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.bold', defaultMessage: 'Bold' })}
       />
     ),
     italicButton: (
       <ToolbarButton
-        key="italic"
         onClick={toggleItalic}
         icon={<ItalicIcon />}
-        active={editorState.isItalic}
-        disabled={props.disabled || !editor || !editorState.canItalic}
-        tooltip="Italic"
+        active={editorState?.isItalic ?? false}
+        disabled={props.disabled || !editor || !editorState?.canItalic}
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.italic', defaultMessage: 'Italic' })}
       />
     ),
     underlineButton: (
       <ToolbarButton
-        key="underline"
         onClick={toggleUnderline}
         icon={<UnderlineIcon />}
-        active={editorState.isUnderline}
-        disabled={props.disabled || !editor || !editorState.canUnderline}
-        tooltip="Underline"
+        active={editorState?.isUnderline ?? false}
+        disabled={props.disabled || !editor || !editorState?.canUnderline}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.underline',
+          defaultMessage: 'Underline',
+        })}
       />
     ),
     strikeButton: (
       <ToolbarButton
-        key="strike"
         onClick={toggleStrike}
         icon={<StrikeThroughIcon />}
-        active={editorState.isStrike}
-        disabled={props.disabled || !editor || !editorState.canStrike}
-        tooltip="Strikethrough"
+        active={editorState?.isStrike ?? false}
+        disabled={props.disabled || !editor || !editorState?.canStrike}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.strikethrough',
+          defaultMessage: 'Strikethrough',
+        })}
       />
     ),
     bulletButton: (
       <ToolbarButton
-        key="bullet"
         onClick={toggleBulletList}
         icon={<BulletListIcon />}
-        active={editorState.isBulletList}
-        disabled={props.disabled || !editor || !editorState.canToggleBulletList}
-        tooltip="Bullet list"
+        active={editorState?.isBulletList ?? false}
+        disabled={props.disabled || !editor || !editorState?.canToggleBulletList}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.bulletList',
+          defaultMessage: 'Bullet list',
+        })}
       />
     ),
     orderedButton: (
       <ToolbarButton
-        key="ordered"
         onClick={toggleOrderedList}
         icon={<NumberListIcon />}
-        active={editorState.isOrderedList}
-        disabled={props.disabled || !editor || !editorState.canToggleOrderedList}
-        tooltip="Numbered list"
+        active={editorState?.isOrderedList ?? false}
+        disabled={props.disabled || !editor || !editorState?.canToggleOrderedList}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.numberedList',
+          defaultMessage: 'Numbered list',
+        })}
       />
     ),
     codeButton: (
       <ToolbarButton
-        key="code"
         onClick={toggleCode}
         icon={<CodeIcon />}
-        active={editorState.isCode}
-        disabled={props.disabled || !editor || !editorState.canCode}
-        tooltip="Inline code"
+        active={editorState?.isCode ?? false}
+        disabled={props.disabled || !editor || !editorState?.canCode}
+        tooltip={formatMessage({
+          id: 'tiptap-editor.toolbar.inlineCode',
+          defaultMessage: 'Inline code',
+        })}
       />
     ),
     blockquoteButton: (
       <ToolbarButton
-        key="blockquote"
         onClick={toggleBlockquote}
         icon={<QuotesIcon />}
-        active={editorState.isBlockquote}
-        disabled={props.disabled || !editor || !editorState.canToggleBlockquote}
-        tooltip="Quote"
+        active={editorState?.isBlockquote ?? false}
+        disabled={props.disabled || !editor || !editorState?.canToggleBlockquote}
+        tooltip={formatMessage({ id: 'tiptap-editor.toolbar.quote', defaultMessage: 'Quote' })}
       />
     ),
   };

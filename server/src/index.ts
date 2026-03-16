@@ -32,3 +32,12 @@ export default {
 /**
  * [ERROR]  server/src/index.ts:19:1 - TS2742: The inferred type of 'default' cannot be named without a reference to '@strapi/core/node_modules/@strapi/types/dist/core'. This is likely not portable. A type annotation is necessary.
  */
+
+// Re-export shared types for host app developer access via the ./strapi-server entry point
+export type { TiptapPresetConfig, TiptapPluginConfig } from '../../shared/types';
+export {
+  PRESET_FEATURE_KEYS,
+  MINIMAL_PRESET_CONFIG,
+  isFeatureEnabled,
+  getFeatureOptions,
+} from '../../shared/types';

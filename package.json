@@ -1,6 +1,13 @@
 {
   "version": "1.0.2",
-  "keywords": ["strapi", "plugin", "tiptap", "editor", "rich-text", "wysiwyg"],
+  "keywords": [
+    "strapi",
+    "plugin",
+    "tiptap",
+    "editor",
+    "rich-text",
+    "wysiwyg"
+  ],
   "type": "commonjs",
   "exports": {
     "./package.json": "./package.json",
@@ -28,36 +35,39 @@
     "watch:link": "strapi-plugin watch:link",
     "verify": "strapi-plugin verify",
     "test:ts:front": "run -T tsc -p admin/tsconfig.json",
-    "test:ts:back": "run -T tsc -p server/tsconfig.json"
+    "test:ts:back": "run -T tsc -p server/tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "@strapi/design-system": "^2.0.0-rc.30",
-    "@strapi/icons": "^2.0.0-rc.30",
-    "react-intl": "^8.1.3",
-    "@tiptap/pm": "^3.19.0",
-    "@tiptap/react": "^3.19.0",
-    "@tiptap/starter-kit": "^3.19.0",
-    "@tiptap/extension-subscript": "^3.19.0",
-    "@tiptap/extension-superscript": "^3.19.0",
-    "@tiptap/extension-table": "^3.19.0",
-    "@tiptap/extension-text-align": "^3.19.0"
+    "@strapi/design-system": "2.2.0",
+    "@strapi/icons": "2.2.0",
+    "@tiptap/extension-subscript": "3.20.1",
+    "@tiptap/extension-superscript": "3.20.1",
+    "@tiptap/extension-table": "3.20.1",
+    "@tiptap/extension-text-align": "3.20.1",
+    "@tiptap/pm": "3.20.1",
+    "@tiptap/react": "3.20.1",
+    "@tiptap/starter-kit": "3.20.1",
+    "react-intl": "^8.1.3"
   },
   "devDependencies": {
-    "@strapi/strapi": "^5.35.0",
     "@strapi/sdk-plugin": "^5.4.0",
+    "@strapi/strapi": "5.39.0",
+    "@strapi/typescript-utils": "5.39.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "^19.2.3",
     "prettier": "^3.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.3",
-    "styled-components": "^6.3.9",
-    "@types/react": "^19.2.13",
-    "@types/react-dom": "^19.2.3",
-    "@strapi/typescript-utils": "^5.35.0",
-    "typescript": "^5.9.3"
+    "styled-components": "6.3.11",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   },
   "peerDependencies": {
-    "@strapi/strapi": "^5.35.0",
     "@strapi/sdk-plugin": "^5.4.0",
+    "@strapi/strapi": "^5.35.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.3",

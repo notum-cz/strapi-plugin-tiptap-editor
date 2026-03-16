@@ -1,1 +1,5 @@
-export default {};
+import createPresetService from './preset';
+
+export default {
+  preset: createPresetService,
+};

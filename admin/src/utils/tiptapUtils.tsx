@@ -1,15 +1,8 @@
 import { Extensions, JSONContent } from '@tiptap/core';
 import { useEditor } from '@tiptap/react';
 import { type InputProps, useField } from '@strapi/strapi/admin';
-import { Button, Tooltip } from '@strapi/design-system';
 
-export interface FieldValue<TValue = any> {
-  error?: string;
-  initialValue: TValue;
-  onChange: (eventOrPath: React.ChangeEvent<any> | string, value?: TValue) => void;
-  value: TValue;
-  rawError?: any;
-}
+export type { FieldValue } from '@strapi/strapi/admin';
 
 export type TiptapInputProps = InputProps & {
   labelAction?: React.ReactNode;
@@ -32,7 +25,7 @@ export function tiptapContent(text: string): JSONContent {
   };
 }
 
-function parseJSONContent(value: any, defaultValue: string) {
+function parseJSONContent(value: string | JSONContent | null | undefined, defaultValue: string) {
   if (!value) {
     return tiptapContent(defaultValue);
   }

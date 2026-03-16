@@ -1,0 +1,528 @@
+{
+  "type": "doc",
+  "content": [
+    {
+      "type": "heading",
+      "attrs": { "level": 1, "tag": "h1", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Lorem Ipsum Dolor Sit Amet" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        {
+          "type": "text",
+          "text": "Consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Text Formatting" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        { "type": "text", "text": "This is " },
+        { "type": "text", "marks": [{ "type": "bold" }], "text": "bold text" },
+        { "type": "text", "text": ", this is " },
+        { "type": "text", "marks": [{ "type": "italic" }], "text": "italic text" },
+        { "type": "text", "text": ", this is " },
+        { "type": "text", "marks": [{ "type": "underline" }], "text": "underlined text" },
+        { "type": "text", "text": ", and this is " },
+        { "type": "text", "marks": [{ "type": "strike" }], "text": "strikethrough text" },
+        { "type": "text", "text": ". You can also combine " },
+        {
+          "type": "text",
+          "marks": [{ "type": "bold" }, { "type": "italic" }],
+          "text": "bold and italic"
+        },
+        { "type": "text", "text": " together." }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 3, "tag": "h3", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Superscript & Subscript" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        { "type": "text", "text": "E = mc" },
+        { "type": "text", "marks": [{ "type": "superscript" }], "text": "2" },
+        { "type": "text", "text": " is a famous equation. Water is H" },
+        { "type": "text", "marks": [{ "type": "subscript" }], "text": "2" },
+        { "type": "text", "text": "O." }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Headings (H1–H6)" }]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 1, "tag": "h1", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Heading Level 1" }]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Heading Level 2" }]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 3, "tag": "h3", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Heading Level 3" }]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 4, "tag": "h4", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Heading Level 4" }]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 5, "tag": "h5", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Heading Level 5" }]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 6, "tag": "h6", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Heading Level 6" }]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Text Alignment" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        {
+          "type": "text",
+          "text": "This paragraph is aligned to the left. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "center" },
+      "content": [
+        {
+          "type": "text",
+          "text": "This paragraph is centered. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "right" },
+      "content": [
+        {
+          "type": "text",
+          "text": "This paragraph is aligned to the right. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis."
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "justify" },
+      "content": [
+        {
+          "type": "text",
+          "text": "This paragraph is justified. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo."
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Lists" }]
+    },
+    {
+      "type": "bulletList",
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": "left" },
+              "content": [
+                { "type": "text", "text": "First unordered item — nemo enim ipsam voluptatem" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": "left" },
+              "content": [
+                { "type": "text", "text": "Second unordered item — quia voluptas sit aspernatur" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": "left" },
+              "content": [
+                { "type": "text", "text": "Third unordered item — neque porro quisquam est" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "orderedList",
+      "attrs": { "start": 1 },
+      "content": [
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": "left" },
+              "content": [
+                { "type": "text", "text": "First ordered item — temporibus autem quibusdam" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": "left" },
+              "content": [
+                { "type": "text", "text": "Second ordered item — et aut officiis debitis" }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "listItem",
+          "content": [
+            {
+              "type": "paragraph",
+              "attrs": { "textAlign": "left" },
+              "content": [
+                { "type": "text", "text": "Third ordered item — rerum necessitabus saepe eveniet" }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Blockquote" }]
+    },
+    {
+      "type": "blockquote",
+      "content": [
+        {
+          "type": "paragraph",
+          "attrs": { "textAlign": "left" },
+          "content": [
+            {
+              "type": "text",
+              "text": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Code" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        { "type": "text", "text": "Inline code example: " },
+        { "type": "text", "marks": [{ "type": "code" }], "text": "const x = 42;" },
+        { "type": "text", "text": " and continue with regular text." }
+      ]
+    },
+    {
+      "type": "codeBlock",
+      "attrs": { "language": null },
+      "content": [
+        {
+          "type": "text",
+          "text": "function loremIpsum() {\n  const dolor = 'sit amet';\n  return `consectetur ${dolor} adipiscing elit`;\n}"
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Link" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        { "type": "text", "text": "Visit " },
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "link",
+              "attrs": {
+                "href": "https://example.com",
+                "target": "_blank",
+                "rel": "noopener noreferrer nofollow",
+                "class": null
+              }
+            }
+          ],
+          "text": "Example Website"
+        },
+        { "type": "text", "text": " for more information about lorem ipsum." }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Table" }]
+    },
+    {
+      "type": "table",
+      "content": [
+        {
+          "type": "tableRow",
+          "content": [
+            {
+              "type": "tableHeader",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "left" },
+                  "content": [{ "type": "text", "marks": [{ "type": "bold" }], "text": "Feature" }]
+                }
+              ]
+            },
+            {
+              "type": "tableHeader",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "left" },
+                  "content": [{ "type": "text", "marks": [{ "type": "bold" }], "text": "Status" }]
+                }
+              ]
+            },
+            {
+              "type": "tableHeader",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "left" },
+                  "content": [
+                    { "type": "text", "marks": [{ "type": "bold" }], "text": "Description" }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "content": [
+            {
+              "type": "tableCell",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "left" },
+                  "content": [{ "type": "text", "text": "Bold" }]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "center" },
+                  "content": [{ "type": "text", "text": "Active" }]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "left" },
+                  "content": [{ "type": "text", "text": "Adipiscing elit sed do eiusmod" }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "content": [
+            {
+              "type": "tableCell",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "left" },
+                  "content": [{ "type": "text", "text": "Italic" }]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "center" },
+                  "content": [{ "type": "text", "text": "Active" }]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "left" },
+                  "content": [{ "type": "text", "text": "Tempor incididunt ut labore" }]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "tableRow",
+          "content": [
+            {
+              "type": "tableCell",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "left" },
+                  "content": [{ "type": "text", "text": "Table" }]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "center" },
+                  "content": [{ "type": "text", "text": "Active" }]
+                }
+              ]
+            },
+            {
+              "type": "tableCell",
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "content": [
+                {
+                  "type": "paragraph",
+                  "attrs": { "textAlign": "left" },
+                  "content": [{ "type": "text", "text": "Dolore magna aliqua ut enim" }]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Hard Break" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        { "type": "text", "text": "First line of text." },
+        { "type": "text", "text": "Second line after a hard break." },
+        { "type": "text", "text": "Third line after another hard break." }
+      ]
+    },
+    {
+      "type": "heading",
+      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "content": [{ "type": "text", "text": "Combined Formatting" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        {
+          "type": "text",
+          "marks": [{ "type": "bold" }, { "type": "underline" }],
+          "text": "Bold and underlined"
+        },
+        { "type": "text", "text": ", " },
+        {
+          "type": "text",
+          "marks": [{ "type": "italic" }, { "type": "strike" }],
+          "text": "italic and strikethrough"
+        },
+        { "type": "text", "text": ", " },
+        {
+          "type": "text",
+          "marks": [{ "type": "bold" }, { "type": "italic" }, { "type": "underline" }],
+          "text": "bold italic underlined"
+        },
+        { "type": "text", "text": ", and " },
+        { "type": "text", "marks": [{ "type": "code" }], "text": "inline code" },
+        { "type": "text", "text": " within a sentence. Also a " },
+        {
+          "type": "text",
+          "marks": [
+            { "type": "bold" },
+            {
+              "type": "link",
+              "attrs": {
+                "href": "https://example.com/bold-link",
+                "target": "_blank",
+                "rel": "noopener noreferrer nofollow",
+                "class": null
+              }
+            }
+          ],
+          "text": "bold link"
+        },
+        { "type": "text", "text": " for good measure." }
+      ]
+    }
+  ]
+}
