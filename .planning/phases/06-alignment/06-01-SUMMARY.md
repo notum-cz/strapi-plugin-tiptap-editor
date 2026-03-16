@@ -60,10 +60,10 @@ completed: 2026-03-16
 
 ## Performance
 
-- **Duration:** ~3 min
+- **Duration:** ~45 min (including human-verify)
 - **Started:** 2026-03-16T18:03:59Z
-- **Completed:** 2026-03-16T18:07:00Z
-- **Tasks:** 2 of 3 (Task 3 is human-verify checkpoint)
+- **Completed:** 2026-03-16
+- **Tasks:** 3 of 3 (all complete, including human-verify)
 - **Files modified:** 8
 
 ## Accomplishments
@@ -71,6 +71,7 @@ completed: 2026-03-16
 - Three alignment buttons (L/C/R) above alt text row in image popover; active button highlighted; toggle-off resets data-align to null
 - Margin-based CSS: `[data-align="center"] img` and `[data-align="right"] img` in TiptapInputStyles
 - All tests pass (41/41 in Image + buildExtensions test files); fixture updated with right/left aligned image nodes
+- Human-verify approved; one post-checkpoint fix applied: `ImageNodeViewReadOnly` was missing `data-align` on `NodeViewWrapper` — read-only images now respect stored alignment (b73c700)
 
 ## Task Commits
 
@@ -78,6 +79,7 @@ Each task was committed atomically:
 
 1. **Task 1: enableContentCheck option and content-safety guard** - `9195591` (feat)
 2. **Task 2: Alignment buttons, CSS, translations, fixture** - `e904488` (feat)
+3. **Task 3: human-verify + fix read-only data-align** - `b73c700` (fix)
 
 _Note: Task 1 used TDD (RED phase confirmed failures before GREEN implementation)_
 
@@ -98,7 +100,20 @@ _Note: Task 1 used TDD (RED phase confirmed failures before GREEN implementation
 
 ## Deviations from Plan
 
-None - plan executed exactly as written.
+### Auto-fixed Issues
+
+**1. [Rule 1 - Bug] Read-only image view missing data-align on NodeViewWrapper**
+- **Found during:** Task 3 (human-verify checkpoint)
+- **Issue:** `ImageNodeViewReadOnly` rendered `<NodeViewWrapper data-drag-handle>` without `data-align`, so CSS alignment rules had no effect on read-only images. Images displayed left-aligned regardless of the stored `data-align` value.
+- **Fix:** Added `data-align={node.attrs['data-align'] ?? undefined}` to `NodeViewWrapper` in `ImageNodeViewReadOnly`, matching the existing `ImageNodeView` pattern.
+- **Files modified:** `admin/src/extensions/Image.tsx`
+- **Verification:** Human-verified — alignment styling now applies correctly in read-only mode
+- **Committed in:** `b73c700` (fix during human-verify)
+
+---
+
+**Total deviations:** 1 auto-fixed (Rule 1 - bug)
+**Impact on plan:** Necessary for correctness — read-only images must respect stored alignment. No scope creep.
 
 ## Issues Encountered
 
@@ -111,9 +126,8 @@ None - no external service configuration required.
 
 ## Next Phase Readiness
 
-- Alignment buttons and content-safety guard are complete; awaiting human-verify (Task 3 checkpoint)
-- After approval: v1.1 image feature is complete — both insertion (Phase 5) and alignment (Phase 6) done
-- Deferred: RichTextInput.test.ts failures need investigation (pre-existing, unrelated to image feature)
+- All tasks complete and human-verified; v1.1 image feature is complete — insertion (Phase 5) and alignment (Phase 6) done
+- Deferred: RichTextInput.test.ts failures need investigation (pre-existing, unrelated to image feature; 8 tests failing due to React hooks outside render context in `useImage`)
 
 ---
 *Phase: 06-alignment*
