@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Media Library Images
 status: executing
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-16T14:38:55.207Z"
+stopped_at: Completed 05-01-PLAN.md
+last_updated: "2026-03-16T15:41:20.208Z"
 last_activity: "2026-03-16 — Phase 4 Plan 01 complete: mediaLibrary key added to types and fixtures"
 progress:
   total_phases: 3
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
   percent: 50
 ---
 
@@ -48,6 +48,7 @@ Progress: [█████░░░░░] 50%
 *Updated after each plan completion*
 | Phase 04-image-schema-foundation P01 | 5 | 2 tasks | 4 files |
 | Phase 04-image-schema-foundation P02 | 3min | 2 tasks | 6 files |
+| Phase 05-image-insertion P01 | 5 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -61,6 +62,9 @@ Progress: [█████░░░░░] 50%
 - [Phase 04-image-schema-foundation]: mediaLibrary uses boolean | Record<string, unknown> — no dedicated config type needed at this stage
 - [Phase 04-image-schema-foundation]: StrapiImage uses standard 'image' node name via Image.extend() for ProseMirror schema compatibility
 - [Phase 04-image-schema-foundation]: renderHTML returns {} for null attrs to prevent ProseMirror serializing null as string 'null'
+- [Phase 05-image-insertion]: @strapi/design-system CJS/ESM conflict requires vi.mock stubs in all test files importing Strapi UI components
+- [Phase 05-image-insertion]: setImage custom attrs typed as any — SetImageOptions does not include extension attrs; runtime schema validates correctly
+- [Phase 05-image-insertion]: createParagraphNear chained after setImage to prevent cursor trap at end of doc
 
 ### Pending Todos
 
@@ -73,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T14:38:55.204Z
-Stopped at: Completed 04-02-PLAN.md
+Last session: 2026-03-16T15:41:20.207Z
+Stopped at: Completed 05-01-PLAN.md
 Resume file: None
