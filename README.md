@@ -157,9 +157,9 @@ This plugin is compatible with Strapi `v5.x.x` and has been tested on Strapi `v5
 
 - **Status:** Needs caution (valid changes, but migration-sensitive behavior updates).
 - **Break risk:** Medium for existing projects that do not define/assign presets (toolbar shrinks to minimal fallback).
-- **Validation evidence:** Vitest suite passes (`13` files / `116` tests), including admin/server/shared preset coverage.
+- **Validation evidence:** Vitest suite passes at PR review time (`13` files / `116` tests), including admin/server/shared preset coverage.
 - **Understandability:** Good; behavior is strongly typed (`shared/types.ts`) and covered by targeted tests (`buildExtensions`, `usePresetConfig`, `config`, `preset.*`).
-- **Main rollout check:** Ensure host Strapi project aligns with updated dependency versions and defines explicit presets before upgrade.
+- **Main rollout check:** Ensure host project runs Node `18-22`, Strapi `^5.35.0`, and defines explicit presets before upgrade.
 
 <!-- Getting Started -->
 
