@@ -8,13 +8,6 @@ export interface StrapiFile {
   url?: string;
 }
 
-interface MediaLibraryDialogProps {
-  onClose: () => void;
-  onSelectAssets: (assets: StrapiFile[]) => void;
-  allowedTypes?: Array<'files' | 'images' | 'videos' | 'audios'>;
-  multiple?: boolean;
-}
-
 interface MediaLibraryWrapperProps {
   open: boolean;
   onClose: () => void;
@@ -24,7 +17,7 @@ interface MediaLibraryWrapperProps {
 export function MediaLibraryWrapper({ open, onClose, onSelectAssets }: MediaLibraryWrapperProps) {
   if (!open) return null;
 
-  const MediaLibraryDialogComp = getMediaLibraryComponent() as React.ComponentType<MediaLibraryDialogProps> | null;
+  const MediaLibraryDialogComp = getMediaLibraryComponent();
   if (!MediaLibraryDialogComp) return null;
 
   return (

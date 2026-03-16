@@ -8,7 +8,7 @@ import { richTextField } from './fields/richTextField';
 
 export default {
   register(app: StrapiApp) {
-    captureApp(app as unknown as Record<string, any>);
+    captureApp(app as never);
 
     app.registerPlugin({
       id: PLUGIN_ID,

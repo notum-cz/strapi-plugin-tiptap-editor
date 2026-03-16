@@ -1,4 +1,20 @@
 import type { ComponentType } from 'react';
+import type { StrapiFile } from '../components/MediaLibraryWrapper';
+
+export interface MediaLibraryDialogProps {
+  onClose: () => void;
+  onSelectAssets: (assets: StrapiFile[]) => void;
+  allowedTypes?: Array<'files' | 'images' | 'videos' | 'audios'>;
+  multiple?: boolean;
+}
+
+interface AppBridge {
+  library: {
+    components: {
+      'media-library'?: ComponentType<MediaLibraryDialogProps>;
+    };
+  };
+}
 
 /**
  * Module-level reference to the StrapiApp instance, captured during register().
@@ -6,12 +22,12 @@ import type { ComponentType } from 'react';
  * without relying on useStrapiApp — which fails due to use-context-selector
  * context isolation between the plugin bundle and the host app.
  */
-let appRef: Record<string, any> | null = null;
+let appRef: AppBridge | null = null;
 
-export function captureApp(app: Record<string, any>) {
+export function captureApp(app: AppBridge) {
   appRef = app;
 }
 
-export function getMediaLibraryComponent(): ComponentType<any> | null {
+export function getMediaLibraryComponent(): ComponentType<MediaLibraryDialogProps> | null {
   return appRef?.library?.components?.['media-library'] ?? null;
 }
