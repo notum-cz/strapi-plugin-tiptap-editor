@@ -88,6 +88,7 @@
     - [Links](#links)
     - [Tables](#tables)
     - [Text Alignment](#text-alignment)
+  - [Images](#images)
   - [Configuration Reference](#configuration-reference)
     - [Feature Values](#feature-values)
     - [Full Preset Example](#full-preset-example)
@@ -110,6 +111,7 @@
 - **Headings** (H1–H6), **bold**, **italic**, **underline**, **strikethrough**
 - **Ordered & unordered lists**, task lists
 - **Links**, **tables**
+- **Images** from Strapi Media Library with alt text editing and alignment
 - **Code blocks** with syntax highlighting
 - **Blockquotes**, **horizontal rules**
 - Full **keyboard shortcut** support
@@ -248,6 +250,7 @@ export default () => ({
           textAlign: true,
           superscript: true,
           subscript: true,
+          mediaLibrary: true,
         },
       },
     },
@@ -390,6 +393,29 @@ Enables all four alignment buttons (left, center, right, justify).
 }
 ```
 
+### Images
+
+| Key            | Description                          | Toolbar                                        |
+| -------------- | ------------------------------------ | ---------------------------------------------- |
+| `mediaLibrary` | Images from Strapi Media Library     | Image button + alt text popover + alignment     |
+
+Enables image insertion from the Strapi Media Library. When enabled, the toolbar shows an image button that opens the Media Library picker. After selecting an image:
+
+- The image appears in the editor at its natural size (constrained to editor width)
+- Alt text is prefilled from the asset's `alternativeText` metadata
+- Clicking a selected image opens a popover to edit alt text or delete the image
+- Three alignment buttons (left, center, right) allow repositioning the image
+
+The image stores both the URL (`src`) and the Strapi asset ID (`data-asset-id`) in the Tiptap JSON output.
+
+**Content safety:** If you remove `mediaLibrary` from a preset, existing images in content are preserved and rendered read-only — they are never silently deleted.
+
+```ts
+{
+  mediaLibrary: true,
+}
+```
+
 ## Configuration Reference
 
 ### Feature Values
@@ -447,6 +473,9 @@ export default () => ({
 
           // Text alignment (left, center, right, justify)
           textAlign: true,
+
+          // Images from Strapi Media Library
+          mediaLibrary: true,
         },
       },
     },
