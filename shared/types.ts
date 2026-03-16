@@ -22,6 +22,18 @@ export type HeadingConfig = {
   levels?: HeadingLevel[];
 };
 
+// ─── Theme types ─────────────────────────────────────────────────────────────
+
+export type ThemeColorEntry = {
+  label: string;
+  color: string;
+};
+
+export type TiptapThemeConfig = {
+  colors?: ThemeColorEntry[];
+  stylesheet?: string;
+};
+
 // ─── Core types ──────────────────────────────────────────────────────────────
 
 export interface TiptapPresetConfig {
@@ -43,10 +55,13 @@ export interface TiptapPresetConfig {
   textAlign?: boolean | TextAlignConfig;
   superscript?: boolean | Record<string, unknown>;
   subscript?: boolean | Record<string, unknown>;
+  textColor?: boolean;
+  highlightColor?: boolean;
 }
 
 export interface TiptapPluginConfig {
   presets: Record<string, TiptapPresetConfig>;
+  theme?: TiptapThemeConfig;
 }
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -70,6 +85,8 @@ export const PRESET_FEATURE_KEYS: Array<keyof TiptapPresetConfig> = [
   'textAlign',
   'superscript',
   'subscript',
+  'textColor',
+  'highlightColor',
 ];
 
 // Fallback for unconfigured fields — deliberately minimal to prompt developers to configure
