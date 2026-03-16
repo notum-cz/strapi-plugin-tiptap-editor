@@ -6,7 +6,10 @@ import Underline from '@tiptap/extension-underline';
 import { TableKit } from '@tiptap/extension-table';
 import TextAlign from '@tiptap/extension-text-align';
 import { Gapcursor } from '@tiptap/extensions';
+import { TextStyle, Color } from '@tiptap/extension-text-style';
+import Highlight from '@tiptap/extension-highlight';
 import { BaseHeadingWithSEOTag } from '../extensions/Heading';
+import { PasteStripper } from '../extensions/PasteStripper';
 import { TiptapPresetConfig, isFeatureEnabled, getFeatureOptions } from '../../../shared/types';
 
 // Helper: converts a preset feature value to StarterKit's expected format
@@ -86,6 +89,18 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
         alignments: textAlignConfig?.alignments || ['left', 'center', 'right', 'justify'],
       })
     );
+  }
+
+  const needsTextStyle = isFeatureEnabled(config.textColor) || isFeatureEnabled(config.highlightColor);
+  if (needsTextStyle) {
+    extensions.push(TextStyle);
+    extensions.push(PasteStripper);
+  }
+  if (isFeatureEnabled(config.textColor)) {
+    extensions.push(Color);
+  }
+  if (isFeatureEnabled(config.highlightColor)) {
+    extensions.push(Highlight.configure({ multicolor: true }));
   }
 
   extensions.push(Gapcursor);
