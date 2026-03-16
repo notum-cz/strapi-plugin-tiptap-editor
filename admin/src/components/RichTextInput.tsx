@@ -12,6 +12,8 @@ import { useHeading } from '../extensions/Heading';
 import { useScript } from '../extensions/Script';
 import { useTable } from '../extensions/Table';
 import { useTextAlign } from '../extensions/TextAlign';
+import { useTextColor } from '../extensions/TextColor';
+import { useHighlightColor } from '../extensions/HighlightColor';
 import { usePresetConfig } from '../hooks/usePresetConfig';
 import { buildExtensions } from '../utils/buildExtensions';
 import { TiptapPresetConfig, MINIMAL_PRESET_CONFIG, getFeatureOptions } from '../../../shared/types';
@@ -41,6 +43,8 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
     const script = useScript(editor, { disabled: props.disabled });
     const table = useTable(editor, { disabled: props.disabled });
     const textAlign = useTextAlign(editor, { disabled: props.disabled });
+    const textColor = useTextColor(editor, { disabled: props.disabled });
+    const highlightColor = useHighlightColor(editor, { disabled: props.disabled });
 
     if (!editor) return null;
 
@@ -75,6 +79,12 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           </FeatureGuard>
           <FeatureGuard featureValue={config?.subscript}>
             {script.subscriptButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.textColor}>
+            {textColor.textColorButton}
+          </FeatureGuard>
+          <FeatureGuard featureValue={config?.highlightColor}>
+            {highlightColor.highlightColorButton}
           </FeatureGuard>
           <Spacer width={8} />
           <FeatureGuard featureValue={config?.textAlign}>
