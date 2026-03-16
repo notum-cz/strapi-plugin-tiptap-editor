@@ -75,6 +75,7 @@
     - [Supported Versions](#supported-versions)
     - [Branch / PR Summary](#branch--pr-summary)
       - [Potential Breaking Changes](#potential-breaking-changes)
+      - [Evaluation Verdict](#evaluation-verdict)
   - [Getting Started](#getting-started)
     - [Installation](#installation)
       - [1. Install the plugin via npm or yarn](#1-install-the-plugin-via-npm-or-yarn)
@@ -151,6 +152,14 @@ This plugin is compatible with Strapi `v5.x.x` and has been tested on Strapi `v5
 - Editor toolset is now preset-controlled; fields without an assigned preset fall back to a minimal toolbar (bold + italic).
 - Plugin config validation is stricter and now rejects unknown preset keys at startup.
 - Dependency set changed significantly (Strapi/Tiptap/React ecosystem updates), which may require host project alignment.
+
+#### Evaluation Verdict
+
+- **Status:** Needs caution (valid changes, but migration-sensitive behavior updates).
+- **Break risk:** Medium for existing projects that do not define/assign presets (toolbar shrinks to minimal fallback).
+- **Validation evidence:** Vitest suite passes (`13` files / `116` tests), including admin/server/shared preset coverage.
+- **Understandability:** Good; behavior is strongly typed (`shared/types.ts`) and covered by targeted tests (`buildExtensions`, `usePresetConfig`, `config`, `preset.*`).
+- **Main rollout check:** Ensure host Strapi project aligns with updated dependency versions and defines explicit presets before upgrade.
 
 <!-- Getting Started -->
 
