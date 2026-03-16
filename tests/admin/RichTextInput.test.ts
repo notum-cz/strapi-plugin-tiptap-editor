@@ -84,6 +84,12 @@ vi.mock('../../admin/src/extensions/TextAlign', () => ({
   useTextAlign: () => mockTextAlign,
 }));
 
+const mockImage = { imageButton: null, imageDialog: null };
+vi.mock('../../admin/src/extensions/Image', () => ({
+  useImage: () => mockImage,
+  StrapiImage: { configure: vi.fn(() => ({})) },
+}));
+
 // ─── Mock components ──────────────────────────────────────────────────────────
 vi.mock('../../admin/src/components/BaseTiptapInput', () => ({
   default: 'BaseTiptapInput',
