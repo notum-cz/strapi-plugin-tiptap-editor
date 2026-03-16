@@ -19,7 +19,9 @@
         "alignments": ["left", "center", "right", "justify"]
       },
       "superscript": true,
-      "subscript": true
+      "subscript": true,
+      "textColor": true,
+      "highlightColor": true
     }
   }
 }
