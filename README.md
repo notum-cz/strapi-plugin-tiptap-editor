@@ -88,7 +88,7 @@
     - [Links](#links)
     - [Tables](#tables)
     - [Text Alignment](#text-alignment)
-  - [Images](#images)
+    - [Images](#images)
   - [Configuration Reference](#configuration-reference)
     - [Feature Values](#feature-values)
     - [Full Preset Example](#full-preset-example)
@@ -395,9 +395,9 @@ Enables all four alignment buttons (left, center, right, justify).
 
 ### Images
 
-| Key            | Description                          | Toolbar                                        |
-| -------------- | ------------------------------------ | ---------------------------------------------- |
-| `mediaLibrary` | Images from Strapi Media Library     | Image button + alt text popover + alignment     |
+| Key            | Description                      | Toolbar                                     |
+| -------------- | -------------------------------- | ------------------------------------------- |
+| `mediaLibrary` | Images from Strapi Media Library | Image button + alt text popover + alignment |
 
 Enables image insertion from the Strapi Media Library. When enabled, the toolbar shows an image button that opens the Media Library picker. After selecting an image:
 
