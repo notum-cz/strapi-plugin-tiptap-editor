@@ -60,7 +60,11 @@ Plans:
   2. Content with text color and highlight marks round-trips through Tiptap JSON without losing color attribute values (concrete hex values, not CSS variable tokens)
   3. The `<link>` tag for the configured stylesheet appears in the document `<head>` exactly once after editor mount, even if multiple editors are mounted or HMR fires
   4. Pasting content from an external source does not introduce unexpected `style` attributes on spans when TextStyle is active
-**Plans**: TBD
+**Plans:** 2 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — Utility modules: themeCache, PasteStripper extension, useThemeConfig hook, package install
+- [ ] 08-02-PLAN.md — Extension registration in buildExtensions, bootstrap wiring, tests, fixture update
 
 ### Phase 9: Color UI and Integration
 **Goal**: Content managers can apply and remove text color and highlight color from selected text using theme swatches; the active color is visually indicated; features are absent when not enabled in the preset
@@ -85,5 +89,5 @@ Plans:
 | 5. Image Insertion | v1.1 | 2/2 | Complete | 2026-03-16 |
 | 6. Alignment | v1.1 | 1/1 | Complete | 2026-03-16 |
 | 7. Types, Config and Server | 2/2 | Complete   | 2026-03-16 | - |
-| 8. Extension Registration and Theme Hook | v1.2 | 0/? | Not started | - |
+| 8. Extension Registration and Theme Hook | v1.2 | 0/2 | Planning | - |
 | 9. Color UI and Integration | v1.2 | 0/? | Not started | - |
