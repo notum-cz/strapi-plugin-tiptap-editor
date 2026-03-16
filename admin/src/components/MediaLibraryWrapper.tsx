@@ -1,5 +1,5 @@
 import React from 'react';
-import { useStrapiApp } from '@strapi/admin/strapi-admin';
+import { getMediaLibraryComponent } from '../utils/strapiApp';
 
 export interface StrapiFile {
   id: number;
@@ -22,12 +22,10 @@ interface MediaLibraryWrapperProps {
 }
 
 export function MediaLibraryWrapper({ open, onClose, onSelectAssets }: MediaLibraryWrapperProps) {
-  const components = useStrapiApp('ImagePicker', (state) => state.components);
-
   if (!open) return null;
-  if (!components || !components['media-library']) return null;
 
-  const MediaLibraryDialogComp = components['media-library'] as React.ComponentType<MediaLibraryDialogProps>;
+  const MediaLibraryDialogComp = getMediaLibraryComponent() as React.ComponentType<MediaLibraryDialogProps> | null;
+  if (!MediaLibraryDialogComp) return null;
 
   return (
     <MediaLibraryDialogComp

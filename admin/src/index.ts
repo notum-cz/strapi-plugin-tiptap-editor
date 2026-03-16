@@ -2,11 +2,14 @@ import type { StrapiApp } from '@strapi/strapi/admin';
 import { PLUGIN_ID } from '../../shared/pluginId';
 import { Initializer } from './components/Initializer';
 import { PresetSelect } from './components/PresetSelect';
+import { captureApp } from './utils/strapiApp';
 
 import { richTextField } from './fields/richTextField';
 
 export default {
   register(app: StrapiApp) {
+    captureApp(app as unknown as Record<string, any>);
+
     app.registerPlugin({
       id: PLUGIN_ID,
       initializer: Initializer,
