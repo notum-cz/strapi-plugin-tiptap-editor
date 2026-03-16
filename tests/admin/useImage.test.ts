@@ -9,6 +9,12 @@ vi.mock('@tiptap/react', () => ({
 vi.mock('react-intl', () => ({
   useIntl: vi.fn(() => ({ formatMessage: (msg: { defaultMessage: string }) => msg.defaultMessage })),
 }));
+vi.mock('@strapi/design-system', () => ({
+  Popover: { Root: 'div', Anchor: 'div', Content: 'div' },
+  TextInput: 'input',
+  IconButton: 'button',
+}));
+vi.mock('@strapi/icons', () => ({ Trash: 'span', Image: 'span' }));
 
 describe('useImage hook (IMG-01, IMG-02)', () => {
   it('useImage is exported as a function', async () => {
