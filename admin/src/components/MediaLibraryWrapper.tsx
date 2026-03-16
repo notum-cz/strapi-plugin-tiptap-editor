@@ -18,7 +18,10 @@ export function MediaLibraryWrapper({ open, onClose, onSelectAssets }: MediaLibr
   if (!open) return null;
 
   const MediaLibraryDialogComp = getMediaLibraryComponent();
-  if (!MediaLibraryDialogComp) return null;
+  if (!MediaLibraryDialogComp) {
+    onClose();
+    return null;
+  }
 
   return (
     <MediaLibraryDialogComp
