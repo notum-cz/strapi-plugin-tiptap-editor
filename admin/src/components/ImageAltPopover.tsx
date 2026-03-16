@@ -3,8 +3,10 @@ import { NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
 import { Popover, TextInput, IconButton } from '@strapi/design-system';
 import { Trash } from '@strapi/icons';
+import { useIntl } from 'react-intl';
 
 export function ImageNodeView({ node, updateAttributes, deleteNode }: NodeViewProps) {
+  const { formatMessage } = useIntl();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [altText, setAltText] = useState<string>(node.attrs.alt ?? '');
 
@@ -40,16 +42,16 @@ export function ImageNodeView({ node, updateAttributes, deleteNode }: NodeViewPr
         <Popover.Content side="bottom">
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px' }}>
             <TextInput
-              placeholder="Alt text"
+              placeholder={formatMessage({ id: 'tiptap-editor.image.altText', defaultMessage: 'Alt text' })}
               value={altText}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAltText(e.target.value)}
               onBlur={handleCommit}
               onKeyDown={handleKeyDown}
-              aria-label="Image alt text"
+              aria-label={formatMessage({ id: 'tiptap-editor.image.altText', defaultMessage: 'Alt text' })}
             />
             <IconButton
               onClick={deleteNode}
-              label="Delete image"
+              label={formatMessage({ id: 'tiptap-editor.image.deleteImage', defaultMessage: 'Delete image' })}
             >
               <Trash />
             </IconButton>
