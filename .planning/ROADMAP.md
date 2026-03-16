@@ -32,7 +32,7 @@
 
 - [x] **Phase 7: Types, Config and Server** — Shared types foundation, theme server route, and config validation (completed 2026-03-16)
 - [x] **Phase 8: Extension Registration and Theme Hook** — Tiptap extension wiring, useThemeConfig hook, stylesheet injection (completed 2026-03-16)
-- [ ] **Phase 9: Color UI and Integration** — Color picker component, color hooks, RichTextInput wiring
+- [x] **Phase 9: Color UI and Integration** — Color picker component, color hooks, RichTextInput wiring (completed 2026-03-16)
 
 ## Phase Details
 
@@ -76,7 +76,7 @@ Plans:
   3. Content manager can select text, open the highlight picker, apply a background color from the theme swatches, and clear it with the remove option
   4. The active swatch in each picker is visually highlighted when the cursor is inside text that has that color applied
   5. A preset without `textColor` or `highlightColor` shows no color picker buttons in the toolbar; a preset with them enabled shows both pickers
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 
 Plans:
 - [x] 09-01-PLAN.md — ColorPickerPopover shared component
@@ -95,4 +95,4 @@ Plans:
 | 6. Alignment | v1.1 | 1/1 | Complete | 2026-03-16 |
 | 7. Types, Config and Server | 2/2 | Complete   | 2026-03-16 | - |
 | 8. Extension Registration and Theme Hook | 2/2 | Complete   | 2026-03-16 | - |
-| 9. Color UI and Integration | 2/3 | In Progress|  | - |
+| 9. Color UI and Integration | 3/3 | Complete   | 2026-03-16 | - |

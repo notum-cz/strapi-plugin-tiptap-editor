@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Text & Highlight Colors
 status: executing
-stopped_at: Completed 09-02-PLAN.md — useTextColor and useHighlightColor hooks
-last_updated: "2026-03-16T20:52:04.762Z"
+stopped_at: Completed 09-03-PLAN.md — RichTextInput color integration
+last_updated: "2026-03-16T20:57:30.094Z"
 last_activity: 2026-03-16 — completed Phase 09 Plan 01 (ColorPickerPopover)
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 7
-  completed_plans: 6
+  completed_plans: 7
   percent: 33
 ---
 
@@ -51,6 +51,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 08-extension-registration-and-theme-hook P01 | 2 | 2 tasks | 7 files |
 | Phase 08 P02 | 15min | 2 tasks | 4 files |
 | Phase 09 P02 | 5min | 2 tasks | 4 files |
+| Phase 09-color-ui-and-integration P03 | 3min | 2 tasks | 2 files |
 
 ### Decisions
 
@@ -73,6 +74,8 @@ Progress: [███░░░░░░░] 33%
 - [Phase 09-01]: Active swatch outline uses spread operator pattern to avoid undefined style keys
 - [Phase Phase 09-02]: Popover.Root controlled mode with Popover.Anchor used instead of Popover.Trigger to prevent button-in-button nesting
 - [Phase Phase 09-02]: setHighlight({ color }) for apply, unsetHighlight() for remove — avoids toggleHighlight multicolor exact-match issue
+- [Phase 09-03]: Color hooks called unconditionally in InnerEditor, FeatureGuard controls rendering — hooks do not conditionally return based on config
+- [Phase 09-03]: Toolbar position: textColor/highlightColor buttons after subscript group, before textAlign Spacer — single visual group
 
 ### Pending Todos
 
@@ -86,6 +89,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-16T20:52:04.760Z
-Stopped at: Completed 09-02-PLAN.md — useTextColor and useHighlightColor hooks
+Last session: 2026-03-16T20:57:30.092Z
+Stopped at: Completed 09-03-PLAN.md — RichTextInput color integration
 Resume file: None
