@@ -1,4 +1,24 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+
+// Image.tsx now imports React components; mock them so pure attribute tests still run in node env
+vi.mock('@strapi/design-system', () => ({
+  Tooltip: 'div',
+  Button: 'button',
+  Popover: { Root: 'div', Anchor: 'div', Content: 'div' },
+  TextInput: 'input',
+  IconButton: 'button',
+}));
+vi.mock('@strapi/icons', () => ({ Trash: 'span', Image: 'span' }));
+vi.mock('@tiptap/react', () => ({
+  ReactNodeViewRenderer: vi.fn(),
+  NodeViewWrapper: 'div',
+  useEditorState: vi.fn(() => ({ isInCodeBlock: false })),
+}));
+vi.mock('react-intl', () => ({
+  useIntl: vi.fn(() => ({ formatMessage: (msg: { defaultMessage: string }) => msg.defaultMessage })),
+}));
+vi.mock('@strapi/admin/strapi-admin', () => ({ useStrapiApp: vi.fn() }));
+
 import { StrapiImage } from '../../admin/src/extensions/Image';
 
 describe('StrapiImage extension', () => {

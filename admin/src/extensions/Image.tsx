@@ -1,4 +1,12 @@
+import React, { useState } from 'react';
 import Image from '@tiptap/extension-image';
+import { ReactNodeViewRenderer, useEditorState } from '@tiptap/react';
+import type { Editor } from '@tiptap/core';
+import { useIntl } from 'react-intl';
+import { Image as ImageIcon } from '@strapi/icons';
+import { ToolbarButton } from '../components/ToolbarButton';
+import { MediaLibraryWrapper, StrapiFile } from '../components/MediaLibraryWrapper';
+import { ImageNodeView } from '../components/ImageAltPopover';
 
 export const StrapiImage = Image.extend({
   addAttributes() {
@@ -29,4 +37,64 @@ export const StrapiImage = Image.extend({
       },
     };
   },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(ImageNodeView);
+  },
 });
+
+export function useImage(
+  editor: Editor | null,
+  props: { disabled?: boolean } = { disabled: false }
+) {
+  const [showPicker, setShowPicker] = useState(false);
+  const { formatMessage } = useIntl();
+
+  const editorState = useEditorState({
+    editor,
+    selector: (ctx) => ({
+      isInCodeBlock: ctx.editor?.isActive('codeBlock') ?? false,
+    }),
+  });
+
+  function handleSelectAssets(assets: StrapiFile[]) {
+    const asset = assets[0];
+    if (!asset || !editor) return;
+
+    // Alt text fallback chain (IMG-03)
+    const altText = asset.alternativeText ?? asset.name ?? '';
+
+    // Insert image and ensure a paragraph follows (research pitfall 2: cursor trapped at end of doc)
+    editor
+      .chain()
+      .focus()
+      .setImage({ src: asset.url ?? '', alt: altText, 'data-asset-id': asset.id } as any)
+      .createParagraphNear()
+      .run();
+
+    setShowPicker(false);
+  }
+
+  const imageButton = (
+    <ToolbarButton
+      onClick={() => setShowPicker(true)}
+      icon={<ImageIcon />}
+      active={false}
+      disabled={props.disabled || !editor || (editorState?.isInCodeBlock ?? false)}
+      tooltip={formatMessage({
+        id: 'tiptap-editor.toolbar.insertImage',
+        defaultMessage: 'Insert image',
+      })}
+    />
+  );
+
+  const imageDialog = (
+    <MediaLibraryWrapper
+      open={showPicker}
+      onClose={() => setShowPicker(false)}
+      onSelectAssets={handleSelectAssets}
+    />
+  );
+
+  return { imageButton, imageDialog };
+}
