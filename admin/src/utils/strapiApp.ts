@@ -1,3 +1,5 @@
+import type { ComponentType } from 'react';
+
 /**
  * Module-level reference to the StrapiApp instance, captured during register().
  * Used to access the component registry (e.g. media-library dialog) at render time
@@ -10,6 +12,6 @@ export function captureApp(app: Record<string, any>) {
   appRef = app;
 }
 
-export function getMediaLibraryComponent(): React.ComponentType<any> | null {
+export function getMediaLibraryComponent(): ComponentType<any> | null {
   return appRef?.library?.components?.['media-library'] ?? null;
 }

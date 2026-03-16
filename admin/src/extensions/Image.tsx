@@ -86,7 +86,11 @@ export function useImage(
 
   function handleSelectAssets(assets: StrapiFile[]) {
     const asset = assets[0];
-    if (!asset || !editor) return;
+    const src = asset?.url?.trim();
+    if (!asset || !editor || !src) {
+      setShowPicker(false);
+      return;
+    }
 
     // Alt text fallback chain (IMG-03)
     const altText = asset.alternativeText ?? asset.name ?? '';
@@ -95,7 +99,7 @@ export function useImage(
     editor
       .chain()
       .focus()
-      .setImage({ src: asset.url ?? '', alt: altText, 'data-asset-id': asset.id } as any)
+      .setImage({ src, alt: altText, 'data-asset-id': asset.id } as any)
       .createParagraphNear()
       .run();
 

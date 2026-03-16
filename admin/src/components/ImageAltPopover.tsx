@@ -41,7 +41,7 @@ export function ImageNodeView({ node, updateAttributes, deleteNode }: NodeViewPr
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
-      handleCommit();
+      e.preventDefault();
       e.currentTarget.blur();
     }
   }
