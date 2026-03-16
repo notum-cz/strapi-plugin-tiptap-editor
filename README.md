@@ -73,6 +73,8 @@
     - [Features](#features)
     - [Screenshots](#screenshots)
     - [Supported Versions](#supported-versions)
+    - [Branch / PR Summary](#branch--pr-summary)
+      - [Potential Breaking Changes](#potential-breaking-changes)
   - [Getting Started](#getting-started)
     - [Installation](#installation)
       - [1. Install the plugin via npm or yarn](#1-install-the-plugin-via-npm-or-yarn)
@@ -135,6 +137,20 @@ This plugin is compatible with Strapi `v5.x.x` and has been tested on Strapi `v5
 | Plugin version | Strapi Version | Full Support |
 | -------------- | -------------- | ------------ |
 | 1.0.0          | 5.34.0         | ✅           |
+
+### Branch / PR Summary
+
+- Added preset-driven editor configuration (server config validation + admin preset picker).
+- Added admin preset endpoints (`/presets`, `/presets/:name`) and shared preset typings/utilities.
+- Added FeatureGuard + EditorErrorBoundary and rebuilt extension wiring from preset config.
+- Expanded extension support/options (heading levels H1-H6, link/table/textAlign options, underline/superscript/subscript).
+- Added comprehensive Vitest coverage for admin/server/shared preset behavior.
+
+#### Potential Breaking Changes
+
+- Editor toolset is now preset-controlled; fields without an assigned preset fall back to a minimal toolbar (bold + italic).
+- Plugin config validation is stricter and now rejects unknown preset keys at startup.
+- Dependency set changed significantly (Strapi/Tiptap/React ecosystem updates), which may require host project alignment.
 
 <!-- Getting Started -->
 
