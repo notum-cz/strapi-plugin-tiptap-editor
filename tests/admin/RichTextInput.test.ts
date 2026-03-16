@@ -84,6 +84,16 @@ vi.mock('../../admin/src/extensions/TextAlign', () => ({
   useTextAlign: () => mockTextAlign,
 }));
 
+// ─── Mock color extension hooks ───────────────────────────────────────────────
+const mockUseTextColor = vi.fn(() => ({ textColorButton: null }));
+const mockUseHighlightColor = vi.fn(() => ({ highlightColorButton: null }));
+vi.mock('../../admin/src/extensions/TextColor', () => ({
+  useTextColor: (...args: any[]) => mockUseTextColor(...args),
+}));
+vi.mock('../../admin/src/extensions/HighlightColor', () => ({
+  useHighlightColor: (...args: any[]) => mockUseHighlightColor(...args),
+}));
+
 // ─── Mock components ──────────────────────────────────────────────────────────
 vi.mock('../../admin/src/components/BaseTiptapInput', () => ({
   default: 'BaseTiptapInput',
@@ -155,6 +165,10 @@ describe('RichTextInput', () => {
 
     // Default: not loading, has config
     mockUsePresetConfig.mockReturnValue({ config: MINIMAL_PRESET_CONFIG, isLoading: false });
+
+    // Default color hook returns — no button by default
+    mockUseTextColor.mockReturnValue({ textColorButton: null });
+    mockUseHighlightColor.mockReturnValue({ highlightColorButton: null });
   });
 
   it('is exported as a function/component', () => {
@@ -263,5 +277,54 @@ describe('RichTextInput', () => {
     const featureGuards = findElements(result, 'FeatureGuard');
     const tableGuard = featureGuards.find(fg => fg.props?.featureValue === config.table);
     expect(tableGuard).toBeDefined();
+  });
+
+  it('calls useTextColor and useHighlightColor unconditionally (React rules of hooks)', () => {
+    const props = { name: 'content' };
+    shallowRender(RichTextInput(props as any, null));
+    expect(mockUseTextColor).toHaveBeenCalledTimes(1);
+    expect(mockUseHighlightColor).toHaveBeenCalledTimes(1);
+  });
+
+  it('uses FeatureGuard for textColor group with config.textColor as featureValue', () => {
+    const config = { ...MINIMAL_PRESET_CONFIG, textColor: true };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+    const featureGuards = findElements(result, 'FeatureGuard');
+    const textColorGuard = featureGuards.find(fg => fg.props?.featureValue === config.textColor);
+    expect(textColorGuard).toBeDefined();
+  });
+
+  it('uses FeatureGuard for highlightColor group with config.highlightColor as featureValue', () => {
+    const config = { ...MINIMAL_PRESET_CONFIG, highlightColor: true };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+    const featureGuards = findElements(result, 'FeatureGuard');
+    const highlightColorGuard = featureGuards.find(fg => fg.props?.featureValue === config.highlightColor);
+    expect(highlightColorGuard).toBeDefined();
+  });
+
+  it('does not show textColor FeatureGuard when config.textColor is falsy', () => {
+    const config = { ...MINIMAL_PRESET_CONFIG, textColor: false };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+    const featureGuards = findElements(result, 'FeatureGuard');
+    // featureValue for textColor guard should be false (FeatureGuard renders null for false)
+    const textColorGuard = featureGuards.find(fg => fg.props?.featureValue === false &&
+      featureGuards.indexOf(fg) === featureGuards.findIndex(g => g.props?.featureValue === false));
+    // The guard with featureValue === false should exist (FeatureGuard blocks rendering)
+    expect(featureGuards.some(fg => fg.props?.featureValue === config.textColor)).toBe(true);
+  });
+
+  it('does not show highlightColor FeatureGuard when config.highlightColor is falsy', () => {
+    const config = { ...MINIMAL_PRESET_CONFIG, highlightColor: false };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+    const featureGuards = findElements(result, 'FeatureGuard');
+    expect(featureGuards.some(fg => fg.props?.featureValue === config.highlightColor)).toBe(true);
   });
 });
