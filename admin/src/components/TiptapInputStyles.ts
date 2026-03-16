@@ -132,6 +132,19 @@ export const TiptapInputStyles = styled.div`
     margin: 0.75em 0;
   }
 
+  /* Image alignment — margin-based, no float */
+  [data-align="center"] img {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  [data-align="right"] img {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  /* data-align="left" and null: natural left flow, no rule needed */
+
   // Source: https://tiptap.dev/docs/editor/extensions/nodes/table
 
   .ProseMirror {
