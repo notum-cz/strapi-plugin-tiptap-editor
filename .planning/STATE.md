@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Text & Highlight Colors
 status: planning
-stopped_at: Completed 08-01-PLAN.md
-last_updated: "2026-03-16T20:17:09.673Z"
+stopped_at: Completed 08-02-PLAN.md
+last_updated: "2026-03-16T20:22:16.220Z"
 last_activity: 2026-03-16 — v1.2 roadmap created
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -49,6 +49,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 07-types-config-and-server P01 | 3 | 2 tasks | 6 files |
 | Phase 07-types-config-and-server P02 | 2min | 2 tasks | 9 files |
 | Phase 08-extension-registration-and-theme-hook P01 | 2 | 2 tasks | 7 files |
+| Phase 08 P02 | 15min | 2 tasks | 4 files |
 
 ### Decisions
 
@@ -64,6 +65,9 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase 07-02]: ThemeService interface inlined in controller to avoid cross-module dependency between controller and service
 - [Phase 08-01]: PasteStripper uses transformPastedHTML config property (not addProseMirrorPlugins) per Tiptap Extension.create API
 - [Phase 08-01]: useThemeConfig is thin wrapper over getThemeCache() — reactivity addable later without changing consumers
+- [Phase Phase 08-02]: Static import for themeCache in index.ts (not dynamic) enables correct vi.mock hoisting in tests
+- [Phase Phase 08-02]: vi.hoisted() used in bootstrap.test.ts to declare mock variables before vi.mock hoisting executes
+- [Phase Phase 08-02]: bootstrap() fails silently on fetch error with console.warn — does not block admin startup
 
 ### Pending Todos
 
@@ -77,6 +81,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-16T20:17:09.671Z
-Stopped at: Completed 08-01-PLAN.md
+Last session: 2026-03-16T20:22:07.871Z
+Stopped at: Completed 08-02-PLAN.md
 Resume file: None

@@ -31,7 +31,7 @@
 **Milestone Goal:** Add text color and highlight color features backed by a global theme configuration system that supports external CSS stylesheet injection for design-system integration.
 
 - [x] **Phase 7: Types, Config and Server** — Shared types foundation, theme server route, and config validation (completed 2026-03-16)
-- [ ] **Phase 8: Extension Registration and Theme Hook** — Tiptap extension wiring, useThemeConfig hook, stylesheet injection
+- [x] **Phase 8: Extension Registration and Theme Hook** — Tiptap extension wiring, useThemeConfig hook, stylesheet injection (completed 2026-03-16)
 - [ ] **Phase 9: Color UI and Integration** — Color picker component, color hooks, RichTextInput wiring
 
 ## Phase Details
@@ -60,7 +60,7 @@ Plans:
   2. Content with text color and highlight marks round-trips through Tiptap JSON without losing color attribute values (concrete hex values, not CSS variable tokens)
   3. The `<link>` tag for the configured stylesheet appears in the document `<head>` exactly once after editor mount, even if multiple editors are mounted or HMR fires
   4. Pasting content from an external source does not introduce unexpected `style` attributes on spans when TextStyle is active
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 - [ ] 08-01-PLAN.md — Utility modules: themeCache, PasteStripper extension, useThemeConfig hook, package install
@@ -89,5 +89,5 @@ Plans:
 | 5. Image Insertion | v1.1 | 2/2 | Complete | 2026-03-16 |
 | 6. Alignment | v1.1 | 1/1 | Complete | 2026-03-16 |
 | 7. Types, Config and Server | 2/2 | Complete   | 2026-03-16 | - |
-| 8. Extension Registration and Theme Hook | 1/2 | In Progress|  | - |
+| 8. Extension Registration and Theme Hook | 2/2 | Complete   | 2026-03-16 | - |
 | 9. Color UI and Integration | v1.2 | 0/? | Not started | - |
