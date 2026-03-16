@@ -16,22 +16,22 @@ Requirements for text color, highlight color, and theme configuration. Each maps
 
 ### Text Color
 
-- [ ] **TXTC-01**: Content manager can apply a text color from the theme palette to selected text
-- [ ] **TXTC-02**: Content manager can remove text color from selected text
-- [ ] **TXTC-03**: Text color picker shows the currently active color highlighted in the swatch grid
+- [x] **TXTC-01**: Content manager can apply a text color from the theme palette to selected text
+- [x] **TXTC-02**: Content manager can remove text color from selected text
+- [x] **TXTC-03**: Text color picker shows the currently active color highlighted in the swatch grid
 - [ ] **TXTC-04**: Text color feature gated by `textColor` preset key
 
 ### Highlight Color
 
-- [ ] **HILC-01**: Content manager can apply a highlight (background) color from the theme palette to selected text
-- [ ] **HILC-02**: Content manager can remove highlight color from selected text
-- [ ] **HILC-03**: Highlight color picker shows the currently active color highlighted in the swatch grid
+- [x] **HILC-01**: Content manager can apply a highlight (background) color from the theme palette to selected text
+- [x] **HILC-02**: Content manager can remove highlight color from selected text
+- [x] **HILC-03**: Highlight color picker shows the currently active color highlighted in the swatch grid
 - [ ] **HILC-04**: Highlight color feature gated by `highlightColor` preset key
 
 ### Shared Infrastructure
 
 - [x] **INFR-01**: Shared `ColorPickerPopover` component renders theme swatches with accessible labels
-- [ ] **INFR-02**: Color picker preserves editor selection when opening/closing (selectionRef pattern)
+- [x] **INFR-02**: Color picker preserves editor selection when opening/closing (selectionRef pattern)
 - [x] **INFR-03**: Pasted content stripped of inherited inline styles when TextStyle is active
 - [x] **INFR-04**: Colors round-trip through Tiptap JSON as concrete values
 - [x] **INFR-05**: Stylesheet injection is idempotent (survives HMR without duplicate `<link>` tags)
@@ -64,16 +64,16 @@ Requirements for text color, highlight color, and theme configuration. Each maps
 | INFR-03 | Phase 8 | Complete |
 | INFR-04 | Phase 8 | Complete |
 | INFR-05 | Phase 8 | Complete |
-| TXTC-01 | Phase 9 | Pending |
-| TXTC-02 | Phase 9 | Pending |
-| TXTC-03 | Phase 9 | Pending |
+| TXTC-01 | Phase 9 | Complete |
+| TXTC-02 | Phase 9 | Complete |
+| TXTC-03 | Phase 9 | Complete |
 | TXTC-04 | Phase 9 | Pending |
-| HILC-01 | Phase 9 | Pending |
-| HILC-02 | Phase 9 | Pending |
-| HILC-03 | Phase 9 | Pending |
+| HILC-01 | Phase 9 | Complete |
+| HILC-02 | Phase 9 | Complete |
+| HILC-03 | Phase 9 | Complete |
 | HILC-04 | Phase 9 | Pending |
 | INFR-01 | Phase 9 | Complete |
-| INFR-02 | Phase 9 | Pending |
+| INFR-02 | Phase 9 | Complete |
 
 **Coverage:**
 - v1.2 requirements: 17 total

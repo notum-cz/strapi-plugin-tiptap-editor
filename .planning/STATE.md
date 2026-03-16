@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Text & Highlight Colors
-status: in-progress
-stopped_at: "Completed 09-01-PLAN.md"
-last_updated: "2026-03-16T20:53:00Z"
+status: executing
+stopped_at: Completed 09-02-PLAN.md — useTextColor and useHighlightColor hooks
+last_updated: "2026-03-16T20:52:04.762Z"
 last_activity: 2026-03-16 — completed Phase 09 Plan 01 (ColorPickerPopover)
 progress:
   total_phases: 3
   completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 7
+  completed_plans: 6
   percent: 33
 ---
 
@@ -50,6 +50,7 @@ Progress: [███░░░░░░░] 33%
 | Phase 07-types-config-and-server P02 | 2min | 2 tasks | 9 files |
 | Phase 08-extension-registration-and-theme-hook P01 | 2 | 2 tasks | 7 files |
 | Phase 08 P02 | 15min | 2 tasks | 4 files |
+| Phase 09 P02 | 5min | 2 tasks | 4 files |
 
 ### Decisions
 
@@ -70,6 +71,8 @@ Progress: [███░░░░░░░] 33%
 - [Phase Phase 08-02]: bootstrap() fails silently on fetch error with console.warn — does not block admin startup
 - [Phase 09-01]: ColorPickerPopover is pure presentational — no Tiptap knowledge, receives colors array/activeColor/onSelect/onRemove
 - [Phase 09-01]: Active swatch outline uses spread operator pattern to avoid undefined style keys
+- [Phase Phase 09-02]: Popover.Root controlled mode with Popover.Anchor used instead of Popover.Trigger to prevent button-in-button nesting
+- [Phase Phase 09-02]: setHighlight({ color }) for apply, unsetHighlight() for remove — avoids toggleHighlight multicolor exact-match issue
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-16T20:53:00Z
-Stopped at: Completed 09-01-PLAN.md
-Resume file: .planning/phases/09-color-ui-and-integration/09-01-SUMMARY.md
+Last session: 2026-03-16T20:52:04.760Z
+Stopped at: Completed 09-02-PLAN.md — useTextColor and useHighlightColor hooks
+Resume file: None
