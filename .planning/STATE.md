@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Media Library Images
 status: executing
-stopped_at: "Checkpoint: 05-02 Task 2 human-verify"
-last_updated: "2026-03-16T15:44:27.323Z"
+stopped_at: Completed 05-02-PLAN.md
+last_updated: "2026-03-16T16:08:15.207Z"
 last_activity: "2026-03-16 — Phase 4 Plan 01 complete: mediaLibrary key added to types and fixtures"
 progress:
   total_phases: 3
@@ -49,6 +49,7 @@ Progress: [█████░░░░░] 50%
 | Phase 04-image-schema-foundation P01 | 5 | 2 tasks | 4 files |
 | Phase 04-image-schema-foundation P02 | 3min | 2 tasks | 6 files |
 | Phase 05-image-insertion P01 | 5 | 3 tasks | 5 files |
+| Phase 05-image-insertion P02 | 30min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,7 @@ Progress: [█████░░░░░] 50%
 - [Phase 05-image-insertion]: setImage custom attrs typed as any — SetImageOptions does not include extension attrs; runtime schema validates correctly
 - [Phase 05-image-insertion]: createParagraphNear chained after setImage to prevent cursor trap at end of doc
 - [Phase Phase 05-image-insertion]: Image FeatureGuard uses config?.mediaLibrary, positioned after link and before table in toolbar
+- [Phase 05-image-insertion]: StrapiApp instance captured at register() via module-level ref — use-context-selector isolates contexts between plugin bundle and host, making useStrapiApp() return undefined
 
 ### Pending Todos
 
@@ -78,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-16T15:44:23.932Z
-Stopped at: Checkpoint: 05-02 Task 2 human-verify
+Last session: 2026-03-16T16:08:15.205Z
+Stopped at: Completed 05-02-PLAN.md
 Resume file: None

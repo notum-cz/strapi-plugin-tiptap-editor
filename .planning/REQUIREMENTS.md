@@ -9,11 +9,11 @@ Requirements for Media Library Images milestone. Each maps to roadmap phases.
 
 ### Image Insertion
 
-- [ ] **IMG-01**: User can click a toolbar button to open the Strapi Media Library picker
-- [ ] **IMG-02**: User can select an image from the Media Library and it is inserted into the editor
-- [ ] **IMG-03**: Inserted image alt text is prefilled from Media Library asset metadata
+- [x] **IMG-01**: User can click a toolbar button to open the Strapi Media Library picker
+- [x] **IMG-02**: User can select an image from the Media Library and it is inserted into the editor
+- [x] **IMG-03**: Inserted image alt text is prefilled from Media Library asset metadata
 - [x] **IMG-04**: Inserted image stores the Strapi asset ID in the Tiptap JSON output
-- [ ] **IMG-05**: Inserted image is visible in the editor canvas
+- [x] **IMG-05**: Inserted image is visible in the editor canvas
 
 ### Image Alignment
 
@@ -23,7 +23,7 @@ Requirements for Media Library Images milestone. Each maps to roadmap phases.
 
 ### Alt Text Editing
 
-- [ ] **ALT-01**: User can edit alt text on an already-inserted image without re-inserting
+- [x] **ALT-01**: User can edit alt text on an already-inserted image without re-inserting
 
 ### Preset Gating
 
@@ -57,15 +57,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| IMG-01 | Phase 5 | Pending |
-| IMG-02 | Phase 5 | Pending |
-| IMG-03 | Phase 5 | Pending |
+| IMG-01 | Phase 5 | Complete |
+| IMG-02 | Phase 5 | Complete |
+| IMG-03 | Phase 5 | Complete |
 | IMG-04 | Phase 4 | Complete |
-| IMG-05 | Phase 5 | Pending |
+| IMG-05 | Phase 5 | Complete |
 | ALIGN-01 | Phase 6 | Pending |
 | ALIGN-02 | Phase 6 | Pending |
 | ALIGN-03 | Phase 6 | Pending |
-| ALT-01 | Phase 5 | Pending |
+| ALT-01 | Phase 5 | Complete |
 | PRESET-01 | Phase 4 | Complete |
 | PRESET-02 | Phase 4 | Complete |
 
