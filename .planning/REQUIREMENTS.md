@@ -30,7 +30,7 @@ Requirements for text color, highlight color, and theme configuration. Each maps
 
 ### Shared Infrastructure
 
-- [ ] **INFR-01**: Shared `ColorPickerPopover` component renders theme swatches with accessible labels
+- [x] **INFR-01**: Shared `ColorPickerPopover` component renders theme swatches with accessible labels
 - [ ] **INFR-02**: Color picker preserves editor selection when opening/closing (selectionRef pattern)
 - [x] **INFR-03**: Pasted content stripped of inherited inline styles when TextStyle is active
 - [x] **INFR-04**: Colors round-trip through Tiptap JSON as concrete values
@@ -72,7 +72,7 @@ Requirements for text color, highlight color, and theme configuration. Each maps
 | HILC-02 | Phase 9 | Pending |
 | HILC-03 | Phase 9 | Pending |
 | HILC-04 | Phase 9 | Pending |
-| INFR-01 | Phase 9 | Pending |
+| INFR-01 | Phase 9 | Complete |
 | INFR-02 | Phase 9 | Pending |
 
 **Coverage:**

@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Text & Highlight Colors
-status: planning
-stopped_at: Completed 08-02-PLAN.md
-last_updated: "2026-03-16T20:22:16.220Z"
-last_activity: 2026-03-16 — v1.2 roadmap created
+status: in-progress
+stopped_at: "Completed 09-01-PLAN.md"
+last_updated: "2026-03-16T20:53:00Z"
+last_activity: 2026-03-16 — completed Phase 09 Plan 01 (ColorPickerPopover)
 progress:
   total_phases: 3
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
-  percent: 0
+  total_plans: 5
+  completed_plans: 5
+  percent: 33
 ---
 
 # Project State
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-03-16)
 
 ## Current Position
 
-Phase: 7 of 9 (Types, Config and Server)
-Plan: — (not yet planned)
-Status: Ready to plan
-Last activity: 2026-03-16 — v1.2 roadmap created
+Phase: 9 of 9 (Color UI and Integration)
+Plan: 1 of 4 (ColorPickerPopover component)
+Status: In progress
+Last activity: 2026-03-16 — completed Phase 09 Plan 01 (ColorPickerPopover)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [███░░░░░░░] 33%
 
 ## Performance Metrics
 
@@ -68,6 +68,8 @@ Progress: [░░░░░░░░░░] 0%
 - [Phase Phase 08-02]: Static import for themeCache in index.ts (not dynamic) enables correct vi.mock hoisting in tests
 - [Phase Phase 08-02]: vi.hoisted() used in bootstrap.test.ts to declare mock variables before vi.mock hoisting executes
 - [Phase Phase 08-02]: bootstrap() fails silently on fetch error with console.warn — does not block admin startup
+- [Phase 09-01]: ColorPickerPopover is pure presentational — no Tiptap knowledge, receives colors array/activeColor/onSelect/onRemove
+- [Phase 09-01]: Active swatch outline uses spread operator pattern to avoid undefined style keys
 
 ### Pending Todos
 
@@ -81,6 +83,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-16T20:22:07.871Z
-Stopped at: Completed 08-02-PLAN.md
-Resume file: None
+Last session: 2026-03-16T20:53:00Z
+Stopped at: Completed 09-01-PLAN.md
+Resume file: .planning/phases/09-color-ui-and-integration/09-01-SUMMARY.md

@@ -79,7 +79,7 @@ Plans:
 **Plans:** 3 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — ColorPickerPopover shared component
+- [x] 09-01-PLAN.md — ColorPickerPopover shared component
 - [ ] 09-02-PLAN.md — useTextColor and useHighlightColor hooks
 - [ ] 09-03-PLAN.md — RichTextInput wiring with FeatureGuard gating
 
@@ -95,4 +95,4 @@ Plans:
 | 6. Alignment | v1.1 | 1/1 | Complete | 2026-03-16 |
 | 7. Types, Config and Server | 2/2 | Complete   | 2026-03-16 | - |
 | 8. Extension Registration and Theme Hook | 2/2 | Complete   | 2026-03-16 | - |
-| 9. Color UI and Integration | v1.2 | 0/3 | Not started | - |
+| 9. Color UI and Integration | v1.2 | 1/3 | In progress | - |
