@@ -10,7 +10,7 @@ import { ImageNodeView } from '../components/ImageAltPopover';
 
 export function ImageNodeViewReadOnly({ node }: NodeViewProps) {
   return (
-    <NodeViewWrapper data-drag-handle>
+    <NodeViewWrapper data-drag-handle data-align={node.attrs['data-align'] ?? undefined}>
       <img
         src={node.attrs.src}
         alt={node.attrs.alt ?? ''}
