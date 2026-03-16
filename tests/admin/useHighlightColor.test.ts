@@ -130,23 +130,23 @@ describe('useHighlightColor', () => {
     expect(result).toEqual({ activeColor: undefined });
   });
 
-  // ─── Test 4: Null button when no colors ──────────────────────────────────
-  it('Test 4: returns { highlightColorButton: null } when useThemeConfig returns null', () => {
+  // ─── Test 4: Button renders even when no colors (picker will be empty) ───
+  it('Test 4: returns highlightColorButton (not null) when useThemeConfig returns null', () => {
     mockUseThemeConfig.mockReturnValue(null);
     const { editor } = makeEditor();
 
     const result = useHighlightColor(editor, {});
 
-    expect(result.highlightColorButton).toBeNull();
+    expect(result.highlightColorButton).not.toBeNull();
   });
 
-  it('returns { highlightColorButton: null } when colors array is empty', () => {
+  it('returns highlightColorButton (not null) when colors array is empty', () => {
     mockUseThemeConfig.mockReturnValue({ colors: [] });
     const { editor } = makeEditor();
 
     const result = useHighlightColor(editor, {});
 
-    expect(result.highlightColorButton).toBeNull();
+    expect(result.highlightColorButton).not.toBeNull();
   });
 
   // ─── Test 1: handleSelect calls setHighlight({ color }) ──────────────────

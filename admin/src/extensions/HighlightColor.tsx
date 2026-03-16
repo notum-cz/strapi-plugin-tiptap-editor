@@ -39,10 +39,6 @@ export function useHighlightColor(editor: Editor | null, props: { disabled?: boo
   const selectionRef = useRef<{ from: number; to: number } | null>(null);
   const [showPicker, setShowPicker] = useState(false);
 
-  if (colors.length === 0) {
-    return { highlightColorButton: null };
-  }
-
   const openPicker = () => {
     if (!editor) return;
     const { from, to } = editor.state.selection;

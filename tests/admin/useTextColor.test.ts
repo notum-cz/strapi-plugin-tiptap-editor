@@ -133,23 +133,23 @@ describe('useTextColor', () => {
     expect(result).toEqual({ activeColor: undefined });
   });
 
-  // ─── Test 6: Null button when no colors ──────────────────────────────────
-  it('returns { textColorButton: null } when useThemeConfig returns null', () => {
+  // ─── Test 6: Button renders even when no colors (picker will be empty) ───
+  it('returns textColorButton (not null) when useThemeConfig returns null', () => {
     mockUseThemeConfig.mockReturnValue(null);
     const { editor } = makeEditor();
 
     const result = useTextColor(editor, {});
 
-    expect(result.textColorButton).toBeNull();
+    expect(result.textColorButton).not.toBeNull();
   });
 
-  it('returns { textColorButton: null } when colors array is empty', () => {
+  it('returns textColorButton (not null) when colors array is empty', () => {
     mockUseThemeConfig.mockReturnValue({ colors: [] });
     const { editor } = makeEditor();
 
     const result = useTextColor(editor, {});
 
-    expect(result.textColorButton).toBeNull();
+    expect(result.textColorButton).not.toBeNull();
   });
 
   // ─── Test 4: selectionRef updated on open ────────────────────────────────

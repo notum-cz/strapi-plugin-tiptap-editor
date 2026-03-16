@@ -36,10 +36,6 @@ export function useTextColor(editor: Editor | null, props: { disabled?: boolean 
   const selectionRef = useRef<{ from: number; to: number } | null>(null);
   const [showPicker, setShowPicker] = useState(false);
 
-  if (colors.length === 0) {
-    return { textColorButton: null };
-  }
-
   const openPicker = () => {
     if (!editor) return;
     const { from, to } = editor.state.selection;

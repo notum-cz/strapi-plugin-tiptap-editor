@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock themeCache module — use vi.hoisted to ensure variable is available before vi.mock hoisting
 const { mockSetThemeCache } = vi.hoisted(() => ({
@@ -19,6 +19,7 @@ vi.mock('@strapi/design-system', () => ({
 // Mock @strapi/strapi/admin
 vi.mock('@strapi/strapi/admin', () => ({
   useNotification: vi.fn(),
+  useFetchClient: vi.fn(() => ({ get: vi.fn() })),
 }));
 
 // Mock react
@@ -28,6 +29,7 @@ vi.mock('react', () => ({
   },
   useState: vi.fn(() => [null, vi.fn()]),
   useEffect: vi.fn(),
+  useRef: vi.fn((val: any) => ({ current: val })),
   forwardRef: vi.fn((fn: any) => fn),
 }));
 
@@ -37,13 +39,6 @@ import pluginExport from '../../admin/src/index';
 const bootstrap = (pluginExport as any).bootstrap;
 
 describe('bootstrap', () => {
-  let mockGetElementById: ReturnType<typeof vi.fn>;
-  let mockCreateElement: ReturnType<typeof vi.fn>;
-  let mockAppendChild: ReturnType<typeof vi.fn>;
-  let mockLink: { id: string; rel: string; href: string };
-  let mockFetch: ReturnType<typeof vi.fn>;
-  let mockConsoleWarn: ReturnType<typeof vi.fn>;
-
   const makeApp = () => {
     const mockCtbPlugin = {
       apis: {
@@ -60,129 +55,26 @@ describe('bootstrap', () => {
   };
 
   beforeEach(() => {
-    mockSetThemeCache.mockReset();
-    mockConsoleWarn = vi.fn();
-    vi.stubGlobal('console', { ...console, warn: mockConsoleWarn });
-
-    mockLink = { id: '', rel: '', href: '' };
-    mockCreateElement = vi.fn(() => mockLink);
-    mockAppendChild = vi.fn();
-    mockGetElementById = vi.fn(() => null);
-
-    vi.stubGlobal('document', {
-      getElementById: mockGetElementById,
-      createElement: mockCreateElement,
-      head: { appendChild: mockAppendChild },
-    });
-
-    mockFetch = vi.fn();
-    vi.stubGlobal('fetch', mockFetch);
+    vi.clearAllMocks();
   });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it('existing CTB plugin registration still works', async () => {
+  it('registers PresetSelect with CTB plugin', async () => {
     const app = makeApp();
-    mockFetch.mockResolvedValue({
-      ok: false,
-    });
 
     await bootstrap(app);
 
     expect(app.getPlugin).toHaveBeenCalledWith('content-type-builder');
-  });
-
-  it('populates themeCache when theme fetch succeeds', async () => {
-    const themeData = {
-      colors: [{ label: 'Brand Blue', value: '#0052cc' }],
-      stylesheet: '/uploads/theme.css',
-    };
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: vi.fn().mockResolvedValue(themeData),
-    });
-    mockGetElementById.mockReturnValue(null);
-
-    await bootstrap(makeApp());
-
-    expect(mockSetThemeCache).toHaveBeenCalledWith(themeData);
-  });
-
-  it('injects link tag when stylesheet is configured', async () => {
-    const themeData = { colors: [], stylesheet: '/uploads/theme.css' };
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: vi.fn().mockResolvedValue(themeData),
-    });
-    mockGetElementById.mockReturnValue(null);
-
-    await bootstrap(makeApp());
-
-    expect(mockCreateElement).toHaveBeenCalledWith('link');
-    expect(mockLink.id).toBe('tiptap-theme-stylesheet');
-    expect(mockLink.rel).toBe('stylesheet');
-    expect(mockLink.href).toBe('/uploads/theme.css');
-    expect(mockAppendChild).toHaveBeenCalledWith(mockLink);
-  });
-
-  it('does not duplicate link tag when element already exists', async () => {
-    const themeData = { colors: [], stylesheet: '/uploads/theme.css' };
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: vi.fn().mockResolvedValue(themeData),
-    });
-    // Simulate link tag already present
-    mockGetElementById.mockReturnValue({ id: 'tiptap-theme-stylesheet' });
-
-    await bootstrap(makeApp());
-
-    expect(mockAppendChild).not.toHaveBeenCalled();
-  });
-
-  it('does not inject link tag when no stylesheet in theme', async () => {
-    const themeData = { colors: [{ label: 'Red', value: '#ff0000' }] };
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: vi.fn().mockResolvedValue(themeData),
-    });
-    mockGetElementById.mockReturnValue(null);
-
-    await bootstrap(makeApp());
-
-    expect(mockCreateElement).not.toHaveBeenCalled();
-    expect(mockAppendChild).not.toHaveBeenCalled();
-  });
-
-  it('logs warning and does not throw when fetch fails', async () => {
-    mockFetch.mockRejectedValue(new Error('Network error'));
-
-    // Should not throw — bootstrap handles errors gracefully
-    await bootstrap(makeApp());
-
-    expect(mockConsoleWarn).toHaveBeenCalledWith(
-      '[TiptapEditor] Failed to fetch theme config:',
-      expect.any(Error)
+    const ctb = app.getPlugin('content-type-builder');
+    expect(ctb.apis.forms.components.add).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'preset-select' })
     );
   });
 
-  it('does not call setThemeCache when fetch response is not ok', async () => {
-    mockFetch.mockResolvedValue({ ok: false });
+  it('does not throw when CTB plugin is missing', async () => {
+    const app = {
+      getPlugin: vi.fn(() => undefined),
+    } as any;
 
-    await bootstrap(makeApp());
-
-    expect(mockSetThemeCache).not.toHaveBeenCalled();
-  });
-
-  it('does not call setThemeCache when theme response is empty object', async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: vi.fn().mockResolvedValue({}),
-    });
-
-    await bootstrap(makeApp());
-
-    expect(mockSetThemeCache).not.toHaveBeenCalled();
+    await expect(bootstrap(app)).resolves.toBeUndefined();
   });
 });
