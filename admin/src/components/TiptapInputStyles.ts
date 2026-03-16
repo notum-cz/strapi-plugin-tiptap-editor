@@ -113,6 +113,25 @@ export const TiptapInputStyles = styled.div`
     text-decoration: line-through;
   }
 
+  /* --- Images --- */
+
+  .ProseMirror img {
+    max-width: 100%;
+    display: block;
+    height: auto;
+  }
+
+  /* Selection ring for selected image node */
+  .ProseMirror .ProseMirror-selectednode img {
+    outline: 2px solid #4945ff;
+    outline-offset: 2px;
+  }
+
+  /* NodeView wrapper for images — ensure block display */
+  [data-type="image"] {
+    margin: 0.75em 0;
+  }
+
   // Source: https://tiptap.dev/docs/editor/extensions/nodes/table
 
   .ProseMirror {
