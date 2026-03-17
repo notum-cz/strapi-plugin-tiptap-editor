@@ -11,10 +11,10 @@ import { useThemeConfig } from '../hooks/useThemeConfig';
 function HighlightColorIcon({ underColor }: { underColor: string }) {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-      {/* Simplified highlighter pen body */}
-      <polygon points="3,10 6,2 10,2 13,10" fill="currentColor" opacity="0.7" />
-      <rect x="5" y="10" width="6" height="1.5" fill="currentColor" />
-      {/* Colored underbar showing active highlight color */}
+      <rect x="2" y="1" width="12" height="12" rx="2" fill={underColor} />
+      <text x="8" y="11" fontFamily="serif" fontSize="12" fontWeight="bold" fill="currentColor" textAnchor="middle">
+        A
+      </text>
       <rect x="2" y="13" width="12" height="2" fill={underColor} rx="1" />
     </svg>
   );

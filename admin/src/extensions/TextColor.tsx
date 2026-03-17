@@ -11,7 +11,9 @@ import { useThemeConfig } from '../hooks/useThemeConfig';
 function TextColorIcon({ underColor }: { underColor: string }) {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-      <text x="2" y="11" fontFamily="serif" fontSize="12" fontWeight="bold" fill="currentColor">A</text>
+      <text x="8" y="11" fontFamily="serif" fontSize="12" fontWeight="bold" fill="currentColor" textAnchor="middle">
+        A
+      </text>
       <rect x="2" y="13" width="12" height="2" fill={underColor} rx="1" />
     </svg>
   );
