@@ -36,7 +36,13 @@ function reconcileThemeStyles(theme: { stylesheet?: string; css?: string }): Pro
   }
 
   // External stylesheet via <link> tag
-  const resolved = new URL(stylesheet!, document.baseURI).href;
+  let resolved: string;
+  try {
+    resolved = new URL(stylesheet!, document.baseURI).href;
+  } catch {
+    console.warn('[TiptapEditor] Invalid stylesheet URL:', stylesheet);
+    return Promise.resolve();
+  }
   if (
     existing &&
     existing.tagName === 'LINK' &&
@@ -85,8 +91,13 @@ const Initializer = ({ setPlugin }: InitializerProps) => {
         console.warn('[TiptapEditor] Failed to fetch theme config:', error);
       }
 
-      await reconcileThemeStyles(themeStyles);
-      ref.current(PLUGIN_ID);
+      try {
+        await reconcileThemeStyles(themeStyles);
+      } catch (error) {
+        console.warn('[TiptapEditor] Failed to reconcile theme styles:', error);
+      } finally {
+        ref.current(PLUGIN_ID);
+      }
     };
 
     fetchTheme();
