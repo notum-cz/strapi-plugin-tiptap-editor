@@ -88,7 +88,7 @@
     - [Links](#links)
     - [Tables](#tables)
     - [Text Alignment](#text-alignment)
-    - [Text Color & Highlight Color](#text-color--highlight-color)
+    - [Text Color \& Highlight Color](#text-color--highlight-color)
     - [Images](#images)
   - [Theme](#theme)
     - [Colors](#colors)
@@ -490,10 +490,7 @@ export default () => ({
   'tiptap-editor': {
     config: {
       theme: {
-        css: readFileSync(
-          require.resolve('@repo/design-system/strapi-styles.css'),
-          'utf-8'
-        ),
+        css: readFileSync(require.resolve('@repo/design-system/strapi-styles.css'), 'utf-8'),
       },
     },
   },
