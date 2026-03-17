@@ -87,7 +87,7 @@ export function useHighlightColor(editor: Editor | null, props: { disabled?: boo
       <Popover.Root open={showPicker} onOpenChange={handleOpenChange}>
         <Popover.Anchor>
           <ToolbarButton
-            onClick={() => setShowPicker((v) => !v)}
+            onClick={() => (showPicker ? handleInteractOutside() : openPicker())}
             icon={<HighlightColorIcon underColor={underColor} />}
             active={showPicker}
             disabled={props.disabled || !editor}
