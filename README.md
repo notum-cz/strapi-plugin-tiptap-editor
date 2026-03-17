@@ -88,7 +88,11 @@
     - [Links](#links)
     - [Tables](#tables)
     - [Text Alignment](#text-alignment)
+    - [Text Color & Highlight Color](#text-color--highlight-color)
     - [Images](#images)
+  - [Theme](#theme)
+    - [Colors](#colors)
+    - [Custom Stylesheet](#custom-stylesheet)
   - [Configuration Reference](#configuration-reference)
     - [Feature Values](#feature-values)
     - [Full Preset Example](#full-preset-example)
@@ -393,6 +397,22 @@ Enables all four alignment buttons (left, center, right, justify).
 }
 ```
 
+### Text Color & Highlight Color
+
+| Key              | Description                       | Toolbar                |
+| ---------------- | --------------------------------- | ---------------------- |
+| `textColor`      | Change the color of selected text | Font color picker      |
+| `highlightColor` | Apply a background highlight      | Highlight color picker |
+
+Both features use a color picker popover that displays the colors defined in the [theme configuration](#colors). If no colors are configured, the buttons will not appear.
+
+```ts
+{
+  textColor: true,
+  highlightColor: true,
+}
+```
+
 ### Images
 
 | Key            | Description                      | Toolbar                                     |
@@ -414,6 +434,88 @@ The image stores both the URL (`src`) and the Strapi asset ID (`data-asset-id`) 
 {
   mediaLibrary: true,
 }
+```
+
+## Theme
+
+The `theme` key in the plugin config lets you define colors for the color pickers and inject custom CSS into the editor.
+
+### Colors
+
+Define a `colors` array to populate the text color and highlight color pickers. Each entry needs a `label` (shown as a tooltip) and a `color` value (hex, rgb, rgba, hsl, hsla, or CSS variable).
+
+```ts
+// config/plugins.ts
+
+export default () => ({
+  'tiptap-editor': {
+    config: {
+      theme: {
+        colors: [
+          { label: 'Black', color: '#000000' },
+          { label: 'Dark gray', color: '#4A4A4A' },
+          { label: 'Red', color: '#E53E3E' },
+          { label: 'Orange', color: '#DD6B20' },
+          { label: 'Blue', color: '#3182CE' },
+          { label: 'Green', color: '#38A169' },
+          { label: 'Brand primary', color: 'var(--color-primary)' },
+        ],
+      },
+      presets: {
+        blog: {
+          bold: true,
+          italic: true,
+          textColor: true,
+          highlightColor: true,
+        },
+      },
+    },
+  },
+});
+```
+
+### Custom Stylesheet
+
+You can inject custom CSS to style the editor content area. There are two options — use one or the other, not both.
+
+**Option 1: `css`** — Inline CSS content (recommended for monorepos and production deployments)
+
+Read the file at Strapi startup so the CSS is captured as a string. This works reliably across all environments (local dev, Docker, Azure Container Apps, etc.) because the file is resolved in your app's Node process at boot time.
+
+```ts
+// config/plugins.ts
+import { readFileSync } from 'fs';
+
+export default () => ({
+  'tiptap-editor': {
+    config: {
+      theme: {
+        css: readFileSync(
+          require.resolve('@repo/design-system/strapi-styles.css'),
+          'utf-8'
+        ),
+      },
+    },
+  },
+});
+```
+
+**Option 2: `stylesheet`** — A URL the browser can fetch directly
+
+Use this when the stylesheet is hosted at a known URL (CDN, public path, etc.).
+
+```ts
+// config/plugins.ts
+
+export default () => ({
+  'tiptap-editor': {
+    config: {
+      theme: {
+        stylesheet: 'https://cdn.example.com/editor-styles.css',
+      },
+    },
+  },
+});
 ```
 
 ## Configuration Reference
@@ -473,6 +575,10 @@ export default () => ({
 
           // Text alignment (left, center, right, justify)
           textAlign: true,
+
+          // Text and highlight colors (requires theme.colors)
+          textColor: true,
+          highlightColor: true,
 
           // Images from Strapi Media Library
           mediaLibrary: true,
