@@ -44,7 +44,6 @@ type ThemeStyleSource =
 export type TiptapThemeConfig = {
   colors?: ThemeColorEntry[];
 } & ThemeStyleSource;
-};
 
 // ─── Core types ──────────────────────────────────────────────────────────────
 
