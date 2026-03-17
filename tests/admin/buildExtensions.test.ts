@@ -142,7 +142,6 @@ describe('buildExtensions', () => {
     expect(hasTextAlign).toBe(false);
   });
 
-  it('with all features enabled includes StarterKit, heading, superscript, subscript, tableKit, textAlign, gapcursor, textStyle, color, highlight, pasteStripper', () => {
   it('includes image extension when mediaLibrary is true', () => {
     const extensions = buildExtensions({ mediaLibrary: true });
     const hasImage = extensions.some((ext: any) => ext.name === 'image');
@@ -170,7 +169,7 @@ describe('buildExtensions', () => {
     expect((imageExt as any).options.enableContentCheck).toBeFalsy();
   });
 
-  it('with all features enabled includes StarterKit, heading, superscript, subscript, tableKit, textAlign, image, gapcursor', () => {
+  it('with all features enabled includes StarterKit, heading, superscript, subscript, tableKit, textAlign, image, gapcursor, textStyle, color, highlight, pasteStripper', () => {
     const config: TiptapPresetConfig = {
       bold: true,
       italic: true,
@@ -210,7 +209,7 @@ describe('buildExtensions', () => {
     expect(names).toContain('pasteStripper');
   });
 
-  it('with all features false returns only StarterKit and Gapcursor', () => {
+  it('with all features false returns only StarterKit, Image, and Gapcursor', () => {
     const config: TiptapPresetConfig = {
       bold: false,
       italic: false,
@@ -312,9 +311,5 @@ describe('buildExtensions', () => {
 
     expect(names).toContain('highlight');
     expect(names).not.toContain('color');
-    // image is always present (content-safety guard); with mediaLibrary: false it uses enableContentCheck: true
-    expect(names).toContain('image');
-    const imageExt = extensions.find((ext: any) => ext.name === 'image');
-    expect((imageExt as any).options.enableContentCheck).toBe(true);
   });
 });

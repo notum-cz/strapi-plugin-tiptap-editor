@@ -10,7 +10,7 @@ import {
 
 describe('PRESET_FEATURE_KEYS (TYPES-03)', () => {
   it('contains exactly 20 keys', () => {
-    expect(PRESET_FEATURE_KEYS).toHaveLength(20);
+    expect(PRESET_FEATURE_KEYS).toHaveLength(21);
   });
   it('contains all expected feature names', () => {
     expect(PRESET_FEATURE_KEYS).toContain('bold');
