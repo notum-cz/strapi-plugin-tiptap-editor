@@ -20,8 +20,11 @@ function reconcileThemeStylesheet(href: string | undefined): Promise<void> {
     return Promise.resolve();
   }
 
+  // Resolve to absolute URL so comparison works with relative paths
+  const resolved = new URL(href, document.baseURI).href;
+
   // Existing link already matches and is loaded
-  if (existing && existing.href === href && existing.sheet) {
+  if (existing && existing.href === resolved && existing.sheet) {
     return Promise.resolve();
   }
 
