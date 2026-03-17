@@ -10,11 +10,7 @@ vi.mock('react', async () => {
       props: {
         ...props,
         children:
-          children.length === 1
-            ? children[0]
-            : children.length > 1
-              ? children
-              : props?.children,
+          children.length === 1 ? children[0] : children.length > 1 ? children : props?.children,
       },
     }),
   };
@@ -112,9 +108,7 @@ describe('ColorPickerPopover', () => {
       onRemove,
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
-    const activeButton = swatchButtons.find(
-      (b: any) => b.props['aria-label'] === 'Red'
-    );
+    const activeButton = swatchButtons.find((b: any) => b.props['aria-label'] === 'Red');
     expect(activeButton).toBeDefined();
     expect(activeButton.props.style.outline).toBe('2px solid #4945ff');
   });
@@ -127,9 +121,7 @@ describe('ColorPickerPopover', () => {
       onRemove,
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
-    const hasOutline = swatchButtons.some(
-      (b: any) => b.props.style?.outline !== undefined
-    );
+    const hasOutline = swatchButtons.some((b: any) => b.props.style?.outline !== undefined);
     expect(hasOutline).toBe(false);
   });
 
@@ -141,9 +133,7 @@ describe('ColorPickerPopover', () => {
       onRemove,
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
-    const blueButton = swatchButtons.find(
-      (b: any) => b.props['aria-label'] === 'Blue'
-    );
+    const blueButton = swatchButtons.find((b: any) => b.props['aria-label'] === 'Blue');
     expect(blueButton).toBeDefined();
     blueButton.props.onClick();
     expect(onSelect).toHaveBeenCalledWith('#0000ff');
@@ -170,12 +160,10 @@ describe('ColorPickerPopover', () => {
       onSelect,
       onRemove,
     });
-    // Find the grid div — it should have gridTemplateColumns set to repeat(6, 24px)
+    // Find the grid div — it should have gridTemplateColumns set to repeat(11, 24px)
     const grids = findAll(
       result,
-      (el) =>
-        el.type === 'div' &&
-        el.props?.style?.gridTemplateColumns === 'repeat(6, 24px)'
+      (el) => el.type === 'div' && el.props?.style?.gridTemplateColumns === 'repeat(11, 24px)'
     );
     expect(grids).toHaveLength(1);
   });
