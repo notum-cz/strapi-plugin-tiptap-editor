@@ -57,6 +57,7 @@ export interface TiptapPresetConfig {
   subscript?: boolean | Record<string, unknown>;
   textColor?: boolean;
   highlightColor?: boolean;
+  mediaLibrary?: boolean | Record<string, unknown>;
 }
 
 export interface TiptapPluginConfig {
@@ -87,6 +88,7 @@ export const PRESET_FEATURE_KEYS: Array<keyof TiptapPresetConfig> = [
   'subscript',
   'textColor',
   'highlightColor',
+  'mediaLibrary',
 ];
 
 // Fallback for unconfigured fields — deliberately minimal to prompt developers to configure

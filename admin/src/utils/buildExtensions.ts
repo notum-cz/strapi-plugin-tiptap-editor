@@ -10,6 +10,7 @@ import { TextStyle, Color } from '@tiptap/extension-text-style';
 import Highlight from '@tiptap/extension-highlight';
 import { BaseHeadingWithSEOTag } from '../extensions/Heading';
 import { PasteStripper } from '../extensions/PasteStripper';
+import { StrapiImage } from '../extensions/Image';
 import { TiptapPresetConfig, isFeatureEnabled, getFeatureOptions } from '../../../shared/types';
 
 // Helper: converts a preset feature value to StarterKit's expected format
@@ -91,7 +92,8 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
     );
   }
 
-  const needsTextStyle = isFeatureEnabled(config.textColor) || isFeatureEnabled(config.highlightColor);
+  const needsTextStyle =
+    isFeatureEnabled(config.textColor) || isFeatureEnabled(config.highlightColor);
   if (needsTextStyle) {
     extensions.push(TextStyle);
     extensions.push(PasteStripper);
@@ -101,6 +103,11 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
   }
   if (isFeatureEnabled(config.highlightColor)) {
     extensions.push(Highlight.configure({ multicolor: true }));
+  }
+  if (isFeatureEnabled(config.mediaLibrary)) {
+    extensions.push(StrapiImage);
+  } else {
+    extensions.push(StrapiImage.configure({ enableContentCheck: true }));
   }
 
   extensions.push(Gapcursor);

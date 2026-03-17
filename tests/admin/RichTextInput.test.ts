@@ -17,14 +17,20 @@ vi.mock('react', async () => {
     forwardRef: (fn: any) => fn,
     createElement: (type: any, props: any, ...children: any[]) => ({
       type,
-      props: { ...props, children: children.length === 1 ? children[0] : children.length > 1 ? children : props?.children },
+      props: {
+        ...props,
+        children:
+          children.length === 1 ? children[0] : children.length > 1 ? children : props?.children,
+      },
     }),
   };
 });
 
 // ─── Mock react-intl ──────────────────────────────────────────────────────────
 vi.mock('react-intl', () => ({
-  useIntl: () => ({ formatMessage: (descriptor: { defaultMessage?: string }) => descriptor.defaultMessage ?? '' }),
+  useIntl: () => ({
+    formatMessage: (descriptor: { defaultMessage?: string }) => descriptor.defaultMessage ?? '',
+  }),
 }));
 
 // ─── Mock usePresetConfig ─────────────────────────────────────────────────────
@@ -49,19 +55,31 @@ vi.mock('../../admin/src/utils/tiptapUtils', () => ({
 
 // ─── Mock extension hooks ─────────────────────────────────────────────────────
 const mockStarterKit = {
-  boldButton: null, italicButton: null, underlineButton: null, strikeButton: null,
-  bulletButton: null, orderedButton: null, codeButton: null, blockquoteButton: null,
+  boldButton: null,
+  italicButton: null,
+  underlineButton: null,
+  strikeButton: null,
+  bulletButton: null,
+  orderedButton: null,
+  codeButton: null,
+  blockquoteButton: null,
 };
 const mockHeading = { headingSelect: null, headingTagSelect: null };
 const mockLink = { linkButton: null, linkDialog: null };
 const mockScript = { superscriptButton: null, subscriptButton: null };
 const mockTable = {
-  tableButton: null, addColumnButton: null, removeColumnButton: null,
-  addRowButton: null, removeRowButton: null, tableDialog: null,
+  tableButton: null,
+  addColumnButton: null,
+  removeColumnButton: null,
+  addRowButton: null,
+  removeRowButton: null,
+  tableDialog: null,
 };
 const mockTextAlign = {
-  textAlignLeftButton: null, textAlignCenterButton: null,
-  textAlignRightButton: null, textAlignJustifyButton: null,
+  textAlignLeftButton: null,
+  textAlignCenterButton: null,
+  textAlignRightButton: null,
+  textAlignJustifyButton: null,
 };
 
 vi.mock('../../admin/src/extensions/StarterKit', () => ({
@@ -92,6 +110,12 @@ vi.mock('../../admin/src/extensions/TextColor', () => ({
 }));
 vi.mock('../../admin/src/extensions/HighlightColor', () => ({
   useHighlightColor: (...args: any[]) => mockUseHighlightColor(...args),
+}));
+
+const mockImage = { imageButton: null, imageDialog: null };
+vi.mock('../../admin/src/extensions/Image', () => ({
+  useImage: () => mockImage,
+  StrapiImage: { configure: vi.fn(() => ({})) },
 }));
 
 // ─── Mock components ──────────────────────────────────────────────────────────
@@ -231,7 +255,9 @@ describe('RichTextInput', () => {
     expect(capturedUseMemoDeps).not.toBeNull();
     expect(capturedUseMemoDeps).toContain('blog');
     // The deps array should NOT contain an object (the config)
-    const hasObjectDep = capturedUseMemoDeps!.some(dep => dep !== null && typeof dep === 'object');
+    const hasObjectDep = capturedUseMemoDeps!.some(
+      (dep) => dep !== null && typeof dep === 'object'
+    );
     expect(hasObjectDep).toBe(false);
   });
 
@@ -255,7 +281,7 @@ describe('RichTextInput', () => {
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
     const featureGuards = findElements(result, 'FeatureGuard');
-    const headingGuard = featureGuards.find(fg => fg.props?.featureValue === config.heading);
+    const headingGuard = featureGuards.find((fg) => fg.props?.featureValue === config.heading);
     expect(headingGuard).toBeDefined();
   });
 
@@ -265,7 +291,7 @@ describe('RichTextInput', () => {
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
     const featureGuards = findElements(result, 'FeatureGuard');
-    const textAlignGuard = featureGuards.find(fg => fg.props?.featureValue === config.textAlign);
+    const textAlignGuard = featureGuards.find((fg) => fg.props?.featureValue === config.textAlign);
     expect(textAlignGuard).toBeDefined();
   });
 
@@ -275,7 +301,7 @@ describe('RichTextInput', () => {
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
     const featureGuards = findElements(result, 'FeatureGuard');
-    const tableGuard = featureGuards.find(fg => fg.props?.featureValue === config.table);
+    const tableGuard = featureGuards.find((fg) => fg.props?.featureValue === config.table);
     expect(tableGuard).toBeDefined();
   });
 
@@ -292,7 +318,7 @@ describe('RichTextInput', () => {
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
     const featureGuards = findElements(result, 'FeatureGuard');
-    const textColorGuard = featureGuards.find(fg => fg.props?.featureValue === config.textColor);
+    const textColorGuard = featureGuards.find((fg) => fg.props?.featureValue === config.textColor);
     expect(textColorGuard).toBeDefined();
   });
 
@@ -302,7 +328,9 @@ describe('RichTextInput', () => {
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
     const featureGuards = findElements(result, 'FeatureGuard');
-    const highlightColorGuard = featureGuards.find(fg => fg.props?.featureValue === config.highlightColor);
+    const highlightColorGuard = featureGuards.find(
+      (fg) => fg.props?.featureValue === config.highlightColor
+    );
     expect(highlightColorGuard).toBeDefined();
   });
 
@@ -313,10 +341,14 @@ describe('RichTextInput', () => {
     const result = RichTextInput(props as any, null) as any;
     const featureGuards = findElements(result, 'FeatureGuard');
     // featureValue for textColor guard should be false (FeatureGuard renders null for false)
-    const textColorGuard = featureGuards.find(fg => fg.props?.featureValue === false &&
-      featureGuards.indexOf(fg) === featureGuards.findIndex(g => g.props?.featureValue === false));
+    const textColorGuard = featureGuards.find(
+      (fg) =>
+        fg.props?.featureValue === false &&
+        featureGuards.indexOf(fg) ===
+          featureGuards.findIndex((g) => g.props?.featureValue === false)
+    );
     // The guard with featureValue === false should exist (FeatureGuard blocks rendering)
-    expect(featureGuards.some(fg => fg.props?.featureValue === config.textColor)).toBe(true);
+    expect(featureGuards.some((fg) => fg.props?.featureValue === config.textColor)).toBe(true);
   });
 
   it('does not show highlightColor FeatureGuard when config.highlightColor is falsy', () => {
@@ -325,6 +357,6 @@ describe('RichTextInput', () => {
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
     const featureGuards = findElements(result, 'FeatureGuard');
-    expect(featureGuards.some(fg => fg.props?.featureValue === config.highlightColor)).toBe(true);
+    expect(featureGuards.some((fg) => fg.props?.featureValue === config.highlightColor)).toBe(true);
   });
 });

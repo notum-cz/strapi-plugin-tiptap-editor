@@ -42,6 +42,7 @@
   "dependencies": {
     "@strapi/design-system": "2.2.0",
     "@strapi/icons": "2.2.0",
+    "@tiptap/extension-image": "3.20.1",
     "@tiptap/extension-subscript": "3.20.1",
     "@tiptap/extension-superscript": "3.20.1",
     "@tiptap/extension-table": "3.20.1",

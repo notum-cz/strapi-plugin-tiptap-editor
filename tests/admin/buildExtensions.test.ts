@@ -143,6 +143,34 @@ describe('buildExtensions', () => {
   });
 
   it('with all features enabled includes StarterKit, heading, superscript, subscript, tableKit, textAlign, gapcursor, textStyle, color, highlight, pasteStripper', () => {
+  it('includes image extension when mediaLibrary is true', () => {
+    const extensions = buildExtensions({ mediaLibrary: true });
+    const hasImage = extensions.some((ext: any) => ext.name === 'image');
+    expect(hasImage).toBe(true);
+  });
+
+  it('includes image extension with enableContentCheck: true when mediaLibrary is false', () => {
+    const extensions = buildExtensions({ mediaLibrary: false });
+    const imageExt = extensions.find((ext: any) => ext.name === 'image');
+    expect(imageExt).toBeDefined();
+    expect((imageExt as any).options.enableContentCheck).toBe(true);
+  });
+
+  it('includes image extension with enableContentCheck: true when mediaLibrary is absent', () => {
+    const extensions = buildExtensions({});
+    const imageExt = extensions.find((ext: any) => ext.name === 'image');
+    expect(imageExt).toBeDefined();
+    expect((imageExt as any).options.enableContentCheck).toBe(true);
+  });
+
+  it('includes image extension without enableContentCheck when mediaLibrary is true', () => {
+    const extensions = buildExtensions({ mediaLibrary: true });
+    const imageExt = extensions.find((ext: any) => ext.name === 'image');
+    expect(imageExt).toBeDefined();
+    expect((imageExt as any).options.enableContentCheck).toBeFalsy();
+  });
+
+  it('with all features enabled includes StarterKit, heading, superscript, subscript, tableKit, textAlign, image, gapcursor', () => {
     const config: TiptapPresetConfig = {
       bold: true,
       italic: true,
@@ -163,6 +191,7 @@ describe('buildExtensions', () => {
       subscript: true,
       textColor: true,
       highlightColor: true,
+      mediaLibrary: true,
     };
     const extensions = buildExtensions(config);
     const names = extensions.map((ext: any) => ext.name);
@@ -173,6 +202,7 @@ describe('buildExtensions', () => {
     expect(names).toContain('subscript');
     expect(names).toContain('tableKit');
     expect(names).toContain('textAlign');
+    expect(names).toContain('image');
     expect(names).toContain('gapCursor');
     expect(names).toContain('textStyle');
     expect(names).toContain('color');
@@ -201,6 +231,7 @@ describe('buildExtensions', () => {
       subscript: false,
       textColor: false,
       highlightColor: false,
+      mediaLibrary: false,
     };
     const extensions = buildExtensions(config);
     const names = extensions.map((ext: any) => ext.name);
@@ -281,5 +312,9 @@ describe('buildExtensions', () => {
 
     expect(names).toContain('highlight');
     expect(names).not.toContain('color');
+    // image is always present (content-safety guard); with mediaLibrary: false it uses enableContentCheck: true
+    expect(names).toContain('image');
+    const imageExt = extensions.find((ext: any) => ext.name === 'image');
+    expect((imageExt as any).options.enableContentCheck).toBe(true);
   });
 });

@@ -21,7 +21,8 @@
       "superscript": true,
       "subscript": true,
       "textColor": true,
-      "highlightColor": true
+      "highlightColor": true,
+      "mediaLibrary": true
     }
   }
 }

@@ -47,6 +47,7 @@ describe('TiptapThemeConfig type (THEME-02)', () => {
     const theme: TiptapThemeConfig = {};
     expect(theme.colors).toBeUndefined();
     expect(theme.stylesheet).toBeUndefined();
+    expect(PRESET_FEATURE_KEYS).toContain('mediaLibrary');
   });
 });
 

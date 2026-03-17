@@ -499,6 +499,46 @@
       ]
     },
     {
+      "type": "image",
+      "attrs": {
+        "src": "https://example.com/test-image.jpg",
+        "alt": "Test image alt text",
+        "title": null,
+        "data-asset-id": 42,
+        "data-align": "center"
+      }
+    },
+    {
+      "type": "image",
+      "attrs": {
+        "src": "https://example.com/another-image.jpg",
+        "alt": null,
+        "title": null,
+        "data-asset-id": null,
+        "data-align": null
+      }
+    },
+    {
+      "type": "image",
+      "attrs": {
+        "src": "https://example.com/right-aligned-image.jpg",
+        "alt": "Right-aligned test image",
+        "title": null,
+        "data-asset-id": 99,
+        "data-align": "right"
+      }
+    },
+    {
+      "type": "image",
+      "attrs": {
+        "src": "https://example.com/left-aligned-image.jpg",
+        "alt": "Explicitly left-aligned test image",
+        "title": null,
+        "data-asset-id": 100,
+        "data-align": "left"
+      }
+    },
+    {
       "type": "heading",
       "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
       "content": [{ "type": "text", "text": "Combined Formatting" }]
