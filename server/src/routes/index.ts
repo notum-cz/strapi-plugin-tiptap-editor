@@ -16,4 +16,15 @@ export default {
       },
     ],
   },
+  'theme-routes': {
+    type: 'admin' as const,
+    routes: [
+      {
+        method: 'GET',
+        path: '/theme',
+        handler: 'theme.find',
+        config: { policies: [], middlewares: [] },
+      },
+    ],
+  },
 };

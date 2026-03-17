@@ -3373,6 +3373,11 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extension-code/-/extension-code-3.20.1.tgz#611b95bb1b583fdca53b39d3abd46165c7fe3721"
   integrity sha512-509DHINIA/Gg+eTG7TEkfsS8RUiPLH5xZNyLRT0A1oaoaJmECKfrV6aAm05IdfTyqDqz6LW5pbnX6DdUC4keug==
 
+"@tiptap/extension-color@3.20.1":
+  version "3.20.1"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-color/-/extension-color-3.20.1.tgz#b5a4100d987b96cfbcf5b4b6f048979d35e7f496"
+  integrity sha512-WpYGG+9zDQXFWdhZ/SPahcVR1aMMXubRSHEBaaLs0SEQ2dThEOYo5xXlVP0Cwat9OiQ+nqWnCFwBmc6mgIAiUA==
+
 "@tiptap/extension-document@^3.20.1":
   version "3.20.1"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-document/-/extension-document-3.20.1.tgz#b8cc670096ad755f3c0daa1f5297aa7536947ff0"
@@ -3402,6 +3407,11 @@
   version "3.20.1"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-heading/-/extension-heading-3.20.1.tgz#e626c7ad0b9906d8045372e726a9a277657f3eaa"
   integrity sha512-unudyfQP6FxnyWinxvPqe/51DG91J6AaJm666RnAubgYMCgym+33kBftx4j4A6qf+ddWYbD00thMNKOnVLjAEQ==
+
+"@tiptap/extension-highlight@3.20.1":
+  version "3.20.1"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-highlight/-/extension-highlight-3.20.1.tgz#ff2dd878d48e4acfa922b6a468fa1186054dbf7f"
+  integrity sha512-Ufv1eNsQBR7NNSxQIvHaI9Bm3/MS8GW9uCXR/20WJ2r0GhDA6vwnS5MHAhP5JUXK6KOsd0Rvz2cfvYB7f3okbQ==
 
 "@tiptap/extension-horizontal-rule@^3.20.1":
   version "3.20.1"
@@ -3474,6 +3484,11 @@
   version "3.20.1"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-text-align/-/extension-text-align-3.20.1.tgz#dabde9b8cbbff22b96adff204e9e1850fe5fa6ec"
   integrity sha512-9816EFiTO7BvACGomYNI0pZIu5EOBVHrgqO33+sFjseQCvq+5FD6OPNLdHSkPzAmRrE0LUBvFZ93sjO4N+kJPg==
+
+"@tiptap/extension-text-style@3.20.1":
+  version "3.20.1"
+  resolved "https://registry.yarnpkg.com/@tiptap/extension-text-style/-/extension-text-style-3.20.1.tgz#c3974d7e73c29115cf3df366450b314a69b95711"
+  integrity sha512-3LQU92zX6tzl47EBskkAKeJXd6EWwYmBDE7jbd7InJqnt9NMAcj4DtXtXpI+e6Un5+8yzNjVA+fI5+5cFS3dSg==
 
 "@tiptap/extension-text@^3.20.1":
   version "3.20.1"

@@ -22,7 +22,7 @@ export default {
     );
   },
 
-  bootstrap(app: StrapiApp) {
+  async bootstrap(app: StrapiApp) {
     const ctbPlugin = app.getPlugin('content-type-builder') as Record<string, any> | undefined;
     const components = ctbPlugin?.apis?.forms?.components;
     if (components && typeof components.add === 'function') {

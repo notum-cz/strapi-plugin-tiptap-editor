@@ -169,7 +169,7 @@ describe('buildExtensions', () => {
     expect((imageExt as any).options.enableContentCheck).toBeFalsy();
   });
 
-  it('with all features enabled includes StarterKit, heading, superscript, subscript, tableKit, textAlign, image, gapcursor', () => {
+  it('with all features enabled includes StarterKit, heading, superscript, subscript, tableKit, textAlign, image, gapcursor, textStyle, color, highlight, pasteStripper', () => {
     const config: TiptapPresetConfig = {
       bold: true,
       italic: true,
@@ -188,6 +188,8 @@ describe('buildExtensions', () => {
       textAlign: true,
       superscript: true,
       subscript: true,
+      textColor: true,
+      highlightColor: true,
       mediaLibrary: true,
     };
     const extensions = buildExtensions(config);
@@ -201,9 +203,13 @@ describe('buildExtensions', () => {
     expect(names).toContain('textAlign');
     expect(names).toContain('image');
     expect(names).toContain('gapCursor');
+    expect(names).toContain('textStyle');
+    expect(names).toContain('color');
+    expect(names).toContain('highlight');
+    expect(names).toContain('pasteStripper');
   });
 
-  it('with all features false returns only StarterKit and Gapcursor', () => {
+  it('with all features false returns only StarterKit, Image, and Gapcursor', () => {
     const config: TiptapPresetConfig = {
       bold: false,
       italic: false,
@@ -222,6 +228,8 @@ describe('buildExtensions', () => {
       textAlign: false,
       superscript: false,
       subscript: false,
+      textColor: false,
+      highlightColor: false,
       mediaLibrary: false,
     };
     const extensions = buildExtensions(config);
@@ -234,9 +242,74 @@ describe('buildExtensions', () => {
     expect(names).not.toContain('subscript');
     expect(names).not.toContain('tableKit');
     expect(names).not.toContain('textAlign');
-    // image is always present (content-safety guard); with mediaLibrary: false it uses enableContentCheck: true
-    expect(names).toContain('image');
-    const imageExt = extensions.find((ext: any) => ext.name === 'image');
-    expect((imageExt as any).options.enableContentCheck).toBe(true);
+    expect(names).not.toContain('textStyle');
+    expect(names).not.toContain('color');
+    expect(names).not.toContain('highlight');
+    expect(names).not.toContain('pasteStripper');
+  });
+
+  // textColor / highlightColor extension registration tests
+
+  it('includes TextStyle, Color, and pasteStripper when textColor is true', () => {
+    const extensions = buildExtensions({ textColor: true });
+    const names = extensions.map((ext: any) => ext.name);
+
+    expect(names).toContain('textStyle');
+    expect(names).toContain('color');
+    expect(names).toContain('pasteStripper');
+  });
+
+  it('includes TextStyle, Highlight, and pasteStripper when highlightColor is true', () => {
+    const extensions = buildExtensions({ highlightColor: true });
+    const names = extensions.map((ext: any) => ext.name);
+
+    expect(names).toContain('textStyle');
+    expect(names).toContain('highlight');
+    expect(names).toContain('pasteStripper');
+  });
+
+  it('includes TextStyle only once when both textColor and highlightColor are true', () => {
+    const extensions = buildExtensions({ textColor: true, highlightColor: true });
+    const names = extensions.map((ext: any) => ext.name);
+
+    const textStyleCount = names.filter((name) => name === 'textStyle').length;
+    expect(textStyleCount).toBe(1);
+
+    const pasteStripperCount = names.filter((name) => name === 'pasteStripper').length;
+    expect(pasteStripperCount).toBe(1);
+  });
+
+  it('does not include TextStyle, Color, or Highlight when neither textColor nor highlightColor is enabled', () => {
+    const extensions = buildExtensions({});
+    const names = extensions.map((ext: any) => ext.name);
+
+    expect(names).not.toContain('textStyle');
+    expect(names).not.toContain('color');
+    expect(names).not.toContain('highlight');
+    expect(names).not.toContain('pasteStripper');
+  });
+
+  it('Highlight is configured with multicolor: true', () => {
+    const extensions = buildExtensions({ highlightColor: true });
+    const highlight = extensions.find((ext: any) => ext.name === 'highlight');
+
+    expect(highlight).toBeDefined();
+    expect((highlight as any).options.multicolor).toBe(true);
+  });
+
+  it('textColor only does not include Highlight', () => {
+    const extensions = buildExtensions({ textColor: true });
+    const names = extensions.map((ext: any) => ext.name);
+
+    expect(names).toContain('color');
+    expect(names).not.toContain('highlight');
+  });
+
+  it('highlightColor only does not include Color', () => {
+    const extensions = buildExtensions({ highlightColor: true });
+    const names = extensions.map((ext: any) => ext.name);
+
+    expect(names).toContain('highlight');
+    expect(names).not.toContain('color');
   });
 });

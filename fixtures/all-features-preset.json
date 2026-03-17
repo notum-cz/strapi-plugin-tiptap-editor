@@ -20,6 +20,8 @@
       },
       "superscript": true,
       "subscript": true,
+      "textColor": true,
+      "highlightColor": true,
       "mediaLibrary": true
     }
   }

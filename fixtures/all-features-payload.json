@@ -479,7 +479,24 @@
     {
       "type": "heading",
       "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
-      "content": [{ "type": "text", "text": "Images" }]
+      "content": [{ "type": "text", "text": "Text & Highlight Colors" }]
+    },
+    {
+      "type": "paragraph",
+      "attrs": { "textAlign": "left" },
+      "content": [
+        {
+          "type": "text",
+          "marks": [{ "type": "textStyle", "attrs": { "color": "#0052cc" } }],
+          "text": "brand blue text"
+        },
+        { "type": "text", "text": " and " },
+        {
+          "type": "text",
+          "marks": [{ "type": "highlight", "attrs": { "color": "#ffff00" } }],
+          "text": "highlighted text"
+        }
+      ]
     },
     {
       "type": "image",

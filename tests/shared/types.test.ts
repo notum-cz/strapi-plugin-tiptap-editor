@@ -4,11 +4,13 @@ import {
   MINIMAL_PRESET_CONFIG,
   isFeatureEnabled,
   getFeatureOptions,
+  ThemeColorEntry,
+  TiptapThemeConfig,
 } from '../../shared/types';
 
 describe('PRESET_FEATURE_KEYS (TYPES-03)', () => {
-  it('contains exactly 19 keys', () => {
-    expect(PRESET_FEATURE_KEYS).toHaveLength(19);
+  it('contains exactly 21 keys', () => {
+    expect(PRESET_FEATURE_KEYS).toHaveLength(21);
   });
   it('contains all expected feature names', () => {
     expect(PRESET_FEATURE_KEYS).toContain('bold');
@@ -19,6 +21,32 @@ describe('PRESET_FEATURE_KEYS (TYPES-03)', () => {
     expect(PRESET_FEATURE_KEYS).toContain('textAlign');
     expect(PRESET_FEATURE_KEYS).toContain('superscript');
     expect(PRESET_FEATURE_KEYS).toContain('subscript');
+    expect(PRESET_FEATURE_KEYS).toContain('textColor');
+    expect(PRESET_FEATURE_KEYS).toContain('highlightColor');
+  });
+});
+
+describe('ThemeColorEntry type (THEME-01)', () => {
+  it('accepts a valid ThemeColorEntry object', () => {
+    const entry: ThemeColorEntry = { label: 'Brand Blue', color: '#0052cc' };
+    expect(entry.label).toBe('Brand Blue');
+    expect(entry.color).toBe('#0052cc');
+  });
+});
+
+describe('TiptapThemeConfig type (THEME-02)', () => {
+  it('accepts a theme with colors and stylesheet', () => {
+    const theme: TiptapThemeConfig = {
+      colors: [{ label: 'Brand', color: '#0052cc' }],
+      stylesheet: '/path/to/theme.css',
+    };
+    expect(theme.colors).toHaveLength(1);
+    expect(theme.stylesheet).toBe('/path/to/theme.css');
+  });
+  it('accepts an empty theme object', () => {
+    const theme: TiptapThemeConfig = {};
+    expect(theme.colors).toBeUndefined();
+    expect(theme.stylesheet).toBeUndefined();
     expect(PRESET_FEATURE_KEYS).toContain('mediaLibrary');
   });
 });
