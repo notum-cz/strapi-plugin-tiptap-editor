@@ -29,6 +29,7 @@ export function ColorPickerPopover({
         {colors.map((entry) => (
           <Tooltip key={entry.color} description={entry.label}>
             <button
+              type="button"
               aria-label={entry.label}
               onClick={() => onSelect(entry.color)}
               style={{
