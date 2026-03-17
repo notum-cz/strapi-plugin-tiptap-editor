@@ -9,36 +9,59 @@ type InitializerProps = {
   setPlugin: (id: string) => void;
 };
 
-const LINK_ID = 'tiptap-theme-stylesheet';
+const THEME_STYLE_ID = 'tiptap-theme-styles';
 
-function reconcileThemeStylesheet(href: string | undefined): Promise<void> {
-  const existing = document.getElementById(LINK_ID) as HTMLLinkElement | null;
+function reconcileThemeStyles(theme: { stylesheet?: string; css?: string }): Promise<void> {
+  const existing = document.getElementById(THEME_STYLE_ID);
 
-  // No stylesheet needed — remove stale link if present
-  if (!href) {
+  const { stylesheet, css } = theme;
+
+  // No styles needed — remove stale element if present
+  if (!stylesheet && !css) {
     existing?.remove();
     return Promise.resolve();
   }
 
-  // Resolve to absolute URL so comparison works with relative paths
-  const resolved = new URL(href, document.baseURI).href;
-
-  // Existing link already matches and is loaded
-  if (existing && existing.href === resolved && existing.sheet) {
+  // Inline CSS via <style> tag
+  if (css) {
+    if (existing && existing.tagName === 'STYLE' && existing.textContent === css) {
+      return Promise.resolve();
+    }
+    existing?.remove();
+    const style = document.createElement('style');
+    style.id = THEME_STYLE_ID;
+    style.textContent = css;
+    document.head.appendChild(style);
     return Promise.resolve();
   }
 
-  // Remove outdated link before inserting the new one
+  // External stylesheet via <link> tag
+  let resolved: string;
+  try {
+    resolved = new URL(stylesheet!, document.baseURI).href;
+  } catch {
+    console.warn('[TiptapEditor] Invalid stylesheet URL:', stylesheet);
+    return Promise.resolve();
+  }
+  if (
+    existing &&
+    existing.tagName === 'LINK' &&
+    (existing as HTMLLinkElement).href === resolved &&
+    (existing as HTMLLinkElement).sheet
+  ) {
+    return Promise.resolve();
+  }
+
   existing?.remove();
 
   return new Promise<void>((resolve) => {
     const link = document.createElement('link');
-    link.id = LINK_ID;
+    link.id = THEME_STYLE_ID;
     link.rel = 'stylesheet';
-    link.href = href;
+    link.href = stylesheet!;
     link.onload = () => resolve();
     link.onerror = () => {
-      console.warn('[TiptapEditor] Failed to load theme stylesheet:', href);
+      console.warn('[TiptapEditor] Failed to load theme stylesheet:', stylesheet);
       resolve();
     };
     document.head.appendChild(link);
@@ -51,23 +74,30 @@ const Initializer = ({ setPlugin }: InitializerProps) => {
 
   useEffect(() => {
     const fetchTheme = async () => {
-      let stylesheetHref: string | undefined;
+      let themeStyles: { stylesheet?: string; css?: string } = {};
 
       try {
         const { data } = await get('/tiptap-editor/theme');
         if (data && typeof data === 'object' && Object.keys(data).length > 0) {
           setThemeCache(data as TiptapThemeConfig);
 
-          if (typeof data.stylesheet === 'string' && data.stylesheet) {
-            stylesheetHref = data.stylesheet;
+          if (typeof data.css === 'string' && data.css) {
+            themeStyles = { css: data.css };
+          } else if (typeof data.stylesheet === 'string' && data.stylesheet) {
+            themeStyles = { stylesheet: data.stylesheet };
           }
         }
       } catch (error) {
         console.warn('[TiptapEditor] Failed to fetch theme config:', error);
       }
 
-      await reconcileThemeStylesheet(stylesheetHref);
-      ref.current(PLUGIN_ID);
+      try {
+        await reconcileThemeStyles(themeStyles);
+      } catch (error) {
+        console.warn('[TiptapEditor] Failed to reconcile theme styles:', error);
+      } finally {
+        ref.current(PLUGIN_ID);
+      }
     };
 
     fetchTheme();

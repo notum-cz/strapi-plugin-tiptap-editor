@@ -18,11 +18,22 @@ export function ColorPickerPopover({
   const { formatMessage } = useIntl();
 
   return (
-    <div style={{ padding: 8 }}>
+    <div style={{ padding: 8, maxHeight: 400, overflowY: 'auto' }}>
+      <Button
+        variant="tertiary"
+        size="S"
+        onClick={onRemove}
+        style={{ marginTop: 8, width: '100%' }}
+      >
+        {formatMessage({
+          id: 'tiptap-editor.color.remove',
+          defaultMessage: 'Remove color',
+        })}
+      </Button>
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(6, 24px)',
+          gridTemplateColumns: 'repeat(11, 24px)',
           gap: 4,
         }}
       >
@@ -48,17 +59,6 @@ export function ColorPickerPopover({
           </Tooltip>
         ))}
       </div>
-      <Button
-        variant="tertiary"
-        size="S"
-        onClick={onRemove}
-        style={{ marginTop: 8, width: '100%' }}
-      >
-        {formatMessage({
-          id: 'tiptap-editor.color.remove',
-          defaultMessage: 'Remove color',
-        })}
-      </Button>
     </div>
   );
 }

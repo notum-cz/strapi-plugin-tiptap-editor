@@ -12,7 +12,7 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> => {
 
 const FEATURE_KEYS = new Set(PRESET_FEATURE_KEYS);
 
-const THEME_KEYS = new Set<string>(['colors', 'stylesheet']);
+const THEME_KEYS = new Set<string>(['colors', 'css', 'stylesheet']);
 
 const COLOR_VALUE_RE =
   /^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgba?\([^)]+\)|hsla?\([^)]+\)|var\(--[^)]+\))$/;
@@ -79,10 +79,18 @@ const config = {
         }
       }
 
-      const { stylesheet, colors } = theme as { stylesheet?: unknown; colors?: unknown };
+      const { stylesheet, css, colors } = theme as { stylesheet?: unknown; css?: unknown; colors?: unknown };
 
       if (stylesheet !== undefined && typeof stylesheet !== 'string') {
         throw new Error('tiptap-editor config.theme.stylesheet must be a string');
+      }
+
+      if (css !== undefined && typeof css !== 'string') {
+        throw new Error('tiptap-editor config.theme.css must be a string');
+      }
+
+      if (stylesheet !== undefined && css !== undefined) {
+        throw new Error('tiptap-editor config.theme: provide either "stylesheet" or "css", not both');
       }
 
       if (colors !== undefined) {

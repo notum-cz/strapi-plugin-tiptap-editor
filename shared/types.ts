@@ -29,10 +29,21 @@ export type ThemeColorEntry = {
   color: string;
 };
 
+type ThemeStyleSource =
+  | {
+      /** A browser-fetchable URL for an external stylesheet */
+      stylesheet?: string;
+      css?: never;
+    }
+  | {
+      stylesheet?: never;
+      /** Inline CSS content to inject via a <style> tag */
+      css?: string;
+    };
+
 export type TiptapThemeConfig = {
   colors?: ThemeColorEntry[];
-  stylesheet?: string;
-};
+} & ThemeStyleSource;
 
 // ─── Core types ──────────────────────────────────────────────────────────────
 
