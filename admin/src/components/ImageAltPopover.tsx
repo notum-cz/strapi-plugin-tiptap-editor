@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
+import type { ImageOptions } from '@tiptap/extension-image';
 import { Popover, TextInput, IconButton } from '@strapi/design-system';
 import { Trash, Cross } from '@strapi/icons';
 import { useIntl } from 'react-intl';
@@ -9,23 +10,17 @@ import { TextAlignLeft } from '../icons/TextAlignLeft';
 import { TextAlignCenter } from '../icons/TextAlignCenter';
 import { TextAlignRight } from '../icons/TextAlignRight';
 
-interface ResizeOptions {
-  alwaysPreserveAspectRatio?: boolean;
-  minWidth?: number;
-  minHeight?: number;
-}
-
-interface ImageExtensionOptions {
-  resize?: ResizeOptions;
-}
-
 export function ImageNodeView({ node, updateAttributes, deleteNode, selected, extension }: NodeViewProps) {
   const { formatMessage } = useIntl();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [altText, setAltText] = useState<string>(node.attrs.alt ?? '');
   const imgRef = useRef<HTMLImageElement>(null);
   const isResizingRef = useRef(false);
-  const resizeOpts = (extension.options as unknown as ImageExtensionOptions).resize;
+  const resizeCleanupRef = useRef<(() => void) | null>(null);
+
+  const rawResize = (extension.options as ImageOptions).resize;
+  const resizeEnabled = rawResize !== false && rawResize?.enabled !== false;
+  const resizeOpts = resizeEnabled && typeof rawResize === 'object' ? rawResize : undefined;
   const preserveAspectRatio = resizeOpts?.alwaysPreserveAspectRatio ?? true;
   const minWidth = resizeOpts?.minWidth ?? 50;
   const minHeight = resizeOpts?.minHeight ?? 50;
@@ -56,6 +51,13 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
     document.addEventListener('scroll', handleScroll, true);
     return () => document.removeEventListener('scroll', handleScroll, true);
   }, [isPopoverOpen]);
+
+  // Remove resize document listeners if component unmounts mid-drag
+  useEffect(() => {
+    return () => {
+      resizeCleanupRef.current?.();
+    };
+  }, []);
 
   const currentAlign = node.attrs['data-align'] as 'left' | 'center' | 'right' | null;
 
@@ -144,9 +146,14 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
         }
       }
 
-      function onMouseUp() {
+      function cleanup() {
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
+        resizeCleanupRef.current = null;
+      }
+
+      function onMouseUp() {
+        cleanup();
         if (img) {
           updateAttributes({
             width: Math.round(img.offsetWidth),
@@ -161,11 +168,7 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
 
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
-
-      return () => {
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-      };
+      resizeCleanupRef.current = cleanup;
     },
     [updateAttributes, preserveAspectRatio, minWidth],
   );
@@ -193,7 +196,7 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
                 if (!isResizingRef.current) setIsPopoverOpen(true);
               }}
             />
-            <div className="image-resize-handle" onMouseDown={handleResizeStart} />
+            {resizeEnabled && <div className="image-resize-handle" onMouseDown={handleResizeStart} />}
           </div>
         </Popover.Anchor>
         <Popover.Content side="bottom">
@@ -223,37 +226,39 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
               marginLeft={0}
             />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '8px', paddingBottom: '0' }}>
-            <TextInput
-              type="number"
-              placeholder="W"
-              value={widthInput}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWidthInput(e.target.value)}
-              onBlur={handleWidthCommit}
-              onKeyDown={handleKeyDown}
-              aria-label={formatMessage({ id: 'tiptap-editor.image.width', defaultMessage: 'Width (px)' })}
-              style={{ minWidth: '62px', flexGrow: 1 }}
-            />
-            <span style={{ fontSize: '1.1rem', color: '#999' }}>&times;</span>
-            <TextInput
-              type="number"
-              placeholder="H"
-              value={heightInput}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHeightInput(e.target.value)}
-              onBlur={handleHeightCommit}
-              onKeyDown={handleKeyDown}
-              aria-label={formatMessage({ id: 'tiptap-editor.image.height', defaultMessage: 'Height (px)' })}
-              style={{ minWidth: '62px', flexGrow: 1 }}
-            />
-            {(currentWidth || currentHeight) && (
-              <IconButton
-                onClick={() => updateAttributes({ width: null, height: null })}
-                label={formatMessage({ id: 'tiptap-editor.image.resetSize', defaultMessage: 'Reset size' })}
-              >
-                <Cross />
-              </IconButton>
-            )}
-          </div>
+          {resizeEnabled && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '8px', paddingBottom: '0' }}>
+              <TextInput
+                type="number"
+                placeholder="W"
+                value={widthInput}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWidthInput(e.target.value)}
+                onBlur={handleWidthCommit}
+                onKeyDown={handleKeyDown}
+                aria-label={formatMessage({ id: 'tiptap-editor.image.width', defaultMessage: 'Width (px)' })}
+                style={{ minWidth: '62px', flexGrow: 1 }}
+              />
+              <span style={{ fontSize: '1.1rem', color: '#999' }}>&times;</span>
+              <TextInput
+                type="number"
+                placeholder="H"
+                value={heightInput}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHeightInput(e.target.value)}
+                onBlur={handleHeightCommit}
+                onKeyDown={handleKeyDown}
+                aria-label={formatMessage({ id: 'tiptap-editor.image.height', defaultMessage: 'Height (px)' })}
+                style={{ minWidth: '62px', flexGrow: 1 }}
+              />
+              {(currentWidth || currentHeight) && (
+                <IconButton
+                  onClick={() => updateAttributes({ width: null, height: null })}
+                  label={formatMessage({ id: 'tiptap-editor.image.resetSize', defaultMessage: 'Reset size' })}
+                >
+                  <Cross />
+                </IconButton>
+              )}
+            </div>
+          )}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px' }}>
             <TextInput
               placeholder={formatMessage({ id: 'tiptap-editor.image.altText', defaultMessage: 'Alt text' })}

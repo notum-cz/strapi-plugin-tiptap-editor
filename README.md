@@ -441,13 +441,28 @@ The image stores the URL (`src`), Strapi asset ID (`data-asset-id`), alignment (
 }
 ```
 
-The resize behaviour respects the standard `@tiptap/extension-image` `resize` options. You can configure them via `StrapiImage.configure()` in `buildExtensions` or through the preset system:
+**Resize** is configured through the `resize` key inside `mediaLibrary`. The options match the standard `@tiptap/extension-image` `resize` configuration. When `resize` is omitted or set to `false`, the resize handle and dimension controls are hidden.
 
-| Option                       | Default | Description                                   |
-| ---------------------------- | ------- | --------------------------------------------- |
-| `resize.alwaysPreserveAspectRatio` | `true`  | Lock aspect ratio when resizing or editing dimensions |
-| `resize.minWidth`            | `50`    | Minimum allowed width in pixels               |
-| `resize.minHeight`           | `50`    | Minimum allowed height in pixels              |
+```ts
+{
+  mediaLibrary: {
+    resize: {
+      enabled: true,
+      alwaysPreserveAspectRatio: true,
+      minWidth: 50,
+      minHeight: 50,
+    },
+  },
+}
+```
+
+| Option                              | Default | Description                                           |
+| ----------------------------------- | ------- | ----------------------------------------------------- |
+| `resize`                            | _none_  | Set to `false` or omit to disable resize entirely     |
+| `resize.enabled`                    | `true`  | Enable or disable resize when the object is present   |
+| `resize.alwaysPreserveAspectRatio`  | `true`  | Lock aspect ratio when resizing or editing dimensions |
+| `resize.minWidth`                   | `50`    | Minimum allowed width in pixels                       |
+| `resize.minHeight`                  | `50`    | Minimum allowed height in pixels                      |
 
 #### Rendering images on the frontend
 
@@ -634,8 +649,10 @@ export default () => ({
           textColor: true,
           highlightColor: true,
 
-          // Images from Strapi Media Library
-          mediaLibrary: true,
+          // Images from Strapi Media Library with resize enabled
+          mediaLibrary: {
+            resize: { enabled: true },
+          },
         },
       },
     },

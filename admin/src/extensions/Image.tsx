@@ -24,7 +24,7 @@ export function ImageNodeViewReadOnly({ node }: NodeViewProps) {
         src={node.attrs.src}
         alt={node.attrs.alt ?? ''}
         style={{
-          maxWidth: '100%',
+          maxWidth: width ? undefined : '100%',
           display: 'block',
           width: width ? `${width}px` : undefined,
           height: height ? `${height}px` : undefined,

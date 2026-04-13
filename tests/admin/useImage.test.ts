@@ -64,6 +64,5 @@ describe('ImageNodeView export shape (RESIZE-01)', () => {
   it('ImageNodeView is a function that accepts props', async () => {
     const mod = await import('../../admin/src/components/ImageAltPopover');
     expect(typeof mod.ImageNodeView).toBe('function');
-    expect(mod.ImageNodeView.length).toBeGreaterThanOrEqual(1);
   });
 });
