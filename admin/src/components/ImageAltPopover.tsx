@@ -19,7 +19,7 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
   const resizeCleanupRef = useRef<(() => void) | null>(null);
 
   const rawResize = (extension.options as ImageOptions).resize;
-  const resizeEnabled = rawResize !== false && rawResize?.enabled !== false;
+  const resizeEnabled = typeof rawResize === 'object' && !!rawResize ? rawResize.enabled : !!rawResize;
   const resizeOpts = resizeEnabled && typeof rawResize === 'object' ? rawResize : undefined;
   const preserveAspectRatio = resizeOpts?.alwaysPreserveAspectRatio ?? true;
   const minWidth = resizeOpts?.minWidth ?? 50;
