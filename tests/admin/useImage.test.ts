@@ -45,7 +45,7 @@ describe('alt text fallback chain (IMG-03)', () => {
 
   it('StrapiImage extension includes alt attribute from parent', async () => {
     const { StrapiImage } = await import('../../admin/src/extensions/Image');
-    const parentAttrs = { src: { default: null }, alt: { default: null }, title: { default: null } };
+    const parentAttrs = { src: { default: null }, alt: { default: null }, title: { default: null }, width: { default: null }, height: { default: null } };
     const mockThis = { parent: () => parentAttrs };
     const addAttributesFn = (StrapiImage as any).config.addAttributes as (this: typeof mockThis) => Record<string, unknown>;
     const attrs = addAttributesFn.call(mockThis);
@@ -57,5 +57,13 @@ describe('ImageNodeView export (ALT-01)', () => {
   it('ImageNodeView is exported from ImageAltPopover', async () => {
     const mod = await import('../../admin/src/components/ImageAltPopover');
     expect(typeof mod.ImageNodeView).toBe('function');
+  });
+});
+
+describe('ImageNodeView export shape (RESIZE-01)', () => {
+  it('ImageNodeView is a function that accepts props', async () => {
+    const mod = await import('../../admin/src/components/ImageAltPopover');
+    expect(typeof mod.ImageNodeView).toBe('function');
+    expect(mod.ImageNodeView.length).toBeGreaterThanOrEqual(1);
   });
 });

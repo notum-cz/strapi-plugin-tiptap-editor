@@ -132,18 +132,52 @@ export const TiptapInputStyles = styled.div`
     margin: 0.75em 0;
   }
 
-  /* Image alignment — margin-based, no float */
-  [data-align="center"] img {
-    margin-left: auto;
-    margin-right: auto;
+  /* Image alignment — text-align on the node wrapper centres the inline-block image container */
+  [data-align="center"] {
+    text-align: center;
   }
 
-  [data-align="right"] img {
-    margin-left: auto;
-    margin-right: 0;
+  [data-align="right"] {
+    text-align: right;
   }
 
   /* data-align="left" and null: natural left flow, no rule needed */
+
+  /* Inline-block wrapper for positioning the resize handle relative to the image */
+  .image-wrapper {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    line-height: 0; /* prevent extra space below img */
+  }
+
+  .image-wrapper img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Resize handle — bottom-right corner */
+  .image-resize-handle {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    width: 12px;
+    height: 12px;
+    background: #4945ff;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: nwse-resize;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 1;
+  }
+
+  .image-wrapper:hover .image-resize-handle,
+  .image-wrapper[data-selected] .image-resize-handle,
+  .ProseMirror-selectednode .image-resize-handle {
+    opacity: 1;
+  }
 
   // Source: https://tiptap.dev/docs/editor/extensions/nodes/table
 

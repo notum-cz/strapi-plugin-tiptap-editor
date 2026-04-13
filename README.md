@@ -90,6 +90,7 @@
     - [Text Alignment](#text-alignment)
     - [Text Color \& Highlight Color](#text-color--highlight-color)
     - [Images](#images)
+      - [Rendering images on the frontend](#rendering-images-on-the-frontend)
   - [Theme](#theme)
     - [Colors](#colors)
     - [Custom Stylesheet](#custom-stylesheet)
@@ -415,24 +416,80 @@ Both features use a color picker popover that displays the colors defined in the
 
 ### Images
 
-| Key            | Description                      | Toolbar                                     |
-| -------------- | -------------------------------- | ------------------------------------------- |
-| `mediaLibrary` | Images from Strapi Media Library | Image button + alt text popover + alignment |
+| Key            | Description                      | Toolbar                                                   |
+| -------------- | -------------------------------- | --------------------------------------------------------- |
+| `mediaLibrary` | Images from Strapi Media Library | Image button + alt text popover + alignment + resize handle |
 
 Enables image insertion from the Strapi Media Library. When enabled, the toolbar shows an image button that opens the Media Library picker. After selecting an image:
 
 - The image appears in the editor at its natural size (constrained to editor width)
 - Alt text is prefilled from the asset's `alternativeText` metadata
-- Clicking a selected image opens a popover to edit alt text or delete the image
-- Three alignment buttons (left, center, right) allow repositioning the image
+- Clicking a selected image opens a popover with:
+  - Three **alignment** buttons (left, center, right)
+  - **Width** and **Height** inputs (in pixels) for precise sizing
+  - A **reset** button to restore the original dimensions
+  - **Alt text** input and a **delete** button
+- A **resize handle** (blue dot) appears at the bottom-right corner on hover — drag it to resize the image
 
-The image stores both the URL (`src`) and the Strapi asset ID (`data-asset-id`) in the Tiptap JSON output.
+The image stores the URL (`src`), Strapi asset ID (`data-asset-id`), alignment (`data-align`), and dimensions (`width`, `height`) in the Tiptap JSON output.
 
 **Content safety:** If you remove `mediaLibrary` from a preset, existing images in content are preserved and rendered read-only — they are never silently deleted.
 
 ```ts
 {
   mediaLibrary: true,
+}
+```
+
+The resize behaviour respects the standard `@tiptap/extension-image` `resize` options. You can configure them via `StrapiImage.configure()` in `buildExtensions` or through the preset system:
+
+| Option                       | Default | Description                                   |
+| ---------------------------- | ------- | --------------------------------------------- |
+| `resize.alwaysPreserveAspectRatio` | `true`  | Lock aspect ratio when resizing or editing dimensions |
+| `resize.minWidth`            | `50`    | Minimum allowed width in pixels               |
+| `resize.minHeight`           | `50`    | Minimum allowed height in pixels              |
+
+#### Rendering images on the frontend
+
+The plugin stores content as **Tiptap/ProseMirror JSON**. The `width`, `height`, `src`, `alt`, and `title` attributes are standard and will render automatically with `@tiptap/extension-image`. However, the custom `data-align` and `data-asset-id` attributes require extending the Image extension on your frontend:
+
+```ts
+import { generateHTML } from '@tiptap/html';
+import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
+
+// Extend with the custom attributes used by this plugin
+const StrapiImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      'data-align': { default: null },
+      'data-asset-id': { default: null },
+    };
+  },
+});
+
+// Convert the JSON from the Strapi API to HTML
+const html = generateHTML(apiResponse.content, [
+  StarterKit,
+  StrapiImage,
+  // ...other extensions you use
+]);
+```
+
+Then add CSS for alignment on your frontend:
+
+```css
+img[data-align="center"] {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+img[data-align="right"] {
+  display: block;
+  margin-left: auto;
+  margin-right: 0;
 }
 ```
 

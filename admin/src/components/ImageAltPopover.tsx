@@ -1,23 +1,53 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
 import { Popover, TextInput, IconButton } from '@strapi/design-system';
-import { Trash } from '@strapi/icons';
+import { Trash, Cross } from '@strapi/icons';
 import { useIntl } from 'react-intl';
 import { ToolbarButton } from './ToolbarButton';
 import { TextAlignLeft } from '../icons/TextAlignLeft';
 import { TextAlignCenter } from '../icons/TextAlignCenter';
 import { TextAlignRight } from '../icons/TextAlignRight';
 
-export function ImageNodeView({ node, updateAttributes, deleteNode }: NodeViewProps) {
+interface ResizeOptions {
+  alwaysPreserveAspectRatio?: boolean;
+  minWidth?: number;
+  minHeight?: number;
+}
+
+interface ImageExtensionOptions {
+  resize?: ResizeOptions;
+}
+
+export function ImageNodeView({ node, updateAttributes, deleteNode, selected, extension }: NodeViewProps) {
   const { formatMessage } = useIntl();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [altText, setAltText] = useState<string>(node.attrs.alt ?? '');
+  const imgRef = useRef<HTMLImageElement>(null);
+  const isResizingRef = useRef(false);
+  const resizeOpts = (extension.options as unknown as ImageExtensionOptions).resize;
+  const preserveAspectRatio = resizeOpts?.alwaysPreserveAspectRatio ?? true;
+  const minWidth = resizeOpts?.minWidth ?? 50;
+  const minHeight = resizeOpts?.minHeight ?? 50;
+
+  const currentWidth = node.attrs.width;
+  const currentHeight = node.attrs.height;
+  const [widthInput, setWidthInput] = useState<string>(currentWidth ? String(currentWidth) : '');
+  const [heightInput, setHeightInput] = useState<string>(currentHeight ? String(currentHeight) : '');
 
   // Sync local alt text state when node attrs change externally (undo/redo safety)
   useEffect(() => {
     setAltText(node.attrs.alt ?? '');
   }, [node.attrs.alt]);
+
+  // Sync dimension inputs when node attrs change (undo/redo, resize handle)
+  useEffect(() => {
+    setWidthInput(node.attrs.width ? String(node.attrs.width) : '');
+  }, [node.attrs.width]);
+
+  useEffect(() => {
+    setHeightInput(node.attrs.height ? String(node.attrs.height) : '');
+  }, [node.attrs.height]);
 
   // Close popover when any ancestor scrolls so it doesn't float over other components
   useEffect(() => {
@@ -36,7 +66,6 @@ export function ImageNodeView({ node, updateAttributes, deleteNode }: NodeViewPr
 
   function handleCommit() {
     updateAttributes({ alt: altText });
-    // Do not close popover — user may want to continue editing
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -46,17 +75,126 @@ export function ImageNodeView({ node, updateAttributes, deleteNode }: NodeViewPr
     }
   }
 
+  function getAspectRatio(): number | null {
+    const img = imgRef.current;
+    if (!img || !img.naturalWidth || !img.naturalHeight) return null;
+    return img.naturalWidth / img.naturalHeight;
+  }
+
+  function handleWidthCommit() {
+    if (widthInput === '') {
+      updateAttributes({ width: null, height: null });
+      return;
+    }
+    const num = parseInt(widthInput, 10);
+    if (!isNaN(num) && num >= minWidth) {
+      const ratio = getAspectRatio();
+      if (preserveAspectRatio && ratio) {
+        const newHeight = Math.round(num / ratio);
+        updateAttributes({ width: num, height: newHeight });
+      } else {
+        updateAttributes({ width: num });
+      }
+    } else {
+      setWidthInput(node.attrs.width ? String(node.attrs.width) : '');
+    }
+  }
+
+  function handleHeightCommit() {
+    if (heightInput === '') {
+      updateAttributes({ height: null, width: null });
+      return;
+    }
+    const num = parseInt(heightInput, 10);
+    if (!isNaN(num) && num >= minHeight) {
+      const ratio = getAspectRatio();
+      if (preserveAspectRatio && ratio) {
+        const newWidth = Math.round(num * ratio);
+        updateAttributes({ width: newWidth, height: num });
+      } else {
+        updateAttributes({ height: num });
+      }
+    } else {
+      setHeightInput(node.attrs.height ? String(node.attrs.height) : '');
+    }
+  }
+
+  const handleResizeStart = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isResizingRef.current = true;
+
+      const startX = e.clientX;
+      const img = imgRef.current;
+      if (!img) return;
+      const startWidth = img.offsetWidth;
+      const ratio = img.naturalWidth && img.naturalHeight
+        ? img.naturalWidth / img.naturalHeight
+        : null;
+
+      function onMouseMove(moveEvent: MouseEvent) {
+        const diff = moveEvent.clientX - startX;
+        const newWidth = Math.max(minWidth, startWidth + diff);
+        if (img) {
+          img.style.width = `${newWidth}px`;
+          if (preserveAspectRatio && ratio) {
+            img.style.height = `${Math.round(newWidth / ratio)}px`;
+          }
+        }
+      }
+
+      function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        if (img) {
+          updateAttributes({
+            width: Math.round(img.offsetWidth),
+            height: Math.round(img.offsetHeight),
+          });
+        }
+        // Delay clearing so the click handler on img doesn't fire
+        requestAnimationFrame(() => {
+          isResizingRef.current = false;
+        });
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+
+      return () => {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+    },
+    [updateAttributes, preserveAspectRatio, minWidth],
+  );
+
   return (
     <NodeViewWrapper data-drag-handle data-align={node.attrs['data-align'] ?? undefined}>
       <Popover.Root open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <Popover.Anchor>
-          <img
-            src={node.attrs.src}
-            alt={node.attrs.alt ?? ''}
-            style={{ maxWidth: '100%', display: 'block' }}
-            draggable={false}
-            onClick={() => setIsPopoverOpen(true)}
-          />
+          <div
+            className="image-wrapper"
+            data-selected={selected || isPopoverOpen || undefined}
+          >
+            <img
+              ref={imgRef}
+              src={node.attrs.src}
+              alt={node.attrs.alt ?? ''}
+              style={{
+                display: 'block',
+                maxWidth: '100%',
+                width: currentWidth ? `${currentWidth}px` : undefined,
+                height: currentHeight ? `${currentHeight}px` : 'auto',
+              }}
+              draggable={false}
+              onClick={() => {
+                if (!isResizingRef.current) setIsPopoverOpen(true);
+              }}
+            />
+            <div className="image-resize-handle" onMouseDown={handleResizeStart} />
+          </div>
         </Popover.Anchor>
         <Popover.Content side="bottom">
           <div style={{ display: 'flex', gap: '4px', padding: '8px', paddingBottom: '0' }}>
@@ -84,6 +222,37 @@ export function ImageNodeView({ node, updateAttributes, deleteNode }: NodeViewPr
               tooltip={formatMessage({ id: 'tiptap-editor.image.alignRight', defaultMessage: 'Align right' })}
               marginLeft={0}
             />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '8px', paddingBottom: '0' }}>
+            <TextInput
+              type="number"
+              placeholder="W"
+              value={widthInput}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWidthInput(e.target.value)}
+              onBlur={handleWidthCommit}
+              onKeyDown={handleKeyDown}
+              aria-label={formatMessage({ id: 'tiptap-editor.image.width', defaultMessage: 'Width (px)' })}
+              style={{ minWidth: '62px', flexGrow: 1 }}
+            />
+            <span style={{ fontSize: '1.1rem', color: '#999' }}>&times;</span>
+            <TextInput
+              type="number"
+              placeholder="H"
+              value={heightInput}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHeightInput(e.target.value)}
+              onBlur={handleHeightCommit}
+              onKeyDown={handleKeyDown}
+              aria-label={formatMessage({ id: 'tiptap-editor.image.height', defaultMessage: 'Height (px)' })}
+              style={{ minWidth: '62px', flexGrow: 1 }}
+            />
+            {(currentWidth || currentHeight) && (
+              <IconButton
+                onClick={() => updateAttributes({ width: null, height: null })}
+                label={formatMessage({ id: 'tiptap-editor.image.resetSize', defaultMessage: 'Reset size' })}
+              >
+                <Cross />
+              </IconButton>
+            )}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px' }}>
             <TextInput

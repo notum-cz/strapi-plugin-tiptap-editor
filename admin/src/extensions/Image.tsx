@@ -13,12 +13,22 @@ import { MediaLibraryWrapper, StrapiFile } from '../components/MediaLibraryWrapp
 import { ImageNodeView } from '../components/ImageAltPopover';
 
 export function ImageNodeViewReadOnly({ node }: NodeViewProps) {
+  const rawWidth = node.attrs.width;
+  const rawHeight = node.attrs.height;
+  const width = typeof rawWidth === 'number' ? rawWidth : null;
+  const height = typeof rawHeight === 'number' ? rawHeight : null;
+
   return (
     <NodeViewWrapper data-drag-handle data-align={node.attrs['data-align'] ?? undefined}>
       <img
         src={node.attrs.src}
         alt={node.attrs.alt ?? ''}
-        style={{ maxWidth: '100%', display: 'block' }}
+        style={{
+          maxWidth: '100%',
+          display: 'block',
+          width: width ? `${width}px` : undefined,
+          height: height ? `${height}px` : undefined,
+        }}
         draggable={false}
       />
     </NodeViewWrapper>
