@@ -43,6 +43,8 @@ describe('StrapiImage extension', () => {
       src: { default: null },
       alt: { default: null },
       title: { default: null },
+      width: { default: null },
+      height: { default: null },
     };
 
     const mockThis = {
@@ -138,6 +140,50 @@ describe('StrapiImage extension', () => {
       it('returns {} for empty string', () => {
         expect(renderHTML({ 'data-align': '' })).toEqual({});
       });
+    });
+
+    // width and height are inherited from the parent Image extension (not custom-defined)
+    it('includes width attribute from parent with default null', () => {
+      expect(attrs).toHaveProperty('width');
+      expect((attrs.width as any).default).toBeNull();
+    });
+
+    it('includes height attribute from parent with default null', () => {
+      expect(attrs).toHaveProperty('height');
+      expect((attrs.height as any).default).toBeNull();
+    });
+  });
+
+  describe('resize option', () => {
+    it('resize defaults to false (from parent Image extension)', () => {
+      const configured = StrapiImage.configure({});
+      expect((configured as any).options.resize).toBe(false);
+    });
+
+    it('accepts resize config with alwaysPreserveAspectRatio', () => {
+      const configured = StrapiImage.configure({
+        resize: {
+          enabled: true,
+          alwaysPreserveAspectRatio: true,
+          minWidth: 100,
+          minHeight: 100,
+        },
+      });
+      const opts = (configured as any).options;
+      expect(opts.resize.enabled).toBe(true);
+      expect(opts.resize.alwaysPreserveAspectRatio).toBe(true);
+      expect(opts.resize.minWidth).toBe(100);
+      expect(opts.resize.minHeight).toBe(100);
+    });
+
+    it('accepts resize config with alwaysPreserveAspectRatio set to false', () => {
+      const configured = StrapiImage.configure({
+        resize: {
+          enabled: true,
+          alwaysPreserveAspectRatio: false,
+        },
+      });
+      expect((configured as any).options.resize.alwaysPreserveAspectRatio).toBe(false);
     });
   });
 });

@@ -105,7 +105,8 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
     extensions.push(Highlight.configure({ multicolor: true }));
   }
   if (isFeatureEnabled(config.mediaLibrary)) {
-    extensions.push(StrapiImage);
+    const mediaOpts = getFeatureOptions(config.mediaLibrary, {});
+    extensions.push(StrapiImage.configure(mediaOpts ?? {}));
   } else {
     extensions.push(StrapiImage.configure({ enableContentCheck: true }));
   }

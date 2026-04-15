@@ -14,7 +14,8 @@ vi.mock('@strapi/design-system', () => ({
   TextInput: 'input',
   IconButton: 'button',
 }));
-vi.mock('@strapi/icons', () => ({ Trash: 'span', Image: 'span' }));
+vi.mock('@strapi/icons', () => ({ Trash: 'span', Image: 'span', Cross: 'span' }));
+vi.mock('../../admin/src/components/ToolbarButton', () => ({ ToolbarButton: 'button' }));
 
 describe('useImage hook (IMG-01, IMG-02)', () => {
   it('useImage is exported as a function', async () => {
@@ -45,7 +46,7 @@ describe('alt text fallback chain (IMG-03)', () => {
 
   it('StrapiImage extension includes alt attribute from parent', async () => {
     const { StrapiImage } = await import('../../admin/src/extensions/Image');
-    const parentAttrs = { src: { default: null }, alt: { default: null }, title: { default: null } };
+    const parentAttrs = { src: { default: null }, alt: { default: null }, title: { default: null }, width: { default: null }, height: { default: null } };
     const mockThis = { parent: () => parentAttrs };
     const addAttributesFn = (StrapiImage as any).config.addAttributes as (this: typeof mockThis) => Record<string, unknown>;
     const attrs = addAttributesFn.call(mockThis);
