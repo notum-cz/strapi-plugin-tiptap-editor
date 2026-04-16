@@ -39,14 +39,13 @@ jobs:
       - name: Verify plugin
         run: yarn verify
 
-      # Ensure npm 11.5.1 or later for trusted publishing
-      - run: npm install -g npm@latest
-
-      - name: Debug npm config
-        run: |
-          npm --version
-          npm config list
-          npm whoami --registry https://registry.npmjs.org || true
+      # Switch to Node 24 for npm 11.5.1+ (required for trusted publishing)
+      - name: Set up Node.js for publishing
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
 
       - name: Publish to NPM
         run: npm publish --provenance --access public
+
