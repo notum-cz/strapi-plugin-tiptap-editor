@@ -38,5 +38,8 @@ jobs:
       - name: Verify plugin
         run: yarn verify
 
+      # Ensure npm 11.5.1 or later for trusted publishing
+      - run: npm install -g npm@latest
+
       - name: Publish to NPM
         run: npm publish --provenance --access public
