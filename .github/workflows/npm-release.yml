@@ -41,5 +41,11 @@ jobs:
       # Ensure npm 11.5.1 or later for trusted publishing
       - run: npm install -g npm@latest
 
+      - name: Debug npm config
+        run: |
+          npm --version
+          npm config list
+          npm whoami --registry https://registry.npmjs.org || true
+
       - name: Publish to NPM
         run: npm publish --provenance --access public
