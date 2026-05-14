@@ -57,7 +57,10 @@ export const TableSizeDialog: FC<TableSizeDialogProps> = ({
           <Dialog.Header>{formatMessage({ id: 'tiptap-editor.table.insertTable', defaultMessage: 'Insert table' })}</Dialog.Header>
           <Dialog.Body>
             <Flex gap={4} alignItems="flex-end">
-              <Field.Root width="100%">
+              <Field.Root
+                width="100%"
+                hint={formatMessage({ id: 'tiptap-editor.table.minMax', defaultMessage: 'Min {min}, max {max}' }, { min, max })}
+              >
                 <Field.Label>{formatMessage({ id: 'tiptap-editor.table.rows', defaultMessage: 'Rows' })}</Field.Label>
                 <TextInput
                   name="table-rows"
@@ -68,11 +71,12 @@ export const TableSizeDialog: FC<TableSizeDialogProps> = ({
                   }
                   placeholder={String(defaultRows)}
                 />
-                <Field.Hint>
-                  {formatMessage({ id: 'tiptap-editor.table.minMax', defaultMessage: 'Min {min}, max {max}' }, { min, max })}
-                </Field.Hint>
+                <Field.Hint />
               </Field.Root>
-              <Field.Root width="100%">
+              <Field.Root
+                width="100%"
+                hint={formatMessage({ id: 'tiptap-editor.table.minMax', defaultMessage: 'Min {min}, max {max}' }, { min, max })}
+              >
                 <Field.Label>{formatMessage({ id: 'tiptap-editor.table.columns', defaultMessage: 'Columns' })}</Field.Label>
                 <TextInput
                   name="table-cols"
@@ -83,9 +87,7 @@ export const TableSizeDialog: FC<TableSizeDialogProps> = ({
                   }
                   placeholder={String(defaultCols)}
                 />
-                <Field.Hint>
-                  {formatMessage({ id: 'tiptap-editor.table.minMax', defaultMessage: 'Min {min}, max {max}' }, { min, max })}
-                </Field.Hint>
+                <Field.Hint />
               </Field.Root>
             </Flex>
           </Dialog.Body>

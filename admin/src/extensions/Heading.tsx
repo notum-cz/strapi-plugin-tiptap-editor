@@ -69,7 +69,7 @@ export function useHeading(editor: Editor | null, props: { disabled?: boolean; l
         placeholder={formatMessage({ id: 'tiptap-editor.heading.style', defaultMessage: 'Style' })}
         aria-label={formatMessage({ id: 'tiptap-editor.heading.textStyle', defaultMessage: 'Text style' })}
         value={editorState?.headingLevel ? `h${editorState.headingLevel}` : 'p'}
-        onChange={(v: string | undefined) => v && onChangeHeading(v)}
+        onChange={(v: string | number) => v != null && onChangeHeading(String(v))}
         disabled={!editor || props.disabled}
         size="S"
       >
@@ -86,7 +86,7 @@ export function useHeading(editor: Editor | null, props: { disabled?: boolean; l
         placeholder={formatMessage({ id: 'tiptap-editor.heading.seoTag', defaultMessage: 'SEO Tag' })}
         aria-label={formatMessage({ id: 'tiptap-editor.heading.seoTagAriaLabel', defaultMessage: "Heading's HTML tag for SEO purposes" })}
         value={editorState?.headingTag}
-        onChange={(v: string | undefined) => v && onChangeHeadingTag(v)}
+        onChange={(v: string | number) => v != null && onChangeHeadingTag(String(v))}
         disabled={!editor || props.disabled || !editorState?.headingLevel}
         size="S"
       >

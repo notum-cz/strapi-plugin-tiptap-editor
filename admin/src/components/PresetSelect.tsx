@@ -28,8 +28,8 @@ export function PresetSelect({ value, onChange, name }: PresetSelectProps) {
     <SingleSelect
       name={name}
       value={value || ''}
-      onChange={(val: string) => {
-        onChange({ target: { name, value: val, type: 'select' } });
+      onChange={(val: string | number) => {
+        onChange({ target: { name, value: String(val), type: 'select' } });
       }}
       placeholder={presets.length === 0
         ? formatMessage({ id: 'tiptap-editor.preset.noPresetsAvailable', defaultMessage: 'No presets available' })

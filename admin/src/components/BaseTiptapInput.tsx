@@ -41,7 +41,7 @@ const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
           >
             {noPresetConfigured && (
               <Box paddingLeft={2} paddingRight={2} paddingTop={2}>
-                <Status variant="secondary" showBullet={false}>
+                <Status variant="secondary">
                   <Typography variant="pi">
                     {formatMessage({
                       id: 'tiptap-editor.noPreset.message',
