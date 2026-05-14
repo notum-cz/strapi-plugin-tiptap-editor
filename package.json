@@ -77,12 +77,12 @@
     "vitest": "4.1.0"
   },
   "peerDependencies": {
-    "@strapi/sdk-plugin": "^5.4.0",
-    "@strapi/strapi": "^5.35.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.3",
-    "styled-components": "^6.3.9"
+    "@strapi/sdk-plugin": "6.1.0",
+    "@strapi/strapi": "5.39.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.30.3",
+    "styled-components": "6.3.9"
   },
   "strapi": {
     "kind": "plugin",
