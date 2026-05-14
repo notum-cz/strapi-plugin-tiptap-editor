@@ -10,6 +10,7 @@ Update all `dependencies` and `devDependencies` in `package.json` to their lates
 ## Rules
 
 - Use **exact versions** (no `^` prefix) for `dependencies` and `devDependencies`.
+- **7-day cooldown**: only update to a target version whose npm publish timestamp is **at least 7 days old** at the moment of the update. This is a supply-chain mitigation — newly-published versions can be malicious and get unpublished/patched within days of discovery. If the latest version fails the cooldown, fall back to the newest version that does satisfy it. If no candidate exists above the current pinned version, skip the package.
 - **NEVER modify `peerDependencies`** — leave them exactly as-is.
 - Updated `devDependencies` that also appear in `peerDependencies` must satisfy the existing (unchanged) peer range.
 - Do NOT update `react` or `react-dom` beyond 18.x — Strapi v5 requires React 18.
@@ -57,7 +58,12 @@ Packages: `react-intl`, `typescript`, `vitest`, `prettier`
 
 For each group, follow this exact sequence:
 
-1. **Determine latest versions**: Run `yarn info <package> version` for each package to get the latest stable version. For packages currently on prerelease, get the latest prerelease in the same series.
+1. **Determine target versions** (with 7-day cooldown):
+   - Run `yarn info <package> time --json` to get the publish timestamp map for every version.
+   - Compute `cutoff = now - 7 days` (UTC).
+   - Pick the **highest** version whose `time[version]` is `<= cutoff` and that is otherwise eligible (stable, unless current is prerelease; respects React 18.x cap; satisfies unchanged peer ranges).
+   - If that version equals the current pinned version, mark the package as "skipped — no version older than 7 days available above current".
+   - Record the chosen version and its publish timestamp for the summary.
 2. **Update package.json**: Set each `dependency`/`devDependency` to the exact new version (no `^`). Do NOT touch `peerDependencies`.
 3. **Install**: Run `yarn install` to update `yarn.lock`.
 4. **Verify**: Run all verification commands in sequence:
@@ -77,13 +83,13 @@ After all groups are processed, output a markdown summary table:
 ```
 ## Dependency Update Summary
 
-| Package | Previous | Updated | Group | Status |
-|---------|----------|---------|-------|--------|
-| @tiptap/react | 3.19.0 | 3.21.2 | @tiptap | ✅ Updated |
-| ... | ... | ... | ... | ... |
+| Package | Previous | Updated | Published | Group | Status |
+|---------|----------|---------|-----------|-------|--------|
+| @tiptap/react | 3.19.0 | 3.21.2 | 2026-04-30 | @tiptap | ✅ Updated |
+| ... | ... | ... | ... | ... | ... |
 
 ### Skipped
-- `<package>`: <reason for skip>
+- `<package>`: <reason for skip — e.g. "latest 3.22.0 published 2026-05-10 (<7d), no older candidate above current">
 ```
 
 Include the commit hashes for each successful group commit.
@@ -93,4 +99,5 @@ Include the commit hashes for each successful group commit.
 - If `yarn outdated` shows no updates available, report that and stop.
 - Always run the full verification suite — do not skip any command.
 - When in doubt about compatibility, prefer the conservative choice (skip the update).
+- The 7-day cooldown is non-negotiable. Do not bypass it even if the user pressures for "latest". If they explicitly want a fresher version, they must invoke a separate command — this skill never publishes a <7-day-old version.
 - Package manager is **Yarn v1** — use `yarn` commands (not npm/pnpm).

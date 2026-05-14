@@ -42,10 +42,10 @@
   "dependencies": {
     "@strapi/design-system": "2.2.0",
     "@strapi/icons": "2.2.0",
-    "react-intl": "^8.1.3"
+    "react-intl": "8.1.3"
   },
   "devDependencies": {
-    "@strapi/sdk-plugin": "^5.4.0",
+    "@strapi/sdk-plugin": "6.1.0",
     "@strapi/strapi": "5.39.0",
     "@strapi/typescript-utils": "5.39.0",
     "@tiptap/core": "3.20.1",
@@ -67,14 +67,14 @@
     "@tiptap/react": "3.20.1",
     "@tiptap/starter-kit": "3.20.1",
     "@types/react": "19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "prettier": "^3.8.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.3",
+    "@types/react-dom": "19.2.3",
+    "prettier": "3.8.1",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "6.30.3",
     "styled-components": "6.3.11",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "typescript": "5.9.3",
+    "vitest": "4.1.0"
   },
   "peerDependencies": {
     "@strapi/sdk-plugin": "^5.4.0",
