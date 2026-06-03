@@ -20,6 +20,20 @@ vi.mock('react', async () => {
 vi.mock('@strapi/design-system', () => ({
   Tooltip: 'Tooltip',
   Button: 'Button',
+  Box: 'Box',
+  Divider: 'Divider',
+  Flex: 'Flex',
+  Typography: 'Typography',
+}));
+
+// ─── Mock styled-components ───────────────────────────────────────────────────
+vi.mock('styled-components', () => ({
+  useTheme: () => ({
+    colors: {
+      primary600: '#4945ff',
+      neutral200: '#dcdce4',
+    },
+  }),
 }));
 
 // ─── Mock react-intl ──────────────────────────────────────────────────────────
@@ -82,6 +96,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     // Find all native button elements (not Button component)
     const swatchButtons = findAll(result, (el) => el.type === 'button');
@@ -94,6 +109,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
     const ariaLabels = swatchButtons.map((b: any) => b.props['aria-label']);
@@ -106,6 +122,7 @@ describe('ColorPickerPopover', () => {
       activeColor: '#ff0000',
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
     const activeButton = swatchButtons.find((b: any) => b.props['aria-label'] === 'Red');
@@ -119,6 +136,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
     const hasOutline = swatchButtons.some((b: any) => b.props.style?.outline !== undefined);
@@ -131,6 +149,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
     const blueButton = swatchButtons.find((b: any) => b.props['aria-label'] === 'Blue');
@@ -145,6 +164,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     // Find the Button component (design system Button, not native button)
     const removeButton = findByType(result, 'Button');
@@ -159,6 +179,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     // Find the grid div — it should have gridTemplateColumns set to repeat(11, 24px)
     const grids = findAll(
