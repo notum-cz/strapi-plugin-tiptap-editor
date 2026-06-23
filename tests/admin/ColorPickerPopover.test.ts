@@ -188,4 +188,70 @@ describe('ColorPickerPopover', () => {
     );
     expect(grids).toHaveLength(1);
   });
+
+  it('does not render the custom color input by default', () => {
+    const result = ColorPickerPopover({
+      colors: SAMPLE_COLORS,
+      activeColor: undefined,
+      onSelect,
+      onRemove,
+      onColorInputChange: vi.fn(),
+    });
+    const colorInputs = findAll(
+      result,
+      (el) => el.type === 'input' && el.props?.type === 'color'
+    );
+    expect(colorInputs).toHaveLength(0);
+  });
+
+  it('renders the custom color input when showCustomColorPicker is true', () => {
+    const result = ColorPickerPopover({
+      colors: SAMPLE_COLORS,
+      activeColor: '#ff0000',
+      onSelect,
+      onRemove,
+      showCustomColorPicker: true,
+      onColorInputChange: vi.fn(),
+    });
+    const colorInputs = findAll(
+      result,
+      (el) => el.type === 'input' && el.props?.type === 'color'
+    );
+    expect(colorInputs).toHaveLength(1);
+    expect(colorInputs[0].props.value).toBe('#ff0000');
+  });
+
+  it('color input calls onColorInputChange with the new value', () => {
+    const onColorInputChange = vi.fn();
+    const result = ColorPickerPopover({
+      colors: SAMPLE_COLORS,
+      activeColor: '#ff0000',
+      onSelect,
+      onRemove,
+      showCustomColorPicker: true,
+      onColorInputChange,
+    });
+    const colorInput = findAll(
+      result,
+      (el) => el.type === 'input' && el.props?.type === 'color'
+    )[0];
+    colorInput.props.onChange({ target: { value: '#00ff00' } });
+    expect(onColorInputChange).toHaveBeenCalledWith('#00ff00');
+  });
+
+  it('displays the active color as uppercase hex in the custom section', () => {
+    const result = ColorPickerPopover({
+      colors: SAMPLE_COLORS,
+      activeColor: '#00ff00',
+      onSelect,
+      onRemove,
+      showCustomColorPicker: true,
+      onColorInputChange: vi.fn(),
+    });
+    const hexDisplays = findAll(
+      result,
+      (el) => el.type === 'Typography' && el.props?.children === '#00FF00'
+    );
+    expect(hexDisplays).toHaveLength(1);
+  });
 });
