@@ -20,6 +20,20 @@ vi.mock('react', async () => {
 vi.mock('@strapi/design-system', () => ({
   Tooltip: 'Tooltip',
   Button: 'Button',
+  Box: 'Box',
+  Divider: 'Divider',
+  Flex: 'Flex',
+  Typography: 'Typography',
+}));
+
+// ─── Mock styled-components ───────────────────────────────────────────────────
+vi.mock('styled-components', () => ({
+  useTheme: () => ({
+    colors: {
+      primary600: '#4945ff',
+      neutral200: '#dcdce4',
+    },
+  }),
 }));
 
 // ─── Mock react-intl ──────────────────────────────────────────────────────────
@@ -82,6 +96,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     // Find all native button elements (not Button component)
     const swatchButtons = findAll(result, (el) => el.type === 'button');
@@ -94,6 +109,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
     const ariaLabels = swatchButtons.map((b: any) => b.props['aria-label']);
@@ -106,6 +122,7 @@ describe('ColorPickerPopover', () => {
       activeColor: '#ff0000',
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
     const activeButton = swatchButtons.find((b: any) => b.props['aria-label'] === 'Red');
@@ -119,6 +136,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
     const hasOutline = swatchButtons.some((b: any) => b.props.style?.outline !== undefined);
@@ -131,6 +149,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     const swatchButtons = findAll(result, (el) => el.type === 'button');
     const blueButton = swatchButtons.find((b: any) => b.props['aria-label'] === 'Blue');
@@ -145,6 +164,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     // Find the Button component (design system Button, not native button)
     const removeButton = findByType(result, 'Button');
@@ -159,6 +179,7 @@ describe('ColorPickerPopover', () => {
       activeColor: undefined,
       onSelect,
       onRemove,
+      onColorInputChange: vi.fn(),
     });
     // Find the grid div — it should have gridTemplateColumns set to repeat(11, 24px)
     const grids = findAll(
@@ -166,5 +187,71 @@ describe('ColorPickerPopover', () => {
       (el) => el.type === 'div' && el.props?.style?.gridTemplateColumns === 'repeat(11, 24px)'
     );
     expect(grids).toHaveLength(1);
+  });
+
+  it('does not render the custom color input by default', () => {
+    const result = ColorPickerPopover({
+      colors: SAMPLE_COLORS,
+      activeColor: undefined,
+      onSelect,
+      onRemove,
+      onColorInputChange: vi.fn(),
+    });
+    const colorInputs = findAll(
+      result,
+      (el) => el.type === 'input' && el.props?.type === 'color'
+    );
+    expect(colorInputs).toHaveLength(0);
+  });
+
+  it('renders the custom color input when showCustomColorPicker is true', () => {
+    const result = ColorPickerPopover({
+      colors: SAMPLE_COLORS,
+      activeColor: '#ff0000',
+      onSelect,
+      onRemove,
+      showCustomColorPicker: true,
+      onColorInputChange: vi.fn(),
+    });
+    const colorInputs = findAll(
+      result,
+      (el) => el.type === 'input' && el.props?.type === 'color'
+    );
+    expect(colorInputs).toHaveLength(1);
+    expect(colorInputs[0].props.value).toBe('#ff0000');
+  });
+
+  it('color input calls onColorInputChange with the new value', () => {
+    const onColorInputChange = vi.fn();
+    const result = ColorPickerPopover({
+      colors: SAMPLE_COLORS,
+      activeColor: '#ff0000',
+      onSelect,
+      onRemove,
+      showCustomColorPicker: true,
+      onColorInputChange,
+    });
+    const colorInput = findAll(
+      result,
+      (el) => el.type === 'input' && el.props?.type === 'color'
+    )[0];
+    colorInput.props.onChange({ target: { value: '#00ff00' } });
+    expect(onColorInputChange).toHaveBeenCalledWith('#00ff00');
+  });
+
+  it('displays the active color as uppercase hex in the custom section', () => {
+    const result = ColorPickerPopover({
+      colors: SAMPLE_COLORS,
+      activeColor: '#00ff00',
+      onSelect,
+      onRemove,
+      showCustomColorPicker: true,
+      onColorInputChange: vi.fn(),
+    });
+    const hexDisplays = findAll(
+      result,
+      (el) => el.type === 'Typography' && el.props?.children === '#00FF00'
+    );
+    expect(hexDisplays).toHaveLength(1);
   });
 });

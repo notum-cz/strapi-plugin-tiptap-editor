@@ -1,10 +1,11 @@
 import { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Popover } from '@strapi/design-system';
 import { ToolbarButton } from '../components/ToolbarButton';
 import { ColorPickerPopover } from '../components/ColorPickerPopover';
 import { useThemeConfig } from '../hooks/useThemeConfig';
+import { TiptapPresetConfig, getFeatureOptions, isFeatureEnabled } from '../../../shared/types';
 
 // ─── Icon ─────────────────────────────────────────────────────────────────────
 
@@ -22,7 +23,8 @@ function HighlightColorIcon({ underColor }: { underColor: string }) {
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
-export function useHighlightColor(editor: Editor | null, props: { disabled?: boolean } = {}) {
+export function useHighlightColor(editor: Editor | null, props: { disabled?: boolean; config?: TiptapPresetConfig['highlightColor'] } = {}) {
+  const customColorPickerEnabled = isFeatureEnabled(getFeatureOptions(props.config, {})?.customColorPicker);
   const themeConfig = useThemeConfig();
   const colors = themeConfig?.colors ?? [];
 
@@ -37,6 +39,7 @@ export function useHighlightColor(editor: Editor | null, props: { disabled?: boo
   });
 
   const selectionRef = useRef<{ from: number; to: number } | null>(null);
+  const choseColorDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showPicker, setShowPicker] = useState(false);
 
   const openPicker = () => {
@@ -59,6 +62,16 @@ export function useHighlightColor(editor: Editor | null, props: { disabled?: boo
     setShowPicker(false);
   };
 
+  // Used by the color input — applies color without focus() so the OS dialog
+  // doesn't trigger a focusOutside event that closes the popover.
+  const handleColorInputChange = (color: string) => {
+    if (!editor) return;
+    if (choseColorDebounceRef.current) clearTimeout(choseColorDebounceRef.current);
+    choseColorDebounceRef.current = setTimeout(() => {
+      editor.chain().setTextSelection(selectionRef.current ?? editor.state.selection).setHighlight({ color }).run();
+    }, 80);
+  };
+
   const handleRemove = () => {
     if (!editor) return;
     restoreSelection();
@@ -78,6 +91,13 @@ export function useHighlightColor(editor: Editor | null, props: { disabled?: boo
       handleInteractOutside();
     }
   };
+
+  // Clear any pending debounced color change on unmount.
+  useEffect(() => {
+    return () => {
+      if (choseColorDebounceRef.current) clearTimeout(choseColorDebounceRef.current);
+    };
+  }, []);
 
   const activeColor = editorState?.activeColor;
   const underColor = activeColor ?? '#999999';
@@ -105,6 +125,8 @@ export function useHighlightColor(editor: Editor | null, props: { disabled?: boo
             activeColor={activeColor}
             onSelect={handleSelect}
             onRemove={handleRemove}
+            showCustomColorPicker={customColorPickerEnabled}
+            onColorInputChange={handleColorInputChange}
           />
         </Popover.Content>
       </Popover.Root>

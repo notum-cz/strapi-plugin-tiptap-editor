@@ -45,8 +45,8 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
     const script = useScript(editor, { disabled: props.disabled });
     const table = useTable(editor, { disabled: props.disabled });
     const textAlign = useTextAlign(editor, { disabled: props.disabled });
-    const textColor = useTextColor(editor, { disabled: props.disabled });
-    const highlightColor = useHighlightColor(editor, { disabled: props.disabled });
+    const textColor = useTextColor(editor, { disabled: props.disabled, config: config.textColor });
+    const highlightColor = useHighlightColor(editor, { disabled: props.disabled, config: config.highlightColor });
 
     if (!editor) return null;
 
