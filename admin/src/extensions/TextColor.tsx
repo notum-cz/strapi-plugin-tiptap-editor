@@ -1,6 +1,6 @@
 import { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Popover } from '@strapi/design-system';
 import { ToolbarButton } from '../components/ToolbarButton';
 import { ColorPickerPopover } from '../components/ColorPickerPopover';
@@ -90,6 +90,13 @@ export function useTextColor(editor: Editor | null, props: { disabled?: boolean;
       handleInteractOutside();
     }
   };
+
+  // Clear any pending debounced color change on unmount.
+  useEffect(() => {
+    return () => {
+      if (choseColorDebounceRef.current) clearTimeout(choseColorDebounceRef.current);
+    };
+  }, []);
 
   const activeColor = editorState?.activeColor;
   const underColor = activeColor ?? '#999999';
