@@ -23,6 +23,8 @@ export function ColorPickerPopover({
   const { formatMessage } = useIntl();
   const theme = useTheme();
 
+  const DEFAULT_COLOR = '#000000';
+
   const customLabel = formatMessage({
     id: 'tiptap-editor.color.custom',
     defaultMessage: 'Custom color',
@@ -105,7 +107,7 @@ export function ColorPickerPopover({
                 >
                   <input
                     type="color"
-                    value={activeColor ?? '#000000'}
+                    value={activeColor ?? DEFAULT_COLOR}
                     aria-label={customLabel}
                     onChange={(e) => onColorInputChange(e.target.value)}
                     style={{
@@ -135,14 +137,14 @@ export function ColorPickerPopover({
                     style={{
                       width: 16,
                       height: 16,
-                      backgroundColor: activeColor ?? '#000000',
+                      backgroundColor: activeColor ?? DEFAULT_COLOR,
                       border: `1px solid ${theme.colors.neutral200}`,
                       borderRadius: 3,
                       flexShrink: 0,
                     }}
                   />
                   <Typography variant="pi" style={{ fontFamily: 'monospace' }}>
-                    {(activeColor ?? '#000000').toUpperCase()}
+                    {(activeColor ?? DEFAULT_COLOR).toUpperCase()}
                   </Typography>
                 </Flex>
               </Box>
