@@ -9,7 +9,7 @@ interface ColorPickerPopoverProps {
   onSelect: (color: string) => void;
   onRemove: () => void;
   showCustomColorPicker?: boolean;
-  onColorInputChange: (color: string) => void;
+  onColorInputChange?: (color: string) => void;
 }
 
 export function ColorPickerPopover({
@@ -18,7 +18,7 @@ export function ColorPickerPopover({
   onSelect,
   onRemove,
   showCustomColorPicker = false,
-  onColorInputChange,
+  onColorInputChange = () => {},
 }: ColorPickerPopoverProps) {
   const { formatMessage } = useIntl();
   const theme = useTheme();
