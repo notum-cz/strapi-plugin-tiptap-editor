@@ -22,7 +22,7 @@
       "subscript": true,
       "textColor": true,
       "highlightColor": true,
-      "mediaLibrary": true
+      "mediaLibrary": { "figure": true }
     }
   }
 }

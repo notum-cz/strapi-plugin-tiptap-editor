@@ -116,7 +116,7 @@
 - **Headings** (H1–H6), **bold**, **italic**, **underline**, **strikethrough**
 - **Ordered & unordered lists**, task lists
 - **Links**, **tables**
-- **Images** from Strapi Media Library with alt text editing and alignment
+- **Images** from Strapi Media Library with alt text editing, alignment, and optional `<figure>`/`<figcaption>` captions
 - **Code blocks** with syntax highlighting
 - **Blockquotes**, **horizontal rules**
 - Full **keyboard shortcut** support
@@ -464,6 +464,20 @@ The image stores the URL (`src`), Strapi asset ID (`data-asset-id`), alignment (
 | `resize.minWidth`                   | `50`    | Minimum allowed width in pixels                       |
 | `resize.minHeight`                  | `50`    | Minimum allowed height in pixels                      |
 
+**Figure/Figcaption** is enabled through the `figure` key inside `mediaLibrary`. When enabled, selecting an image shows an "Add caption" button that wraps it in a `<figure>` with an editable `<figcaption>`. Captions support basic inline formatting (bold, italic, link).
+
+```ts
+{
+  mediaLibrary: {
+    figure: true,
+  },
+}
+```
+
+Clicking the caption button again ("Remove caption") unwraps the figure back to a standalone image. Existing standalone `<img>` content remains valid and is unaffected when `figure` is enabled or disabled.
+
+Captions support multiple lines, the same way a blockquote does: press Enter to start a new line within the caption, and press Enter again on an empty trailing line to leave the caption and continue editing below the image.
+
 #### Rendering images on the frontend
 
 The plugin stores content as **Tiptap/ProseMirror JSON**. The `width`, `height`, `src`, `alt`, and `title` attributes are standard and will render automatically with `@tiptap/extension-image`. However, the custom `data-align` and `data-asset-id` attributes require extending the Image extension on your frontend:
@@ -488,6 +502,36 @@ const StrapiImage = Image.extend({
 const html = generateHTML(apiResponse.content, [
   StarterKit,
   StrapiImage,
+  // ...other extensions you use
+]);
+```
+
+If you have captions enabled (`mediaLibrary.figure`), `generateHTML` also needs the `figure` and `figcaption` node types registered, or it will throw `Unknown node type: figure` for any content saved with a caption:
+
+```ts
+import { Node, mergeAttributes } from '@tiptap/core';
+
+const Figure = Node.create({
+  name: 'figure',
+  group: 'block',
+  content: 'image figcaption',
+  parseHTML: () => [{ tag: 'figure' }],
+  renderHTML: ({ HTMLAttributes }) => ['figure', mergeAttributes(HTMLAttributes), 0],
+});
+
+const Figcaption = Node.create({
+  name: 'figcaption',
+  group: 'block',
+  content: 'paragraph+',
+  parseHTML: () => [{ tag: 'figcaption' }],
+  renderHTML: ({ HTMLAttributes }) => ['figcaption', mergeAttributes(HTMLAttributes), 0],
+});
+
+const html = generateHTML(apiResponse.content, [
+  StarterKit,
+  StrapiImage,
+  Figure,
+  Figcaption,
   // ...other extensions you use
 ]);
 ```

@@ -22,6 +22,17 @@ export type HeadingConfig = {
   levels?: HeadingLevel[];
 };
 
+export type MediaLibraryConfig = {
+  resize?: {
+    enabled?: boolean;
+    alwaysPreserveAspectRatio?: boolean;
+    minWidth?: number;
+    minHeight?: number;
+  };
+  /** Wrap inserted images in a <figure> element with an editable <figcaption> */
+  figure?: boolean;
+};
+
 // ─── Theme types ─────────────────────────────────────────────────────────────
 
 export type ThemeColorEntry = {
@@ -68,7 +79,7 @@ export interface TiptapPresetConfig {
   subscript?: boolean | Record<string, unknown>;
   textColor?: boolean;
   highlightColor?: boolean;
-  mediaLibrary?: boolean | Record<string, unknown>;
+  mediaLibrary?: boolean | MediaLibraryConfig;
 }
 
 export interface TiptapPluginConfig {

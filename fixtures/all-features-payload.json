@@ -593,6 +593,54 @@
         },
         { "type": "text", "text": " for good measure." }
       ]
+    },
+    {
+      "type": "figure",
+      "content": [
+        {
+          "type": "image",
+          "attrs": {
+            "src": "https://example.com/image.jpg",
+            "alt": "An example image",
+            "title": null,
+            "width": null,
+            "height": null,
+            "data-asset-id": 1,
+            "data-align": "center"
+          }
+        },
+        {
+          "type": "figcaption",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [
+                { "type": "text", "marks": [{ "type": "bold" }], "text": "Figure 1:" },
+                { "type": "text", "text": " An example image with a " },
+                {
+                  "type": "text",
+                  "marks": [
+                    {
+                      "type": "link",
+                      "attrs": {
+                        "href": "https://example.com/caption-link",
+                        "target": "_blank",
+                        "rel": "noopener noreferrer nofollow",
+                        "class": null
+                      }
+                    }
+                  ],
+                  "text": "captioned link"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Second line of the caption." }]
+            }
+          ]
+        }
+      ]
     }
   ]
 }

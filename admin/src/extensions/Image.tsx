@@ -90,7 +90,7 @@ export function useImage(
   const editorState = useEditorState({
     editor,
     selector: (ctx) => ({
-      isInCodeBlock: ctx.editor?.isActive('codeBlock') ?? false,
+      canInsertImage: ctx.editor?.can().setImage({ src: '' }) ?? true,
     }),
   });
 
@@ -121,7 +121,7 @@ export function useImage(
       onClick={() => setShowPicker(true)}
       icon={<ImageIcon />}
       active={false}
-      disabled={props.disabled || !editor || (editorState?.isInCodeBlock ?? false)}
+      disabled={props.disabled || !editor || !(editorState?.canInsertImage ?? true)}
       tooltip={formatMessage({
         id: 'tiptap-editor.toolbar.insertImage',
         defaultMessage: 'Insert image',
