@@ -31,6 +31,10 @@ export type MediaLibraryConfig = {
   };
   /** Wrap inserted images in a <figure> element with an editable <figcaption> */
   figure?: boolean;
+  /** Passed through to @tiptap/extension-image */
+  inline?: boolean;
+  allowBase64?: boolean;
+  HTMLAttributes?: Record<string, unknown>;
 };
 
 // ─── Theme types ─────────────────────────────────────────────────────────────

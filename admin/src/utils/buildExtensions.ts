@@ -112,13 +112,13 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
   }
   if (isFeatureEnabled(config.mediaLibrary)) {
     const mediaOpts = getFeatureOptions(config.mediaLibrary, {} as MediaLibraryConfig);
-    const { figure, resize } = (mediaOpts ?? {}) as MediaLibraryConfig;
+    const { figure, resize, ...rest } = (mediaOpts ?? {}) as MediaLibraryConfig;
 
     // Normalise resize: StrapiImageOptions.resize.enabled is required boolean (not boolean | undefined)
     const normalizedResize =
       resize === undefined ? undefined : { ...resize, enabled: resize.enabled ?? true };
 
-    extensions.push(StrapiImage.configure({ resize: normalizedResize }));
+    extensions.push(StrapiImage.configure({ ...rest, resize: normalizedResize }));
     // Always register figure/figcaption so existing content keeps parsing even after
     // `figure` is turned off; enableContentCheck just makes them inert in that case.
     extensions.push(Figure.configure({ enableContentCheck: !figure }));

@@ -26,7 +26,16 @@ const getInvalidKeys = (presetConfig: unknown): string[] => {
   );
 };
 
-const MEDIA_LIBRARY_KEYS = new Set<string>(['resize', 'figure']);
+// resize/figure are validated below; inline/allowBase64/HTMLAttributes are passed
+// straight through to @tiptap/extension-image's own options, same as before this
+// validator existed — kept permissive so existing configs don't start failing to boot.
+const MEDIA_LIBRARY_KEYS = new Set<string>([
+  'resize',
+  'figure',
+  'inline',
+  'allowBase64',
+  'HTMLAttributes',
+]);
 
 const RESIZE_KEYS = new Set<string>([
   'enabled',
