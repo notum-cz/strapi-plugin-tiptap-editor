@@ -253,7 +253,7 @@ export const Figure = Node.create<FigureOptions>({
           if (dispatch) {
             const tr = state.tr.replaceWith(figurePos, figurePos + figureNode.nodeSize, imageChild);
             tr.setSelection(
-              TextSelection.near(tr.doc.resolve(figurePos + imageChild.nodeSize)) as any
+              TextSelection.near(tr.doc.resolve(figurePos + imageChild.nodeSize))
             );
             dispatch(tr);
           }
