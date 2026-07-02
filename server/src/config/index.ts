@@ -64,9 +64,9 @@ const validateMediaLibraryConfig = (value: unknown, path: string): void => {
     throw new Error(`tiptap-editor ${path}.figure must be a boolean`);
   }
 
-  if (resize !== undefined) {
+  if (resize !== undefined && typeof resize !== 'boolean') {
     if (!isPlainObject(resize)) {
-      throw new Error(`tiptap-editor ${path}.resize must be a plain object`);
+      throw new Error(`tiptap-editor ${path}.resize must be a boolean or a plain object`);
     }
     for (const key of Object.keys(resize)) {
       if (!RESIZE_KEYS.has(key)) {

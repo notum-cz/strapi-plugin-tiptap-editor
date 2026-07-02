@@ -614,6 +614,7 @@
           "content": [
             {
               "type": "paragraph",
+              "attrs": { "textAlign": "left" },
               "content": [
                 { "type": "text", "marks": [{ "type": "bold" }], "text": "Figure 1:" },
                 { "type": "text", "text": " An example image with a " },
@@ -636,6 +637,7 @@
             },
             {
               "type": "paragraph",
+              "attrs": { "textAlign": "left" },
               "content": [{ "type": "text", "text": "Second line of the caption." }]
             }
           ]

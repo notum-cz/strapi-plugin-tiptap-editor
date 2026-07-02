@@ -114,9 +114,11 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
     const mediaOpts = getFeatureOptions(config.mediaLibrary, {} as MediaLibraryConfig);
     const { figure, resize, ...rest } = (mediaOpts ?? {}) as MediaLibraryConfig;
 
-    // Normalise resize: StrapiImageOptions.resize.enabled is required boolean (not boolean | undefined)
+    // Normalise resize: false disables it; object form requires enabled to be an explicit boolean
     const normalizedResize =
-      resize === undefined ? undefined : { ...resize, enabled: resize.enabled ?? true };
+      !resize || typeof resize === 'boolean'
+        ? undefined
+        : { ...resize, enabled: resize.enabled ?? true };
 
     extensions.push(StrapiImage.configure({ ...rest, resize: normalizedResize }));
     // Always register figure/figcaption so existing content keeps parsing even after

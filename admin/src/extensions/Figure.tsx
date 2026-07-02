@@ -1,8 +1,8 @@
 import React from 'react';
 import { Node, mergeAttributes } from '@tiptap/core';
 import { ReactNodeViewRenderer, NodeViewWrapper, NodeViewContent } from '@tiptap/react';
-import { TextSelection } from 'prosemirror-state';
-import type { ResolvedPos } from 'prosemirror-model';
+import { TextSelection } from '@tiptap/pm/state';
+import type { ResolvedPos } from '@tiptap/pm/model';
 import type { NodeViewProps } from '@tiptap/react';
 import { useIntl } from 'react-intl';
 
@@ -115,7 +115,7 @@ export const Figcaption = Node.create<FigureOptions>({
 
         const figureAfter = tr.mapping.map($from.end(figureDepth)) + 1;
         tr.insert(figureAfter, paragraphType.create());
-        tr.setSelection(TextSelection.near(tr.doc.resolve(figureAfter + 1)) as any);
+        tr.setSelection(TextSelection.near(tr.doc.resolve(figureAfter + 1)));
         view.dispatch(tr);
         return true;
       },
@@ -149,23 +149,14 @@ export const Figcaption = Node.create<FigureOptions>({
 
 // ─── Figure node view ────────────────────────────────────────────────────────
 
-function FigureNodeView({ selected }: NodeViewProps) {
-  return (
-    <NodeViewWrapper as="figure" data-selected={selected || undefined} className="tiptap-figure">
-      <NodeViewContent />
-    </NodeViewWrapper>
-  );
-}
-
-// Inert render used when the `figure` feature is administratively disabled: keeps
-// existing <figure>/<figcaption> content visible and parseable, but not editable.
-function FigureNodeViewReadOnly({ selected }: NodeViewProps) {
+function FigureNodeView({ selected, extension }: NodeViewProps) {
+  const readOnly = (extension.options as FigureOptions).enableContentCheck;
   return (
     <NodeViewWrapper
       as="figure"
       data-selected={selected || undefined}
       className="tiptap-figure"
-      contentEditable={false}
+      contentEditable={readOnly ? false : undefined}
     >
       <NodeViewContent />
     </NodeViewWrapper>
@@ -197,9 +188,7 @@ export const Figure = Node.create<FigureOptions>({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(
-      this.options.enableContentCheck ? FigureNodeViewReadOnly : FigureNodeView
-    );
+    return ReactNodeViewRenderer(FigureNodeView);
   },
 
   addCommands() {
@@ -235,7 +224,7 @@ export const Figure = Node.create<FigureOptions>({
           if (dispatch) {
             const tr = state.tr.replaceWith(imagePos, imagePos + imageNode.nodeSize, figureNode);
             const figcaptionPos = imagePos + imageNode.nodeSize + 1;
-            tr.setSelection(TextSelection.near(tr.doc.resolve(figcaptionPos)) as any);
+            tr.setSelection(TextSelection.near(tr.doc.resolve(figcaptionPos)));
             dispatch(tr);
           }
           return true;

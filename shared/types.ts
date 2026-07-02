@@ -23,12 +23,14 @@ export type HeadingConfig = {
 };
 
 export type MediaLibraryConfig = {
-  resize?: {
-    enabled?: boolean;
-    alwaysPreserveAspectRatio?: boolean;
-    minWidth?: number;
-    minHeight?: number;
-  };
+  resize?:
+    | boolean
+    | {
+        enabled?: boolean;
+        alwaysPreserveAspectRatio?: boolean;
+        minWidth?: number;
+        minHeight?: number;
+      };
   /** Wrap inserted images in a <figure> element with an editable <figcaption> */
   figure?: boolean;
   /** Passed through to @tiptap/extension-image */
