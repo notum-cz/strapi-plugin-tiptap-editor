@@ -179,6 +179,34 @@ export const TiptapInputStyles = styled.div`
     opacity: 1;
   }
 
+  /* --- Figure / Figcaption --- */
+
+  .tiptap-figure {
+    margin: 0.75em 0;
+  }
+
+  .tiptap-figure[data-selected] {
+    outline: 2px solid #4945ff;
+    outline-offset: 2px;
+  }
+
+  .tiptap-figure figcaption {
+    position: relative;
+    margin-top: 0.5em;
+    font-size: 0.9em;
+    font-style: italic;
+  }
+
+  /* Placeholder overlay shown while the caption's only paragraph is empty */
+  .tiptap-figure figcaption.is-empty::before {
+    content: attr(data-placeholder);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: ${({ theme }) => theme.colors.neutral600};
+    pointer-events: none;
+  }
+
   // Source: https://tiptap.dev/docs/editor/extensions/nodes/table
 
   .ProseMirror {

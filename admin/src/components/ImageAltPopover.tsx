@@ -2,21 +2,46 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
 import type { ImageOptions } from '@tiptap/extension-image';
-import { Popover, TextInput, IconButton } from '@strapi/design-system';
-import { Trash, Cross } from '@strapi/icons';
+import { Popover, TextInput, IconButton, Button } from '@strapi/design-system';
+import { Trash, Cross, Plus, Minus } from '@strapi/icons';
 import { useIntl } from 'react-intl';
 import { ToolbarButton } from './ToolbarButton';
 import { TextAlignLeft } from '../icons/TextAlignLeft';
 import { TextAlignCenter } from '../icons/TextAlignCenter';
 import { TextAlignRight } from '../icons/TextAlignRight';
 
-export function ImageNodeView({ node, updateAttributes, deleteNode, selected, extension }: NodeViewProps) {
+export function ImageNodeView({
+  node,
+  updateAttributes,
+  deleteNode,
+  selected,
+  extension,
+  editor,
+  getPos,
+}: NodeViewProps) {
   const { formatMessage } = useIntl();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [altText, setAltText] = useState<string>(node.attrs.alt ?? '');
   const imgRef = useRef<HTMLImageElement>(null);
   const isResizingRef = useRef(false);
   const resizeCleanupRef = useRef<(() => void) | null>(null);
+
+  // The figure node type is always registered (so saved content keeps parsing even
+  // after the feature is turned off) — check its enableContentCheck option, not just
+  // schema presence, to know whether wrapping/unwrapping is actually active.
+  const figureExtension = editor.extensionManager.extensions.find((ext) => ext.name === 'figure');
+  const figureEnabled =
+    !!figureExtension &&
+    !(figureExtension.options as { enableContentCheck?: boolean })?.enableContentCheck;
+
+  // Determine if this image is already a child of a figure node
+  const isInsideFigure = (() => {
+    if (!figureEnabled || typeof getPos !== 'function') return false;
+    const pos = getPos();
+    if (typeof pos !== 'number') return false;
+    const $pos = editor.state.doc.resolve(pos);
+    return $pos.depth > 0 && $pos.node($pos.depth)?.type.name === 'figure';
+  })();
 
   const rawResize = (extension.options as ImageOptions).resize;
   const resizeEnabled = typeof rawResize === 'object' && !!rawResize ? rawResize.enabled : !!rawResize;
@@ -275,6 +300,33 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
               <Trash />
             </IconButton>
           </div>
+          {figureEnabled && (
+            <div style={{ padding: '0 8px 8px' }}>
+              <Button
+                variant="tertiary"
+                size="S"
+                startIcon={isInsideFigure ? <Minus /> : <Plus />}
+                onClick={() => {
+                  setIsPopoverOpen(false);
+                  if (isInsideFigure) {
+                    editor.commands.removeFigureCaption();
+                  } else {
+                    editor.commands.wrapImageInFigure();
+                    // Popover close steals DOM focus back to the trigger; reclaim it
+                    // after that settles so the caret actually lands in the figcaption.
+                    requestAnimationFrame(() => editor.commands.focus());
+                  }
+                }}
+                style={{ width: '100%' }}
+              >
+                {formatMessage(
+                  isInsideFigure
+                    ? { id: 'tiptap-editor.image.removeCaption', defaultMessage: 'Remove caption' }
+                    : { id: 'tiptap-editor.image.addCaption', defaultMessage: 'Add caption' }
+                )}
+              </Button>
+            </div>
+          )}
         </Popover.Content>
       </Popover.Root>
     </NodeViewWrapper>

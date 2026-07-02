@@ -9,8 +9,28 @@ vi.mock('@tiptap/react', () => ({
   useEditorState: vi.fn(),
 }));
 
+import { getSchema } from '@tiptap/core';
+import { Node as PMNode } from 'prosemirror-model';
+import { EditorState, TextSelection } from 'prosemirror-state';
 import { buildExtensions } from '../../admin/src/utils/buildExtensions';
 import { TiptapPresetConfig } from '../../shared/types';
+
+// A figure/figcaption doc, as it would have been saved while `figure` was enabled.
+const FIGURE_DOC_JSON = {
+  type: 'doc',
+  content: [
+    {
+      type: 'figure',
+      content: [
+        { type: 'image', attrs: { src: 'https://example.com/x.jpg' } },
+        {
+          type: 'figcaption',
+          content: [{ type: 'paragraph', content: [{ type: 'text', text: 'A caption' }] }],
+        },
+      ],
+    },
+  ],
+};
 
 describe('buildExtensions', () => {
   it('always returns an array containing StarterKit', () => {
@@ -311,5 +331,199 @@ describe('buildExtensions', () => {
 
     expect(names).toContain('highlight');
     expect(names).not.toContain('color');
+  });
+
+  // figure/figcaption are always registered (regardless of the `figure` flag) so that
+  // content saved while the feature was on keeps parsing safely if it's later turned off.
+  // enableContentCheck is what actually toggles editability, not schema presence.
+
+  it('registers figure/figcaption inert (enableContentCheck) when mediaLibrary is true but figure is not specified', () => {
+    const extensions = buildExtensions({ mediaLibrary: true });
+    const names = extensions.map((ext: any) => ext.name);
+    const figure = extensions.find((ext: any) => ext.name === 'figure');
+    const figcaption = extensions.find((ext: any) => ext.name === 'figcaption');
+
+    expect(names).toContain('figure');
+    expect(names).toContain('figcaption');
+    expect((figure as any)?.options.enableContentCheck).toBe(true);
+    expect((figcaption as any)?.options.enableContentCheck).toBe(true);
+  });
+
+  it('includes figure and figcaption when mediaLibrary.figure is true', () => {
+    const extensions = buildExtensions({ mediaLibrary: { figure: true } });
+    const names = extensions.map((ext: any) => ext.name);
+    const figure = extensions.find((ext: any) => ext.name === 'figure');
+
+    expect(names).toContain('figure');
+    expect(names).toContain('figcaption');
+    expect((figure as any)?.options.enableContentCheck).toBe(false);
+  });
+
+  it('registers figure/figcaption inert (enableContentCheck) when mediaLibrary.figure is false', () => {
+    const extensions = buildExtensions({ mediaLibrary: { figure: false } });
+    const names = extensions.map((ext: any) => ext.name);
+    const figure = extensions.find((ext: any) => ext.name === 'figure');
+    const figcaption = extensions.find((ext: any) => ext.name === 'figcaption');
+
+    expect(names).toContain('figure');
+    expect(names).toContain('figcaption');
+    expect((figure as any)?.options.enableContentCheck).toBe(true);
+    expect((figcaption as any)?.options.enableContentCheck).toBe(true);
+  });
+
+  describe('regression: figure/figcaption content must survive the feature being turned off', () => {
+    // Before figure/figcaption were always registered, building a schema without them
+    // and feeding it a doc that already had a <figure> threw "Unknown node type:
+    // figcaption" — i.e. any saved caption broke the whole field once `figure` (or
+    // `mediaLibrary`) was disabled. These pin that parsing must always succeed.
+
+    it('parses a saved figure/figcaption doc when mediaLibrary.figure is false', () => {
+      const schema = getSchema(buildExtensions({ mediaLibrary: { figure: false } }));
+      expect(() => PMNode.fromJSON(schema, FIGURE_DOC_JSON)).not.toThrow();
+    });
+
+    it('parses a saved figure/figcaption doc when mediaLibrary is false entirely', () => {
+      const schema = getSchema(buildExtensions({ mediaLibrary: false }));
+      expect(() => PMNode.fromJSON(schema, FIGURE_DOC_JSON)).not.toThrow();
+    });
+
+    it('preserves the image src and caption text once parsed', () => {
+      const schema = getSchema(buildExtensions({ mediaLibrary: { figure: false } }));
+      const doc = PMNode.fromJSON(schema, FIGURE_DOC_JSON);
+      const figure = doc.firstChild!;
+      expect(figure.type.name).toBe('figure');
+      expect(figure.firstChild!.attrs.src).toBe('https://example.com/x.jpg');
+      expect(figure.lastChild!.textContent).toBe('A caption');
+    });
+  });
+
+  it('still parses fine when figure is enabled (control case)', () => {
+    const schema = getSchema(buildExtensions({ mediaLibrary: { figure: true } }));
+    expect(() => PMNode.fromJSON(schema, FIGURE_DOC_JSON)).not.toThrow();
+  });
+
+  describe('Enter inside a caption (paragraph+ content, same model as blockquote)', () => {
+    function buildFigureDoc(schema: any, figcaptionParagraphs: unknown[]) {
+      return PMNode.fromJSON(schema, {
+        type: 'doc',
+        content: [
+          {
+            type: 'figure',
+            content: [
+              { type: 'image', attrs: { src: 'https://example.com/x.jpg' } },
+              { type: 'figcaption', content: figcaptionParagraphs },
+            ],
+          },
+        ],
+      });
+    }
+
+    function endOf(doc: any, match: (node: any) => boolean): number {
+      let result: number | null = null;
+      doc.descendants((node: any, pos: number) => {
+        if (match(node)) result = pos + node.nodeSize - 1;
+      });
+      if (result === null) throw new Error('node not found');
+      return result;
+    }
+
+    function runEnter(extensions: any[], schema: any, doc: any, pos: number) {
+      const state = EditorState.create({ schema, doc, selection: TextSelection.create(doc, pos) });
+      const figcaptionExt = extensions.find((ext: any) => ext.name === 'figcaption');
+      const shortcuts = (figcaptionExt as any).config.addKeyboardShortcuts.call({
+        options: (figcaptionExt as any).options,
+      });
+      let dispatchedTr: any = null;
+      const editor = { state, view: { dispatch: (tr: any) => (dispatchedTr = tr) }, commands: {} };
+      const handled = shortcuts.Enter({ editor });
+      return { handled, dispatchedTr };
+    }
+
+    it('on a non-empty line, defers to the default splitBlock (returns false, no dispatch)', () => {
+      const extensions = buildExtensions({ mediaLibrary: { figure: true } });
+      const schema = getSchema(extensions);
+      const doc = buildFigureDoc(schema, [
+        { type: 'paragraph', content: [{ type: 'text', text: 'Hello' }] },
+      ]);
+      const pos = endOf(doc, (n) => n.type.name === 'paragraph');
+
+      const { handled, dispatchedTr } = runEnter(extensions, schema, doc, pos);
+      expect(handled).toBe(false);
+      expect(dispatchedTr).toBeNull();
+    });
+
+    it('on an empty trailing line (with text above it), exits and drops the empty paragraph', () => {
+      const extensions = buildExtensions({ mediaLibrary: { figure: true } });
+      const schema = getSchema(extensions);
+      const doc = buildFigureDoc(schema, [
+        { type: 'paragraph', content: [{ type: 'text', text: 'Hello' }] },
+        { type: 'paragraph' },
+      ]);
+
+      // cursor inside the second (empty) paragraph
+      const emptyParagraphPos = endOf(
+        doc,
+        (n) => n.type.name === 'paragraph' && n.textContent === ''
+      );
+
+      const { handled, dispatchedTr } = runEnter(extensions, schema, doc, emptyParagraphPos);
+      expect(handled).toBe(true);
+      expect(dispatchedTr).not.toBeNull();
+
+      const newDoc = dispatchedTr.doc;
+      const figure = newDoc.firstChild!;
+      const figcaption = figure.lastChild!;
+      expect(figcaption.childCount).toBe(1);
+      expect(figcaption.firstChild!.textContent).toBe('Hello');
+      expect(newDoc.childCount).toBe(2);
+      expect(newDoc.lastChild!.type.name).toBe('paragraph');
+      expect(newDoc.lastChild!.content.size).toBe(0);
+    });
+
+    it('on a lone empty caption, exits but keeps the single paragraph (figcaption needs at least one)', () => {
+      const extensions = buildExtensions({ mediaLibrary: { figure: true } });
+      const schema = getSchema(extensions);
+      const doc = buildFigureDoc(schema, [{ type: 'paragraph' }]);
+      const pos = endOf(doc, (n) => n.type.name === 'paragraph');
+
+      const { handled, dispatchedTr } = runEnter(extensions, schema, doc, pos);
+      expect(handled).toBe(true);
+      expect(dispatchedTr).not.toBeNull();
+
+      const newDoc = dispatchedTr.doc;
+      const figcaption = newDoc.firstChild!.lastChild!;
+      expect(figcaption.childCount).toBe(1);
+      expect(figcaption.firstChild!.content.size).toBe(0);
+      expect(newDoc.childCount).toBe(2);
+      expect(newDoc.lastChild!.type.name).toBe('paragraph');
+    });
+  });
+
+  it('registers figure/figcaption inert (enableContentCheck) when mediaLibrary is false', () => {
+    const extensions = buildExtensions({ mediaLibrary: false });
+    const names = extensions.map((ext: any) => ext.name);
+    const figure = extensions.find((ext: any) => ext.name === 'figure');
+    const figcaption = extensions.find((ext: any) => ext.name === 'figcaption');
+
+    expect(names).toContain('figure');
+    expect(names).toContain('figcaption');
+    expect((figure as any)?.options.enableContentCheck).toBe(true);
+    expect((figcaption as any)?.options.enableContentCheck).toBe(true);
+  });
+
+  it('still includes image extension when mediaLibrary.figure is true', () => {
+    const extensions = buildExtensions({ mediaLibrary: { figure: true } });
+    const names = extensions.map((ext: any) => ext.name);
+
+    expect(names).toContain('image');
+  });
+
+  it('always registers figure and figcaption together', () => {
+    const extensions = buildExtensions({ mediaLibrary: { figure: true } });
+    const names = extensions.map((ext: any) => ext.name);
+    const hasFigure = names.includes('figure');
+    const hasFigcaption = names.includes('figcaption');
+
+    expect(hasFigure).toBe(hasFigcaption);
   });
 });

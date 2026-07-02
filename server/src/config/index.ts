@@ -26,6 +26,74 @@ const getInvalidKeys = (presetConfig: unknown): string[] => {
   );
 };
 
+// resize/figure are validated below; inline/allowBase64/HTMLAttributes are passed
+// straight through to @tiptap/extension-image's own options, same as before this
+// validator existed — kept permissive so existing configs don't start failing to boot.
+const MEDIA_LIBRARY_KEYS = new Set<string>([
+  'resize',
+  'figure',
+  'inline',
+  'allowBase64',
+  'HTMLAttributes',
+]);
+
+const RESIZE_KEYS = new Set<string>([
+  'enabled',
+  'alwaysPreserveAspectRatio',
+  'minWidth',
+  'minHeight',
+]);
+
+const validateMediaLibraryConfig = (value: unknown, path: string): void => {
+  if (typeof value === 'boolean' || value === undefined) return;
+  if (!isPlainObject(value)) {
+    throw new Error(`tiptap-editor ${path} must be a boolean or a plain object`);
+  }
+
+  for (const key of Object.keys(value)) {
+    if (!MEDIA_LIBRARY_KEYS.has(key)) {
+      throw new Error(
+        `tiptap-editor ${path} has unknown key: "${key}". Allowed keys: ${[...MEDIA_LIBRARY_KEYS].join(', ')}`
+      );
+    }
+  }
+
+  const { figure, resize } = value as { figure?: unknown; resize?: unknown };
+
+  if (figure !== undefined && typeof figure !== 'boolean') {
+    throw new Error(`tiptap-editor ${path}.figure must be a boolean`);
+  }
+
+  if (resize !== undefined && typeof resize !== 'boolean') {
+    if (!isPlainObject(resize)) {
+      throw new Error(`tiptap-editor ${path}.resize must be a boolean or a plain object`);
+    }
+    for (const key of Object.keys(resize)) {
+      if (!RESIZE_KEYS.has(key)) {
+        throw new Error(
+          `tiptap-editor ${path}.resize has unknown key: "${key}". Allowed keys: ${[...RESIZE_KEYS].join(', ')}`
+        );
+      }
+    }
+    const { enabled, alwaysPreserveAspectRatio, minWidth, minHeight } = resize as Record<
+      string,
+      unknown
+    >;
+    if (enabled !== undefined && typeof enabled !== 'boolean') {
+      throw new Error(`tiptap-editor ${path}.resize.enabled must be a boolean`);
+    }
+    if (alwaysPreserveAspectRatio !== undefined && typeof alwaysPreserveAspectRatio !== 'boolean') {
+      throw new Error(`tiptap-editor ${path}.resize.alwaysPreserveAspectRatio must be a boolean`);
+    }
+    if (minWidth !== undefined && typeof minWidth !== 'number') {
+      throw new Error(`tiptap-editor ${path}.resize.minWidth must be a number`);
+    }
+    if (minHeight !== undefined && typeof minHeight !== 'number') {
+      throw new Error(`tiptap-editor ${path}.resize.minHeight must be a number`);
+    }
+  }
+};
+
 const config = {
   default: {
     presets: {} as Record<string, TiptapPresetConfig>,
@@ -56,6 +124,11 @@ const config = {
         if (invalidKeys.length > 0) {
           allInvalidKeys.push(...invalidKeys);
         }
+
+        validateMediaLibraryConfig(
+          presetConfig.mediaLibrary,
+          `config.presets.${presetName}.mediaLibrary`
+        );
       }
 
       if (allInvalidKeys.length > 0) {

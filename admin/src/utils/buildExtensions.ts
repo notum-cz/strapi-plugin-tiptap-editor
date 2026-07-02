@@ -11,7 +11,13 @@ import Highlight from '@tiptap/extension-highlight';
 import { BaseHeadingWithSEOTag } from '../extensions/Heading';
 import { PasteStripper } from '../extensions/PasteStripper';
 import { StrapiImage } from '../extensions/Image';
-import { TiptapPresetConfig, isFeatureEnabled, getFeatureOptions } from '../../../shared/types';
+import { Figure, Figcaption } from '../extensions/Figure';
+import {
+  TiptapPresetConfig,
+  MediaLibraryConfig,
+  isFeatureEnabled,
+  getFeatureOptions,
+} from '../../../shared/types';
 
 // Helper: converts a preset feature value to StarterKit's expected format
 // false = disable the sub-extension, {} = enable with defaults
@@ -105,10 +111,24 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
     extensions.push(Highlight.configure({ multicolor: true }));
   }
   if (isFeatureEnabled(config.mediaLibrary)) {
-    const mediaOpts = getFeatureOptions(config.mediaLibrary, {});
-    extensions.push(StrapiImage.configure(mediaOpts ?? {}));
+    const mediaOpts = getFeatureOptions(config.mediaLibrary, {} as MediaLibraryConfig);
+    const { figure, resize, ...rest } = (mediaOpts ?? {}) as MediaLibraryConfig;
+
+    // Normalise resize: false disables it; object form requires enabled to be an explicit boolean
+    const normalizedResize =
+      !resize || typeof resize === 'boolean'
+        ? undefined
+        : { ...resize, enabled: resize.enabled ?? true };
+
+    extensions.push(StrapiImage.configure({ ...rest, resize: normalizedResize }));
+    // Always register figure/figcaption so existing content keeps parsing even after
+    // `figure` is turned off; enableContentCheck just makes them inert in that case.
+    extensions.push(Figure.configure({ enableContentCheck: !figure }));
+    extensions.push(Figcaption.configure({ enableContentCheck: !figure }));
   } else {
     extensions.push(StrapiImage.configure({ enableContentCheck: true }));
+    extensions.push(Figure.configure({ enableContentCheck: true }));
+    extensions.push(Figcaption.configure({ enableContentCheck: true }));
   }
 
   extensions.push(Gapcursor);
