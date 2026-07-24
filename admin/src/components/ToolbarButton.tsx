@@ -1,4 +1,4 @@
-import { Tooltip, Button } from '@strapi/design-system';
+import { IconButton } from '@strapi/design-system';
 
 export function ToolbarButton({
   onClick,
@@ -18,23 +18,16 @@ export function ToolbarButton({
   hidden?: boolean;
 }) {
   return (
-    <Tooltip description={tooltip}>
-      <Button
-        onClick={onClick}
-        variant="tertiary"
-        size="S"
-        paddingLeft={2}
-        paddingRight={2}
-        marginLeft={marginLeft ?? 1}
-        disabled={disabled}
-        style={{
-          color: active ? 'black' : undefined,
-          backgroundColor: active ? '#d9d8ff' : undefined,
-          display: hidden ? 'none' : undefined,
-        }}
-      >
-        {icon}
-      </Button>
-    </Tooltip>
+    <IconButton
+      label={tooltip}
+      onClick={onClick}
+      variant={active ? "secondary" : 'ghost'}
+      marginLeft={marginLeft || 0}
+      disabled={disabled}
+      data-active={active}
+      style={{ display: hidden ? 'none' : undefined }}
+    >
+      {icon}
+    </IconButton>
   );
 }
