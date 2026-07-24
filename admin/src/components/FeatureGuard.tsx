@@ -3,7 +3,7 @@ import { TiptapPresetConfig, isFeatureEnabled } from '../../../shared/types';
 
 interface FeatureGuardProps {
   /** The feature config value from TiptapPresetConfig (e.g., config.bold, config.heading) */
-  featureValue: TiptapPresetConfig[keyof TiptapPresetConfig];
+  featureValue: TiptapPresetConfig[keyof TiptapPresetConfig] | TiptapPresetConfig[keyof TiptapPresetConfig][];
   children: ReactNode;
 }
 
@@ -14,7 +14,10 @@ interface FeatureGuardProps {
  * because FeatureGuard prevents them from being called entirely.
  */
 export function FeatureGuard({ featureValue, children }: FeatureGuardProps): ReactNode {
-  if (!isFeatureEnabled(featureValue)) {
+  if (Array.isArray(featureValue)) {
+    const isAnyFeatureEnabled = featureValue.some((value) => isFeatureEnabled(value));
+    if (!isAnyFeatureEnabled) return null;
+  } else if (!isFeatureEnabled(featureValue)) {
     return null;
   }
   return children;

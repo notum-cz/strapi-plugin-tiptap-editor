@@ -62,8 +62,8 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           <FeatureGuard featureValue={config?.heading}>
             {heading.headingSelect}
             {heading.headingTagSelect}
-            <Spacer width={8} />
           </FeatureGuard>
+          
           <FeatureGuard featureValue={config?.bold}>
             {starterKit.boldButton}
           </FeatureGuard>
@@ -73,6 +73,11 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           <FeatureGuard featureValue={config?.underline}>
             {starterKit.underlineButton}
           </FeatureGuard>
+
+          <FeatureGuard featureValue={[config?.bold, config?.italic, config?.underline]}>
+            <Spacer margin={1} />
+          </FeatureGuard>
+
           <FeatureGuard featureValue={config?.strike}>
             {starterKit.strikeButton}
           </FeatureGuard>
@@ -88,21 +93,30 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           <FeatureGuard featureValue={config?.highlightColor}>
             {highlightColor.highlightColorButton}
           </FeatureGuard>
-          <Spacer width={8} />
+
+          <FeatureGuard featureValue={[config?.strike, config?.superscript, config?.subscript, config?.textColor, config?.highlightColor]}>
+            <Spacer margin={1} />
+          </FeatureGuard>
+
           <FeatureGuard featureValue={config?.textAlign}>
             {textAlign.textAlignLeftButton}
             {textAlign.textAlignCenterButton}
             {textAlign.textAlignRightButton}
             {textAlign.textAlignJustifyButton}
-            <Spacer width={8} />
+            <Spacer margin={1} />
           </FeatureGuard>
+
           <FeatureGuard featureValue={config?.bulletList}>
             {starterKit.bulletButton}
           </FeatureGuard>
           <FeatureGuard featureValue={config?.orderedList}>
             {starterKit.orderedButton}
           </FeatureGuard>
-          <Spacer width={8} />
+
+          <FeatureGuard featureValue={[config?.bulletList, config?.orderedList]}>
+            <Spacer margin={1} />
+          </FeatureGuard>
+
           <FeatureGuard featureValue={config?.code}>
             {starterKit.codeButton}
           </FeatureGuard>
@@ -117,8 +131,12 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
             {image.imageButton}
             {image.imageDialog}
           </FeatureGuard>
+
+          <FeatureGuard featureValue={[config?.code, config?.blockquote, config?.link, config?.mediaLibrary]}>
+            <Spacer margin={1} />
+          </FeatureGuard>
+
           <FeatureGuard featureValue={config?.table}>
-            <Spacer width={8} />
             {table.tableButton}
             {table.addColumnButton}
             {table.removeColumnButton}
