@@ -51,5 +51,6 @@
   "tiptap-editor.table.columns": "Columns",
   "tiptap-editor.table.minMax": "Min {min}, max {max}",
   "tiptap-editor.table.cancel": "Cancel",
-  "tiptap-editor.table.insert": "Insert"
+  "tiptap-editor.table.insert": "Insert",
+  "tiptap-editor.more": "More"
 }
