@@ -3,9 +3,9 @@ import { useIntl } from 'react-intl';
 import { Box } from '@strapi/design-system';
 import BaseTiptapInput from './BaseTiptapInput';
 import { EditorErrorBoundary } from './EditorErrorBoundary';
-import { FeatureGuard } from './FeatureGuard';
-import { TiptapInputProps, useTiptapEditor } from '../utils/tiptapUtils';
 import { Spacer } from './Spacer';
+import { TiptapInputProps, useTiptapEditor } from '../utils/tiptapUtils';
+import { ResponsiveToolbar } from './ResponsiveToolbar';
 import { useStarterKit } from '../extensions/StarterKit';
 import { useLink } from '../extensions/Link';
 import { useHeading } from '../extensions/Heading';
@@ -18,6 +18,7 @@ import { useHighlightColor } from '../extensions/HighlightColor';
 import { usePresetConfig } from '../hooks/usePresetConfig';
 import { buildExtensions } from '../utils/buildExtensions';
 import { TiptapPresetConfig, MINIMAL_PRESET_CONFIG, getFeatureOptions } from '../../../shared/types';
+import type { ToolbarItem } from './ResponsiveToolbar';
 
 // ─── Inner editor ────────────────────────────────────────────────────────────
 // Mounted only AFTER preset config is resolved, so useEditor receives the
@@ -27,6 +28,13 @@ type InnerEditorProps = TiptapInputProps & {
   config: TiptapPresetConfig;
   presetName: string | undefined;
 };
+
+/**
+ * Type guard to check if a toolbar item is valid.
+ * @param item - The toolbar item to check.
+ * @returns True if the item is a valid ToolbarItem, false otherwise.
+ */
+const isToolbarItem = (item: ToolbarItem | false | undefined): item is ToolbarItem => Boolean(item);
 
 const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
   ({ config, presetName, ...props }, forwardedRef) => {
@@ -48,6 +56,102 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
     const textColor = useTextColor(editor, { disabled: props.disabled });
     const highlightColor = useHighlightColor(editor, { disabled: props.disabled });
 
+    const toolbarItemCandidates: Array<ToolbarItem | false | undefined> = [
+      config.heading && {
+        id: 'heading',
+        content: (
+          <>
+            {heading.headingSelect}
+            {heading.headingTagSelect}
+          </>
+        ),
+      },
+      config.bold && { id: 'bold', content: starterKit.boldButton },
+      config.italic && { id: 'italic', content: starterKit.italicButton },
+      config.underline && { id: 'underline', content: starterKit.underlineButton },
+      (config.bold || config.italic || config.underline) && {
+        id: 'basicTextSpacer',
+        content: <Spacer margin={1} />,
+      },
+      config.strike && { id: 'strike', content: starterKit.strikeButton },
+      config.superscript && { id: 'superscript', content: script.superscriptButton },
+      config.subscript && { id: 'subscript', content: script.subscriptButton },
+      config.textColor && { id: 'textColor', content: textColor.textColorButton },
+      config.highlightColor && { id: 'highlightColor', content: highlightColor.highlightColorButton },
+      (config.strike || config.superscript || config.subscript || config.textColor || config.highlightColor) && {
+        id: 'textDecorationSpacer',
+        content: <Spacer margin={1} />,
+      },
+      config.textAlign && {
+        id: 'textAlign',
+        content: (
+          <>
+            {textAlign.textAlignLeftButton}
+            {textAlign.textAlignCenterButton}
+            {textAlign.textAlignRightButton}
+            {textAlign.textAlignJustifyButton}
+          </>
+        ),
+      },
+      config.textAlign && { id: 'textAlignSpacer', content: <Spacer margin={1} /> },
+      config.bulletList && { id: 'bullet', content: starterKit.bulletButton },
+      config.orderedList && { id: 'ordered', content: starterKit.orderedButton },
+      (config.bulletList || config.orderedList) && {
+        id: 'listSpacer',
+        content: <Spacer margin={1} />,
+      },
+      config.code && { id: 'code', content: starterKit.codeButton },
+      config.blockquote && { id: 'blockquote', content: starterKit.blockquoteButton },
+      config.link && {
+        id: 'link',
+        content: (
+          <>
+            {link.linkButton}
+            {link.linkDialog}
+          </>
+        ),
+      },
+      config.mediaLibrary && {
+        id: 'mediaLibrary',
+        content: (
+          <>
+            {image.imageButton}
+            {image.imageDialog}
+          </>
+        ),
+      },
+      (config.code || config.blockquote || config.link || config.mediaLibrary) && {
+        id: 'insertSpacer',
+        content: <Spacer margin={1} />,
+      },
+      config.table && {
+        id: 'table',
+        content: (
+          <>
+            {table.tableButton}
+            {table.addColumnButton}
+            {table.removeColumnButton}
+            {table.addRowButton}
+            {table.removeRowButton}
+            {table.tableDialog}
+          </>
+        ),
+      },
+    ];
+
+    const rawToolbarItems = toolbarItemCandidates.filter(isToolbarItem);
+
+    // Clean up consecutive, leading, or trailing spacers
+    const toolbarItems = rawToolbarItems.filter((item, idx, arr) => {
+      const isSpacer = item.id.toLowerCase().includes('spacer');
+      if (!isSpacer) return true;
+
+      if (idx === 0 || idx === arr.length - 1) return false;
+
+      const prevIsSpacer = arr[idx - 1].id.toLowerCase().includes('spacer');
+      return !prevIsSpacer;
+    });
+
     if (!editor) return null;
 
     return (
@@ -59,73 +163,7 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           ref={forwardedRef}
           noPresetConfigured={!presetName}
         >
-          <FeatureGuard featureValue={config?.heading}>
-            {heading.headingSelect}
-            {heading.headingTagSelect}
-            <Spacer width={8} />
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.bold}>
-            {starterKit.boldButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.italic}>
-            {starterKit.italicButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.underline}>
-            {starterKit.underlineButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.strike}>
-            {starterKit.strikeButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.superscript}>
-            {script.superscriptButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.subscript}>
-            {script.subscriptButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.textColor}>
-            {textColor.textColorButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.highlightColor}>
-            {highlightColor.highlightColorButton}
-          </FeatureGuard>
-          <Spacer width={8} />
-          <FeatureGuard featureValue={config?.textAlign}>
-            {textAlign.textAlignLeftButton}
-            {textAlign.textAlignCenterButton}
-            {textAlign.textAlignRightButton}
-            {textAlign.textAlignJustifyButton}
-            <Spacer width={8} />
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.bulletList}>
-            {starterKit.bulletButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.orderedList}>
-            {starterKit.orderedButton}
-          </FeatureGuard>
-          <Spacer width={8} />
-          <FeatureGuard featureValue={config?.code}>
-            {starterKit.codeButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.blockquote}>
-            {starterKit.blockquoteButton}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.link}>
-            {link.linkButton}
-            {link.linkDialog}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.mediaLibrary}>
-            {image.imageButton}
-            {image.imageDialog}
-          </FeatureGuard>
-          <FeatureGuard featureValue={config?.table}>
-            <Spacer width={8} />
-            {table.tableButton}
-            {table.addColumnButton}
-            {table.removeColumnButton}
-            {table.addRowButton}
-            {table.removeRowButton}
-            {table.tableDialog}
-          </FeatureGuard>
+          <ResponsiveToolbar items={toolbarItems} />
         </BaseTiptapInput>
       </EditorErrorBoundary>
     );
