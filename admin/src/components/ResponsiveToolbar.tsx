@@ -1,11 +1,11 @@
 
 import { useIntl } from 'react-intl';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Box, Flex, IconButton, Popover } from '@strapi/design-system';
 import { More } from '@strapi/icons';
 
 export type ToolbarItem = { id: string; content: React.ReactNode };
-type ResponsiveToolbarProps = { items: ToolbarItem[] };
+export type ResponsiveToolbarProps = { items: ToolbarItem[] };
 
 const MORE_BUTTON_WIDTH = 40;
 const ITEM_GAP = 4;
@@ -16,6 +16,9 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const itemWidths = useRef<Record<string, number>>({});
   const [visibleCount, setVisibleCount] = useState(items.length);
+
+  const visibleItems = useMemo(() => items.slice(0, visibleCount), [items, visibleCount]);
+  const overflowItems = useMemo(() => items.slice(visibleCount), [items, visibleCount]);
 
   // Recalculate visible items on resize
   useLayoutEffect(() => {
@@ -54,23 +57,24 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
     return () => observer.disconnect();
   }, [items]);
 
-  const visibleItems = items.slice(0, visibleCount);
-  const overflowItems = items.slice(visibleCount);
-
   return (
     <Box ref={toolbarRef} width="100%">
-      <Flex gap={1} wrap="wrap">
-        {visibleItems.map((item) => (
-          <Flex
-            gap={1}
-            key={item.id}
-            ref={(element: HTMLDivElement | null) => {
-              if (element) itemWidths.current[item.id] = element.getBoundingClientRect().width;
-            }}
-          >
-            {item.content}
-          </Flex>
-        ))}
+      <Flex gap={1}>
+        {visibleItems.map(({ id, content }, idx) => {
+          if (id.toLowerCase().includes('spacer') && idx === visibleItems.length - 1) return null;
+
+          return (
+            <Flex
+              gap={1}
+              key={id}
+              ref={(element: HTMLDivElement | null) => {
+                if (element) itemWidths.current[id] = element.getBoundingClientRect().width;
+              }}
+            >
+              {content}
+            </Flex>
+          )
+        })}
 
         {overflowItems.length > 0 && (
           <Popover.Root>
@@ -81,9 +85,7 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
             </Popover.Trigger>
             <Popover.Content align="end">
               <Flex padding={4} gap={1} wrap="wrap" maxWidth="max(312px, 50vw)">
-                {overflowItems.map((item) => (
-                  <Flex key={item.id} gap={1}>{item.content}</Flex>
-                ))}
+                {overflowItems.map(({ id, content }) => <Flex key={id} gap={1}>{content}</Flex>)}
               </Flex>
             </Popover.Content>
           </Popover.Root>
