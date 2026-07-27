@@ -20,6 +20,7 @@ export function ToolbarButton({
   return (
     <IconButton
       aria-label={tooltip}
+      aria-pressed={active}
       label={tooltip}
       onClick={onClick}
       variant={active ? "secondary" : 'ghost'}
