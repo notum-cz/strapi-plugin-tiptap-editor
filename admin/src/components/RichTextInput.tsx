@@ -139,7 +139,18 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
       },
     ];
 
-    const toolbarItems = toolbarItemCandidates.filter(isToolbarItem);
+    const rawToolbarItems = toolbarItemCandidates.filter(isToolbarItem);
+
+    // Clean up consecutive, leading, or trailing spacers
+    const toolbarItems = rawToolbarItems.filter((item, idx, arr) => {
+      const isSpacer = item.id.toLowerCase().includes('spacer');
+      if (!isSpacer) return true;
+
+      if (idx === 0 || idx === arr.length - 1) return false;
+
+      const prevIsSpacer = arr[idx - 1].id.toLowerCase().includes('spacer');
+      return !prevIsSpacer;
+    });
 
     if (!editor) return null;
 
