@@ -15,14 +15,23 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
 
   const toolbarRef = useRef<HTMLDivElement>(null);
   const itemWidths = useRef<Record<string, number>>({});
+  const itemsRef = useRef(items);
+  itemsRef.current = items;
+
   const [visibleCount, setVisibleCount] = useState(items.length);
+
+  const itemIdsKey = useMemo(() => items.map((item) => item.id).join(','), [items]);
 
   const visibleItems = useMemo(() => items.slice(0, visibleCount), [items, visibleCount]);
   const overflowItems = useMemo(() => items.slice(visibleCount), [items, visibleCount]);
+  const filteredOverflowItems = useMemo(
+    () => overflowItems.filter((item) => !item.id.toLowerCase().includes('spacer')),
+    [overflowItems]
+  );
 
   // Recalculate visible items on resize
   useLayoutEffect(() => {
-    if (!items) return;
+    if (!itemsRef.current.length) return;
 
     const toolbar = toolbarRef.current;
     if (!toolbar) return;
@@ -31,19 +40,20 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
      * Calculates how many items can fit in the toolbar based on its current width.
      */
     const calculateVisibleItems = () => {
+      const currentItems = itemsRef.current;
       const availableWidth = toolbar.clientWidth;
-      const { visibleCount: nextVisibleCount } = items.reduce(
+      const { visibleCount: nextVisibleCount } = currentItems.reduce(
         (acc, itm, idx) => {
           if (acc.overflowed || !itemWidths.current[itm.id]) return acc;
 
-          const moreWidth = idx < items.length - 1 ? MORE_BUTTON_WIDTH + ITEM_GAP : 0;
+          const moreWidth = idx < currentItems.length - 1 ? MORE_BUTTON_WIDTH + ITEM_GAP : 0;
           const nextWidth = acc.usedWidth + itemWidths.current[itm.id] + ITEM_GAP;
 
           return nextWidth + moreWidth > availableWidth
             ? { ...acc, visibleCount: idx, overflowed: true }
             : { ...acc, usedWidth: nextWidth };
         },
-        { usedWidth: 0, visibleCount: items.length, overflowed: false }
+        { usedWidth: 0, visibleCount: currentItems.length, overflowed: false }
       );
 
       setVisibleCount((current) => (current === nextVisibleCount ? current : nextVisibleCount));
@@ -53,9 +63,9 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
 
     const observer = new ResizeObserver(calculateVisibleItems);
     observer.observe(toolbar);
-   
+
     return () => observer.disconnect();
-  }, [items]);
+  }, [itemIdsKey]);
 
   return (
     <Box ref={toolbarRef} width="100%">
@@ -73,10 +83,10 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
             >
               {content}
             </Flex>
-          )
+          );
         })}
 
-        {overflowItems.length > 0 && (
+        {filteredOverflowItems.length > 0 && (
           <Popover.Root>
             <Popover.Trigger>
               <IconButton label={formatMessage({ id: 'tiptap-editor.more', defaultMessage: 'More' })} variant="ghost" marginLeft="auto">
@@ -84,8 +94,12 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
               </IconButton>
             </Popover.Trigger>
             <Popover.Content align="end">
-              <Flex padding={4} gap={1} wrap="wrap" maxWidth="max(312px, 50vw)">
-                {overflowItems.map(({ id, content }) => <Flex key={id} gap={1}>{content}</Flex>)}
+              <Flex padding={3} gap={1} wrap="wrap" maxWidth="max(292px, 50vw)">
+                {filteredOverflowItems.map(({ id, content }) => (
+                  <Flex key={id} gap={1}>
+                    {content}
+                  </Flex>
+                ))}
               </Flex>
             </Popover.Content>
           </Popover.Root>
