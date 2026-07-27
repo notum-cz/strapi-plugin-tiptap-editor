@@ -104,7 +104,7 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
               </IconButton>
             </Popover.Trigger>
             <StyledPopoverContent align="end">
-              <Flex padding={3} gap={1} wrap="wrap" maxWidth="max(292px, 50vw)">
+              <Flex padding={2} gap={1} wrap="wrap" maxWidth="max(292px, 50vw)">
                 {filteredOverflowItems.map(({ id, content }) => (
                   <Flex key={id} gap={1}>
                     {content}
