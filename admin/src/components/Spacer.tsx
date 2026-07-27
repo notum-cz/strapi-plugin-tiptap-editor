@@ -3,11 +3,7 @@ import styled from 'styled-components';
 
 const StyledBox = styled(Box)`
   width: 1px;
-  align-self: stretch;
-
-  &:last-child {
-    display: none;
-  }
+  height: 32px;
 `;
 
 export function Spacer({ margin }: { margin: number }) {
