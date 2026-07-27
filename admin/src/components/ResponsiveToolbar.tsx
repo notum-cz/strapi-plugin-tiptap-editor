@@ -16,7 +16,6 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
   const toolbarRef = useRef<HTMLDivElement>(null);
   const itemWidths = useRef<Record<string, number>>({});
   const itemsRef = useRef(items);
-  itemsRef.current = items;
 
   const [visibleCount, setVisibleCount] = useState(items.length);
 
@@ -66,6 +65,11 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
 
     return () => observer.disconnect();
   }, [itemIdsKey]);
+
+  // Update itemsRef if items change
+  useLayoutEffect(() => {
+    itemsRef.current = items;
+  }, [items]);
 
   return (
     <Box ref={toolbarRef} width="100%">
