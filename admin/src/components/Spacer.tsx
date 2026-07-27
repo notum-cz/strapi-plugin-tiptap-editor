@@ -7,5 +7,5 @@ const StyledBox = styled(Box)`
 `;
 
 export function Spacer({ margin }: { margin: number }) {
-  return <StyledBox marginLeft={margin} marginRight={margin} background="neutral200" flex="0 0 1px" />;
+  return <StyledBox marginLeft={margin} marginRight={margin} background="neutral200" flex="0 0 1px" aria-hidden="true" />;
 }
