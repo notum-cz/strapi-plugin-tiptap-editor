@@ -322,11 +322,10 @@ describe('RichTextInput', () => {
   });
 
   it('sanitizes leading, trailing, and consecutive spacers', () => {
-    // Enable only bold and code (bold creates basicTextSpacer after, code creates insertSpacer)
+    // Enable only bold, italic (from minimal config) and code (bold creates basicTextSpacer after, code creates insertSpacer)
     const config = {
       ...MINIMAL_PRESET_CONFIG,
       heading: false,
-      bold: true,
       code: true,
     };
     mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
