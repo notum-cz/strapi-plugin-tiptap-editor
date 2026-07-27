@@ -127,12 +127,12 @@ vi.mock('../../admin/src/components/EditorErrorBoundary', () => ({
   EditorErrorBoundary: 'EditorErrorBoundary',
 }));
 
-vi.mock('../../admin/src/components/FeatureGuard', () => ({
-  FeatureGuard: 'FeatureGuard',
-}));
-
 vi.mock('../../admin/src/components/Spacer', () => ({
   Spacer: 'Spacer',
+}));
+
+vi.mock('../../admin/src/components/ResponsiveToolbar', () => ({
+  ResponsiveToolbar: 'ResponsiveToolbar',
 }));
 
 // ─── Mock @strapi/design-system ───────────────────────────────────────────────
@@ -275,88 +275,88 @@ describe('RichTextInput', () => {
     expect(rendered.type).toBe('EditorErrorBoundary');
   });
 
-  it('uses FeatureGuard for heading group with config.heading as featureValue', () => {
-    const config = { ...MINIMAL_PRESET_CONFIG, heading: true };
+  it('passes toolbar items to ResponsiveToolbar based on enabled config options', () => {
+    const config = {
+      ...MINIMAL_PRESET_CONFIG,
+      heading: true,
+      bold: true,
+      italic: true,
+      underline: true,
+      strike: true,
+      superscript: true,
+      subscript: true,
+      textColor: true,
+      highlightColor: true,
+      textAlign: true,
+      bulletList: true,
+      orderedList: true,
+      code: true,
+      blockquote: true,
+      link: true,
+      mediaLibrary: true,
+      table: true,
+    };
     mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
-    const featureGuards = findElements(result, 'FeatureGuard');
-    const headingGuard = featureGuards.find((fg) => fg.props?.featureValue === config.heading);
-    expect(headingGuard).toBeDefined();
+    const responsiveToolbars = findElements(result, 'ResponsiveToolbar');
+    expect(responsiveToolbars.length).toBe(1);
+    const itemIds = responsiveToolbars[0].props.items.map((i: any) => i.id);
+    expect(itemIds).toContain('heading');
+    expect(itemIds).toContain('bold');
+    expect(itemIds).toContain('italic');
+    expect(itemIds).toContain('underline');
+    expect(itemIds).toContain('strike');
+    expect(itemIds).toContain('superscript');
+    expect(itemIds).toContain('subscript');
+    expect(itemIds).toContain('textColor');
+    expect(itemIds).toContain('highlightColor');
+    expect(itemIds).toContain('textAlign');
+    expect(itemIds).toContain('bullet');
+    expect(itemIds).toContain('ordered');
+    expect(itemIds).toContain('code');
+    expect(itemIds).toContain('blockquote');
+    expect(itemIds).toContain('link');
+    expect(itemIds).toContain('mediaLibrary');
+    expect(itemIds).toContain('table');
   });
 
-  it('uses FeatureGuard for textAlign group with config.textAlign as featureValue', () => {
-    const config = { ...MINIMAL_PRESET_CONFIG, textAlign: true };
+  it('sanitizes leading, trailing, and consecutive spacers', () => {
+    // Enable only bold and code (bold creates basicTextSpacer after, code creates insertSpacer)
+    const config = {
+      ...MINIMAL_PRESET_CONFIG,
+      heading: false,
+      bold: true,
+      code: true,
+    };
     mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
-    const featureGuards = findElements(result, 'FeatureGuard');
-    const textAlignGuard = featureGuards.find((fg) => fg.props?.featureValue === config.textAlign);
-    expect(textAlignGuard).toBeDefined();
+    const responsiveToolbars = findElements(result, 'ResponsiveToolbar');
+    const items = responsiveToolbars[0].props.items;
+    const itemIds = items.map((i: any) => i.id);
+
+    // Should contain bold, spacer, code (no leading or trailing spacer)
+    expect(itemIds[0]).not.toMatch(/spacer/i);
+    expect(itemIds[itemIds.length - 1]).not.toMatch(/spacer/i);
+
+    // Verify no consecutive spacers exist
+    for (let i = 0; i < itemIds.length - 1; i++) {
+      const currentIsSpacer = itemIds[i].toLowerCase().includes('spacer');
+      const nextIsSpacer = itemIds[i + 1].toLowerCase().includes('spacer');
+      expect(currentIsSpacer && nextIsSpacer).toBe(false);
+    }
   });
 
-  it('uses FeatureGuard for table group with config.table as featureValue', () => {
-    const config = { ...MINIMAL_PRESET_CONFIG, table: true };
+  it('filters out feature toolbar items when feature config is falsy', () => {
+    const config = { ...MINIMAL_PRESET_CONFIG, textColor: false, highlightColor: false };
     mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
-    const featureGuards = findElements(result, 'FeatureGuard');
-    const tableGuard = featureGuards.find((fg) => fg.props?.featureValue === config.table);
-    expect(tableGuard).toBeDefined();
-  });
-
-  it('calls useTextColor and useHighlightColor unconditionally (React rules of hooks)', () => {
-    const props = { name: 'content' };
-    shallowRender(RichTextInput(props as any, null));
-    expect(mockUseTextColor).toHaveBeenCalledTimes(1);
-    expect(mockUseHighlightColor).toHaveBeenCalledTimes(1);
-  });
-
-  it('uses FeatureGuard for textColor group with config.textColor as featureValue', () => {
-    const config = { ...MINIMAL_PRESET_CONFIG, textColor: true };
-    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
-    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
-    const result = RichTextInput(props as any, null) as any;
-    const featureGuards = findElements(result, 'FeatureGuard');
-    const textColorGuard = featureGuards.find((fg) => fg.props?.featureValue === config.textColor);
-    expect(textColorGuard).toBeDefined();
-  });
-
-  it('uses FeatureGuard for highlightColor group with config.highlightColor as featureValue', () => {
-    const config = { ...MINIMAL_PRESET_CONFIG, highlightColor: true };
-    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
-    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
-    const result = RichTextInput(props as any, null) as any;
-    const featureGuards = findElements(result, 'FeatureGuard');
-    const highlightColorGuard = featureGuards.find(
-      (fg) => fg.props?.featureValue === config.highlightColor
-    );
-    expect(highlightColorGuard).toBeDefined();
-  });
-
-  it('does not show textColor FeatureGuard when config.textColor is falsy', () => {
-    const config = { ...MINIMAL_PRESET_CONFIG, textColor: false };
-    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
-    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
-    const result = RichTextInput(props as any, null) as any;
-    const featureGuards = findElements(result, 'FeatureGuard');
-    // featureValue for textColor guard should be false (FeatureGuard renders null for false)
-    const textColorGuard = featureGuards.find(
-      (fg) =>
-        fg.props?.featureValue === false &&
-        featureGuards.indexOf(fg) ===
-          featureGuards.findIndex((g) => g.props?.featureValue === false)
-    );
-    // The guard with featureValue === false should exist (FeatureGuard blocks rendering)
-    expect(featureGuards.some((fg) => fg.props?.featureValue === config.textColor)).toBe(true);
-  });
-
-  it('does not show highlightColor FeatureGuard when config.highlightColor is falsy', () => {
-    const config = { ...MINIMAL_PRESET_CONFIG, highlightColor: false };
-    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
-    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
-    const result = RichTextInput(props as any, null) as any;
-    const featureGuards = findElements(result, 'FeatureGuard');
-    expect(featureGuards.some((fg) => fg.props?.featureValue === config.highlightColor)).toBe(true);
+    const responsiveToolbars = findElements(result, 'ResponsiveToolbar');
+    expect(responsiveToolbars.length).toBe(1);
+    const itemIds = responsiveToolbars[0].props.items.map((i: any) => i.id);
+    expect(itemIds).not.toContain('textColor');
+    expect(itemIds).not.toContain('highlightColor');
   });
 });
