@@ -26,7 +26,6 @@ export function ToolbarButton({
       variant={active ? "secondary" : 'ghost'}
       marginLeft={marginLeft || 0}
       disabled={disabled}
-      data-active={active}
       style={{ display: hidden ? 'none' : undefined }}
     >
       {icon}
