@@ -3,12 +3,18 @@ import { useIntl } from 'react-intl';
 import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Box, Flex, IconButton, Popover } from '@strapi/design-system';
 import { More } from '@strapi/icons';
+import styled from 'styled-components';
 
 export type ToolbarItem = { id: string; content: React.ReactNode };
 export type ResponsiveToolbarProps = { items: ToolbarItem[] };
 
 const MORE_BUTTON_WIDTH = 40;
 const ITEM_GAP = 4;
+
+// Fix z-index of popover
+const StyledPopoverContent = styled(Popover.Content)`
+  z-index: 200 !important;
+`;
 
 export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
   const { formatMessage } = useIntl();
@@ -97,7 +103,7 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
                 <More />
               </IconButton>
             </Popover.Trigger>
-            <Popover.Content align="end">
+            <StyledPopoverContent align="end">
               <Flex padding={3} gap={1} wrap="wrap" maxWidth="max(292px, 50vw)">
                 {filteredOverflowItems.map(({ id, content }) => (
                   <Flex key={id} gap={1}>
@@ -105,7 +111,7 @@ export function ResponsiveToolbar({ items }: ResponsiveToolbarProps) {
                   </Flex>
                 ))}
               </Flex>
-            </Popover.Content>
+            </StyledPopoverContent>
           </Popover.Root>
         )}
       </Flex>
