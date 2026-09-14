@@ -174,4 +174,30 @@ describe('BaseTiptapInput', () => {
     const result = BaseTiptapInput(props as any, null) as any;
     expect(findTextContent(result, 'No editor preset configured — showing minimal editor')).toBe(true);
   });
+
+  describe('unknown-content notice', () => {
+    it('is not shown when nothing was removed', () => {
+      for (const removedContent of [undefined, null, { nodeTypes: [], markTypes: [] }]) {
+        const result = BaseTiptapInput({ ...defaultProps, removedContent } as any, null) as any;
+        expect(findTextContent(result, 'no longer knows')).toBe(false);
+      }
+    });
+
+    it('shows a warning Status above the toolbar when content was removed', () => {
+      const props = { ...defaultProps, removedContent: { nodeTypes: ['callout'], markTypes: [] } };
+      const result = BaseTiptapInput(props as any, null) as any;
+      expect(findTextContent(result, 'no longer knows')).toBe(true);
+
+      const wrapperBox = findElements(result, 'TiptapInputStyles')[0].props.children;
+      const childArray = wrapperBox.props.children;
+      const noticeIdx = childArray.findIndex((child: any) =>
+        findElements(child, 'Status').some((s: any) => s.props.variant === 'warning')
+      );
+      const toolbarIdx = childArray.findIndex((child: any) =>
+        child?.props?.className?.includes?.('editor-toolbar')
+      );
+      expect(noticeIdx).toBeGreaterThanOrEqual(0);
+      expect(noticeIdx).toBeLessThan(toolbarIdx);
+    });
+  });
 });

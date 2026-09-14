@@ -3,3 +3,4 @@ export * from './fields';
 export * from './pluginId';
 export * from './components';
 export * from './table';
+export * from './sanitize';

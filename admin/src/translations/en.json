@@ -74,5 +74,6 @@
   "tiptap-editor.components.nodeView.edit": "Edit component",
   "tiptap-editor.components.nodeView.delete": "Delete component",
   "tiptap-editor.components.nodeView.readOnly": "Read-only in this preset",
-  "tiptap-editor.components.button.label": "Button"
+  "tiptap-editor.components.button.label": "Button",
+  "tiptap-editor.content.unknownRemoved": "This content contained components the editor no longer knows ({types}). They are hidden here and will be permanently removed when you save."
 }

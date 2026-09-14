@@ -9,6 +9,7 @@ Strapi admin, and how the frontend renders it.
 - [Add a project-level component](#add-a-project-level-component)
 - [How it looks in the Strapi editor](#how-it-looks-in-the-strapi-editor)
 - [How it renders on the frontend](#how-it-renders-on-the-frontend)
+- [Removing a component](#removing-a-component)
 - [Checklist](#checklist)
 - [Limitations & next steps](#limitations--next-steps)
 
@@ -55,8 +56,10 @@ Three rules worth internalising:
    component just renders read-only.
 2. **Registration happens once, at admin boot**, before any field mounts.
    ([`admin/src/index.ts`](../admin/src/index.ts) for built-ins, `src/admin/app.tsx` for project ones.)
-3. **Stored JSON is the contract with the frontend.** Nothing on the server validates it —
-   the field is a plain `text` column.
+3. **Stored JSON is the contract with the frontend.** The server doesn't validate it (the field is a
+   plain `text` column), so both readers tolerate node types they don't know. The admin editor strips
+   unknown nodes and marks on load, logs a `[TiptapEditor]` warning, and shows a notice above the
+   toolbar. Nothing is written back on load: the content is only lost if an editor saves afterwards.
 
 ---
 
@@ -570,13 +573,25 @@ plugin ships no frontend CSS.
 
 > ⚠️ **Strip unknown nodes first.** `Node.fromJSON` throws if the stored JSON contains a node type
 > your renderer doesn't define — which happens the moment Strapi enables a component the frontend
-> hasn't wired up yet. The Notum
-> [Next.js starter](https://github.com/notum-cz/strapi-next-monorepo-starter) ships
-> `stripUnknownContent(content, schema)` for this; it returns the sanitised document plus
+> hasn't wired up yet. The plugin exports `stripUnknownContent(content, schema)` from
+> `@notum-cz/strapi-plugin-tiptap-editor/shared` (the admin editor uses the same function); pass it
+> the renderer's `getSchema(extensions)`. It returns the sanitised document plus
 > `unknownNodeTypes` / `unknownMarkTypes` so you can log a warning.
 
 **Roll-out order that avoids broken pages:** ship the frontend renderer → deploy → then enable the
 component in the Strapi preset.
+
+---
+
+## Removing a component
+
+1. Unregister it in the admin (drop the `registerRichTextComponent` call or the registry entry).
+2. Delete its key from every preset's `components`.
+3. Remove the frontend renderer.
+
+Existing documents keep the node until someone edits them. Until then both the admin editor and the
+frontend drop it when rendering; the admin shows a notice, and saving that document removes the node
+for good.
 
 ---
 
@@ -619,6 +634,11 @@ No plugin change, no publish, no version bump.
 - **Nothing validates stored content server-side.** The field is a `text` column; the server never
   parses the JSON. A bad payload written through the REST API reaches the frontend untouched.
   *Next:* a lifecycle hook validating documents against the registered schemas.
+- **Unknown nodes are stripped, not preserved.** When a stored document contains a node or mark type
+  the editor doesn't know (a component that was unregistered or renamed), the admin removes it on
+  load, warns in the console, and shows a notice above the toolbar. Loading never rewrites the field;
+  the node is only lost if the editor saves afterwards. Shapes the sanitizer can't fix (invalid
+  attributes, content that breaks a content expression) are logged via Tiptap's content-error event.
 - **No schema migrations.** Renaming or removing an attribute leaves old documents with the old
   shape. Missing attributes fall back to the schema default; renamed ones are silently lost.
   *Next:* a `version` on the schema plus a migration hook.
