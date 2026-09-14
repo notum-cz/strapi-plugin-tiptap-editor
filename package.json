@@ -11,6 +11,13 @@
   "type": "commonjs",
   "exports": {
     "./package.json": "./package.json",
+    "./shared": {
+      "types": "./dist/shared/src/index.d.ts",
+      "source": "./shared/src/index.ts",
+      "import": "./dist/shared/index.mjs",
+      "require": "./dist/shared/index.js",
+      "default": "./dist/shared/index.js"
+    },
     "./strapi-admin": {
       "types": "./dist/admin/src/index.d.ts",
       "source": "./admin/src/index.ts",
@@ -34,8 +41,9 @@
     "watch": "strapi-plugin watch",
     "watch:link": "strapi-plugin watch:link",
     "verify": "strapi-plugin verify",
-    "test:ts:front": "run -T tsc -p admin/tsconfig.json",
-    "test:ts:back": "run -T tsc -p server/tsconfig.json",
+    "test:ts:front": "tsc -p admin/tsconfig.json --noEmit",
+    "test:ts:back": "tsc -p server/tsconfig.json --noEmit",
+    "test:ts:shared": "tsc -p shared/tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
   },

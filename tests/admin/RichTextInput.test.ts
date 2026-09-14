@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MINIMAL_PRESET_CONFIG } from '../../shared/types';
+import { MINIMAL_PRESET_CONFIG } from '../../shared/src/types';
 
 // ─── Mock React ───────────────────────────────────────────────────────────────
 let capturedUseMemoFactory: (() => any) | null = null;
@@ -120,6 +120,14 @@ const mockImage = { imageButton: null, imageDialog: null };
 vi.mock('../../admin/src/extensions/Image', () => ({
   useImage: () => mockImage,
   StrapiImage: { configure: vi.fn(() => ({})) },
+}));
+
+const mockUseRichTextComponents = vi.fn(() => ({
+  componentsMenu: 'MENU',
+  componentDialog: 'DIALOG',
+}));
+vi.mock('../../admin/src/extensions/Components', () => ({
+  useRichTextComponents: (...args: any[]) => mockUseRichTextComponents(...args),
 }));
 
 // ─── Mock components ──────────────────────────────────────────────────────────
@@ -376,5 +384,28 @@ describe('RichTextInput', () => {
       (i: any) => i.id === 'table'
     );
     expect(tableItem.content.props.children.includes('CELL_BACKGROUND')).toBe(expected);
+  });
+
+  it('wraps the components menu in a FeatureGuard keyed on config.components', () => {
+    const config = { ...MINIMAL_PRESET_CONFIG, components: { button: true } };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+
+    const featureGuards = findElements(result, 'FeatureGuard');
+    const componentsGuard = featureGuards.find(
+      (fg) => fg.props?.featureValue === config.components
+    );
+    expect(componentsGuard).toBeDefined();
+    const children = Array.isArray(componentsGuard.props.children)
+      ? componentsGuard.props.children
+      : [componentsGuard.props.children];
+    expect(children).toContain('MENU');
+    expect(children).toContain('DIALOG');
+
+    expect(mockUseRichTextComponents).toHaveBeenCalledWith(mockEditor, {
+      config,
+      disabled: undefined,
+    });
   });
 });

@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useFetchClient } from '@strapi/strapi/admin';
 
-import { PLUGIN_ID } from '../../../shared/pluginId';
-import { TiptapThemeConfig } from '../../../shared/types';
+import { PLUGIN_ID } from '../../../shared/src/pluginId';
+import { TiptapThemeConfig } from '../../../shared/src/types';
 import { setThemeCache } from '../utils/themeCache';
 
 type InitializerProps = {

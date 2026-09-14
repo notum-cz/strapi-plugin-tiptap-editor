@@ -7,6 +7,7 @@ import { Spacer } from './Spacer';
 import { TiptapInputProps, useTiptapEditor } from '../utils/tiptapUtils';
 import { ResponsiveToolbar } from './ResponsiveToolbar';
 import { useStarterKit } from '../extensions/StarterKit';
+import { useRichTextComponents } from '../extensions/Components';
 import { useLink } from '../extensions/Link';
 import { useHeading } from '../extensions/Heading';
 import { useImage } from '../extensions/Image';
@@ -23,7 +24,7 @@ import {
   TiptapPresetConfig,
   MINIMAL_PRESET_CONFIG,
   getFeatureOptions,
-} from '../../../shared/types';
+} from '../../../shared/src/types';
 import type { ToolbarItem } from './ResponsiveToolbar';
 
 // ─── Inner editor ────────────────────────────────────────────────────────────
@@ -63,6 +64,7 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
     const textAlign = useTextAlign(editor, { disabled: props.disabled });
     const textColor = useTextColor(editor, { disabled: props.disabled, config: config.textColor });
     const highlightColor = useHighlightColor(editor, { disabled: props.disabled, config: config.highlightColor });
+    const components = useRichTextComponents(editor, { config, disabled: props.disabled });
 
     const toolbarItemCandidates: Array<ToolbarItem | false | undefined> = [
       config.heading && {
@@ -143,6 +145,16 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
             {table.removeRowButton}
             {tableOptions?.cellBackground && cellBackground.cellBackgroundButton}
             {table.tableDialog}
+          </>
+        ),
+      },
+      config.components && { id: 'componentsSpacer', content: <Spacer margin={1} /> },
+      config.components && {
+        id: 'components',
+        content: (
+          <>
+            {components.componentsMenu}
+            {components.componentDialog}
           </>
         ),
       },

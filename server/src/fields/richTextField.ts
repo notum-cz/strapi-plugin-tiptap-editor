@@ -1,5 +1,5 @@
-import { PLUGIN_ID } from '../../../shared/pluginId';
-import { RICH_TEXT_FIELD_NAME } from '../../../shared/fields';
+import { PLUGIN_ID } from '../../../shared/src/pluginId';
+import { RICH_TEXT_FIELD_NAME } from '../../../shared/src/fields';
 import { CustomFieldServerOptions } from '@strapi/types/dist/modules/custom-fields';
 
 export const richTextField: CustomFieldServerOptions = {

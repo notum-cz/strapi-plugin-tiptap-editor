@@ -9,7 +9,7 @@ import { Popover } from '@strapi/design-system';
 import { ToolbarButton } from '../components/ToolbarButton';
 import { ColorPickerPopover } from '../components/ColorPickerPopover';
 import { useThemeConfig } from '../hooks/useThemeConfig';
-import { CELL_BACKGROUND_ATTRIBUTE, cellBackgroundAttribute } from '../../../shared/table';
+import { CELL_BACKGROUND_ATTRIBUTE, cellBackgroundAttribute } from '../../../shared/src/table';
 
 // ─── Extensions ───────────────────────────────────────────────────────────────
 

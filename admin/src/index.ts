@@ -1,20 +1,34 @@
 import type { StrapiApp } from '@strapi/strapi/admin';
-import { PLUGIN_ID } from '../../shared/pluginId';
+import { PLUGIN_ID } from '../../shared/src/pluginId';
 import { Initializer } from './components/Initializer';
 import { PresetSelect } from './components/PresetSelect';
 import { captureApp } from './utils/strapiApp';
+import { buttonComponent } from './builtins/button';
+import {
+  defineRichTextComponent,
+  listRichTextComponents,
+  registerRichTextComponent,
+} from './registry/richTextComponents';
 
 import { richTextField } from './fields/richTextField';
 
 export default {
   register(app: StrapiApp) {
     captureApp(app as never);
+    registerRichTextComponent(buttonComponent);
 
     app.registerPlugin({
       id: PLUGIN_ID,
       initializer: Initializer,
       isReady: false,
       name: PLUGIN_ID,
+      apis: {
+        richTextComponents: {
+          register: registerRichTextComponent,
+          define: defineRichTextComponent,
+          list: listRichTextComponents,
+        },
+      },
     });
 
     app.customFields.register(
@@ -47,3 +61,20 @@ export default {
     );
   },
 };
+
+export {
+  defineRichTextComponent,
+  getRichTextComponent,
+  listRichTextComponents,
+  registerRichTextComponent,
+} from './registry/richTextComponents';
+export type {
+  AnyRichTextComponentDefinition,
+  IntlLabel,
+  RichTextComponentContext,
+  RichTextComponentDefinition,
+  RichTextComponentFormProps,
+  RichTextComponentHelpers,
+  RichTextComponentPreviewProps,
+} from './registry/types';
+export type { ButtonAttrs } from './builtins/button';

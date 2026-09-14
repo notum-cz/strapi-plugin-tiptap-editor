@@ -597,6 +597,15 @@
         },
         { "type": "text", "text": " for good measure." }
       ]
+    },
+    {
+      "type": "button",
+      "attrs": {
+        "label": "Get started",
+        "href": "https://example.com",
+        "variant": "primary",
+        "openInNewTab": false
+      }
     }
   ]
 }

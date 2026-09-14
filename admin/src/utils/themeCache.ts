@@ -1,4 +1,4 @@
-import { TiptapThemeConfig } from '../../../shared/types';
+import { TiptapThemeConfig } from '../../../shared/src/types';
 
 let cache: TiptapThemeConfig | null = null;
 

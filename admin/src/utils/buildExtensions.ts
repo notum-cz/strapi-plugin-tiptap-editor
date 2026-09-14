@@ -9,15 +9,17 @@ import { Gapcursor } from '@tiptap/extensions';
 import { TextStyle, Color } from '@tiptap/extension-text-style';
 import Highlight from '@tiptap/extension-highlight';
 import { BaseHeadingWithSEOTag } from '../extensions/Heading';
+import { createComponentExtension } from '../extensions/Components';
 import { PasteStripper } from '../extensions/PasteStripper';
 import { StrapiImage } from '../extensions/Image';
 import { TableCellWithBackground, TableHeaderWithBackground } from '../extensions/TableCellBackground';
+import { resolveRichTextComponents } from '../registry/richTextComponents';
 import {
   TableConfig,
   TiptapPresetConfig,
   isFeatureEnabled,
   getFeatureOptions,
-} from '../../../shared/types';
+} from '../../../shared/src/types';
 
 // Helper: converts a preset feature value to StarterKit's expected format
 // false = disable the sub-extension, {} = enable with defaults
@@ -123,6 +125,17 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
     extensions.push(StrapiImage.configure(mediaOpts ?? {}));
   } else {
     extensions.push(StrapiImage.configure({ enableContentCheck: true }));
+  }
+
+  // Every registered component joins the schema regardless of the preset: a document written under a
+  // richer preset must still round-trip here, read-only, instead of losing its nodes on save.
+  for (const resolved of resolveRichTextComponents(config)) {
+    extensions.push(
+      createComponentExtension(resolved.definition, {
+        enabled: resolved.enabled,
+        options: resolved.options,
+      })
+    );
   }
 
   extensions.push(Gapcursor);

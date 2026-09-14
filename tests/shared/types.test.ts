@@ -6,11 +6,11 @@ import {
   getFeatureOptions,
   ThemeColorEntry,
   TiptapThemeConfig,
-} from '../../shared/types';
+} from '../../shared/src/types';
 
 describe('PRESET_FEATURE_KEYS (TYPES-03)', () => {
-  it('contains exactly 21 keys', () => {
-    expect(PRESET_FEATURE_KEYS).toHaveLength(21);
+  it('contains exactly 22 keys', () => {
+    expect(PRESET_FEATURE_KEYS).toHaveLength(22);
   });
   it('contains all expected feature names', () => {
     expect(PRESET_FEATURE_KEYS).toContain('bold');
@@ -93,5 +93,40 @@ describe('getFeatureOptions (TYPES-05)', () => {
   });
   it('merges options object with defaults (options override defaults)', () => {
     expect(getFeatureOptions({ a: 2 }, { a: 1, b: 3 })).toStrictEqual({ a: 2, b: 3 });
+  });
+});
+
+import { isComponentEnabled, getComponentOptions } from '../../shared/src/types';
+
+describe('PRESET_FEATURE_KEYS components key', () => {
+  it('ends with components', () => {
+    expect(PRESET_FEATURE_KEYS[PRESET_FEATURE_KEYS.length - 1]).toBe('components');
+  });
+});
+
+describe('isComponentEnabled / getComponentOptions', () => {
+  it('treats an absent components map as disabled', () => {
+    expect(isComponentEnabled({}, 'button')).toBe(false);
+    expect(getComponentOptions({}, 'button')).toBeNull();
+  });
+  it('enables with true and yields empty options', () => {
+    const config = { components: { button: true } };
+    expect(isComponentEnabled(config, 'button')).toBe(true);
+    expect(getComponentOptions(config, 'button')).toStrictEqual({});
+  });
+  it('enables with an options object and returns it without enabled/disabled flags', () => {
+    const config = { components: { button: { enabled: true, variants: ['a'] } } };
+    expect(isComponentEnabled(config, 'button')).toBe(true);
+    expect(getComponentOptions(config, 'button')).toStrictEqual({ variants: ['a'] });
+  });
+  it('disables with false or enabled:false and returns null options', () => {
+    expect(isComponentEnabled({ components: { button: false } }, 'button')).toBe(false);
+    expect(getComponentOptions({ components: { button: false } }, 'button')).toBeNull();
+    expect(isComponentEnabled({ components: { button: { enabled: false } } }, 'button')).toBe(
+      false
+    );
+    expect(
+      getComponentOptions({ components: { button: { enabled: false } } }, 'button')
+    ).toBeNull();
   });
 });

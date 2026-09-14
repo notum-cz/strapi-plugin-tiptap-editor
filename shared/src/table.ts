@@ -1,4 +1,4 @@
-// shared/table.ts
+// shared/src/table.ts
 
 /** Node attribute holding a table cell's background color, on both `tableCell` and `tableHeader`. */
 export const CELL_BACKGROUND_ATTRIBUTE = 'backgroundColor';

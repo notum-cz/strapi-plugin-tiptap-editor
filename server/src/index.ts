@@ -34,10 +34,15 @@ export default {
  */
 
 // Re-export shared types for host app developer access via the ./strapi-server entry point
-export type { TiptapPresetConfig, TiptapPluginConfig, TiptapThemeConfig, ThemeColorEntry } from '../../shared/types';
+export type {
+  TiptapPresetConfig,
+  TiptapPluginConfig,
+  TiptapThemeConfig,
+  ThemeColorEntry,
+} from '../../shared/src/types';
 export {
   PRESET_FEATURE_KEYS,
   MINIMAL_PRESET_CONFIG,
   isFeatureEnabled,
   getFeatureOptions,
-} from '../../shared/types';
+} from '../../shared/src/types';

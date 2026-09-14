@@ -23,7 +23,7 @@ vi.mock('@strapi/strapi/admin', () => ({
 }));
 
 import { usePresetConfig } from '../../admin/src/hooks/usePresetConfig';
-import { MINIMAL_PRESET_CONFIG } from '../../shared/types';
+import { MINIMAL_PRESET_CONFIG } from '../../shared/src/types';
 
 describe('usePresetConfig', () => {
   beforeEach(() => {
