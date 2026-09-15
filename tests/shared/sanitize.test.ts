@@ -83,6 +83,19 @@ describe('stripUnknownContent', () => {
     expect(() => stripUnknownContent(input as JSONContent, schema)).not.toThrow();
   });
 
+  it('drops nodes without a string type, keeping their children', () => {
+    const result = stripUnknownContent(
+      doc(
+        { attrs: { href: '/' } },
+        { content: [paragraph(text('inside'))] } as JSONContent,
+        { type: 7, content: [paragraph(text('numbered'))] } as unknown as JSONContent
+      ),
+      schema
+    );
+    expect(result.content).toEqual(doc(paragraph(text('inside')), paragraph(text('numbered'))));
+    expect(result.unknownNodeTypes).toEqual([]);
+  });
+
   it('falls back to an empty doc when nothing survives', () => {
     expect(stripUnknownContent({ type: 'mystery' }, schema).content).toEqual({
       type: 'doc',

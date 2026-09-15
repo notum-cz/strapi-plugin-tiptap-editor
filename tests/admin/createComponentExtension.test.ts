@@ -29,7 +29,9 @@ vi.mock('../../admin/src/components/ComponentNodeView', () => ({
 }));
 
 // ─── Import the modules under test ────────────────────────────────────────────
+import { getSchema } from '@tiptap/core';
 import { ReactNodeViewRenderer } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import {
   createComponentExtension,
   insertRichTextComponent,
@@ -111,8 +113,10 @@ describe('createComponentExtension', () => {
     expect(attrs.count.parseHTML(elementWith('data-count', 'null'))).toBe(null);
     expect(attrs.count.parseHTML(elementWith('data-count', '3'))).toBe(3);
 
-    // A string under a null default is written raw, so it must come back raw and not as the default.
-    expect(attrs.slug.renderHTML({ slug: '/x' })).toStrictEqual({ 'data-slug': '/x' });
+    // A string under a null default is json-quoted so a numeric-looking one stays a string.
+    expect(attrs.slug.renderHTML({ slug: '12' })).toStrictEqual({ 'data-slug': '"12"' });
+    expect(attrs.slug.parseHTML(elementWith('data-slug', '"12"'))).toBe('12');
+    // Unquoted strings (older clipboard HTML) are still read verbatim.
     expect(attrs.slug.parseHTML(elementWith('data-slug', '/x'))).toBe('/x');
   });
 
@@ -159,10 +163,27 @@ describe('createComponentExtension', () => {
 });
 
 describe('insertRichTextComponent', () => {
-  it('inserts a paragraph child for containers and no content for atoms', () => {
+  const headings = defineRichTextComponent({
+    name: 'titled',
+    label: 'Titled',
+    content: 'heading+',
+    attributes: {},
+  });
+  const schema = getSchema([
+    StarterKit,
+    createComponentExtension(atom, ctx),
+    createComponentExtension(container, ctx),
+    createComponentExtension(headings, ctx),
+  ]);
+  const makeEditor = () => {
     const run = vi.fn(() => true);
     const insertContent = vi.fn(() => ({ run }));
-    const editor = { chain: () => ({ focus: () => ({ insertContent }) }) } as any;
+    const editor = { schema, chain: () => ({ focus: () => ({ insertContent }) }) } as any;
+    return { editor, insertContent };
+  };
+
+  it('inserts a paragraph child for containers and no content for atoms', () => {
+    const { editor, insertContent } = makeEditor();
 
     expect(insertRichTextComponent(editor, container, { tone: 'info' })).toBe(true);
     expect(insertContent).toHaveBeenCalledWith({
@@ -176,5 +197,15 @@ describe('insertRichTextComponent', () => {
       type: 'button',
       attrs: { href: '/x', openInNewTab: false },
     });
+  });
+
+  it('fills a container whose content expression does not accept a paragraph', () => {
+    const { editor, insertContent } = makeEditor();
+    insertRichTextComponent(editor, headings, {});
+    const [inserted] = insertContent.mock.calls[0] as any[];
+    expect(inserted.type).toBe('titled');
+    expect(inserted.content).toHaveLength(1);
+    expect(inserted.content[0].type).toBe('heading');
+    expect(() => schema.nodeFromJSON(inserted).check()).not.toThrow();
   });
 });

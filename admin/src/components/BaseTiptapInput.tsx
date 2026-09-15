@@ -14,11 +14,13 @@ type TiptapInputProps = InputProps & {
   children?: React.ReactNode;
   noPresetConfigured?: boolean;
   removedContent?: RemovedContent | null;
+  /** True when Tiptap rejected part of the stored content and mounted what it could recover. */
+  contentError?: boolean;
 };
 
 const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
   (
-    { hint, disabled = false, labelAction, label, name, required = false, editor, field, children, noPresetConfigured, removedContent },
+    { hint, disabled = false, labelAction, label, name, required = false, editor, field, children, noPresetConfigured, removedContent, contentError },
     forwardedRef
   ) => {
     const { formatMessage } = useIntl();
@@ -63,10 +65,23 @@ const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
                       {
                         id: 'tiptap-editor.content.unknownRemoved',
                         defaultMessage:
-                          'This content contained components the editor no longer knows ({types}). They are hidden here and will be permanently removed when you save.',
+                          'This content contains elements this editor no longer supports ({types}). They are hidden here and will be permanently removed when you save.',
                       },
                       { types: removedTypes.join(', ') }
                     )}
+                  </Typography>
+                </Status>
+              </Box>
+            )}
+            {contentError && (
+              <Box paddingLeft={2} paddingRight={2} paddingTop={2}>
+                <Status variant="warning">
+                  <Typography variant="pi">
+                    {formatMessage({
+                      id: 'tiptap-editor.content.invalid',
+                      defaultMessage:
+                        'Part of this content is invalid and could not be loaded. Saving will replace the stored content with what is shown here.',
+                    })}
                   </Typography>
                 </Status>
               </Box>

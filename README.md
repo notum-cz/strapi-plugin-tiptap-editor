@@ -440,7 +440,7 @@ const calloutComponent = defineRichTextComponent<CalloutAttrs>({
 - **Read-only behaviour** — a component your project has registered but the *active preset* doesn't enable still renders: its card shows a "Read-only in this preset" badge, the Edit button is hidden, and Delete stays available. This is because **every registered component is always part of the editor's schema** — the preset only gates *inserting and editing*, never *reading*. A document written under a richer preset (or before a component was disabled) keeps round-tripping through a narrower one instead of silently losing nodes on save.
 - **Unknown content notice** — if a stored document contains a node or mark the editor doesn't know (for example a component that was unregistered or renamed), the editor hides it, shows a warning above the toolbar, and removes it permanently only when the entry is saved. `stripUnknownContent` from `@notum-cz/strapi-plugin-tiptap-editor/shared` gives the frontend the same behaviour.
 
-Under the hood, a component's clipboard HTML is `<div data-type="name">` with one `data-<attribute-in-kebab-case>` attribute per schema attribute (e.g. `openInNewTab` becomes `data-open-in-new-tab`) — string attributes are written raw, everything else as JSON. Clearing an attribute back to `null` still writes `data-open-in-new-tab="null"` rather than dropping the attribute, for any attribute whose schema default isn't itself a string; for a string-typed attribute, clearing it is indistinguishable from leaving it at the default, so the attribute is simply omitted.
+Under the hood, a component's clipboard HTML is `<div data-type="name">` with one `data-<attribute-in-kebab-case>` attribute per schema attribute (e.g. `openInNewTab` becomes `data-open-in-new-tab`) — attributes whose schema default is a string are written raw, everything else (including strings under a `null` default) as JSON. Clearing an attribute back to `null` still writes `data-open-in-new-tab="null"` rather than dropping the attribute, for any attribute whose schema default isn't itself a string; for a string-typed attribute, clearing it is indistinguishable from leaving it at the default, so the attribute is simply omitted.
 
 ### Rendering Components on the Frontend
 
@@ -460,6 +460,7 @@ import { renderToReactElement } from '@tiptap/static-renderer/pm/react';
 import type { Node as ProseMirrorNode } from 'prosemirror-model';
 import type { ReactNode } from 'react';
 import {
+  stripUnknownContent,
   toNodeSpec,
   type RichTextComponentSchema,
 } from '@notum-cz/strapi-plugin-tiptap-editor/shared';
@@ -501,7 +502,7 @@ const rendered = renderToReactElement({
 
 (`@tiptap/html`'s `generateHTML(content, extensions)` follows the same idea if you need an HTML string instead of React elements — see [Rendering images on the frontend](#rendering-images-on-the-frontend) for that style with a built-in node.)
 
-**Strip unknown nodes before rendering.** `Node.fromJSON` — called internally by both `renderToReactElement` and `generateHTML` — throws if the stored JSON references a node type your `extensions` array doesn't define. That happens whenever the frontend's extension list doesn't exactly mirror what a document was written with (a component enabled in Strapi but not yet wired up on the frontend, or removed later). Write a small sanitizer that walks the JSON first and drops — or, for a container, unwraps into its children — any node or mark type absent from your renderer's `schema.nodes` / `schema.marks`, and run stored content through it before handing it to the renderer. The Notum Next.js starter for this plugin ships exactly this logic as a `stripUnknownContent(content, schema)` helper that returns `{ content, unknownNodeTypes, unknownMarkTypes }` — the sanitized document plus the two lists, so callers can log a warning when either is non-empty (that's what the `.content` above picks out).
+**Strip unknown nodes before rendering.** `Node.fromJSON` — called internally by both `renderToReactElement` and `generateHTML` — throws if the stored JSON references a node type your `extensions` array doesn't define. That happens whenever the frontend's extension list doesn't exactly mirror what a document was written with (a component enabled in Strapi but not yet wired up on the frontend, or removed later). `stripUnknownContent(content, schema)`, exported from `@notum-cz/strapi-plugin-tiptap-editor/shared` and imported above, walks the JSON first and drops — or, for a container, unwraps into its children — any node or mark type absent from your renderer's `schema.nodes` / `schema.marks`. It returns `{ content, unknownNodeTypes, unknownMarkTypes }` — the sanitized document plus the two lists, so callers can log a warning when either is non-empty (that's what the `.content` above picks out). The admin editor runs stored content through the same function.
 
 ### The `richTextComponents` API
 

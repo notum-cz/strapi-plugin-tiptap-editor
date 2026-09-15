@@ -8,7 +8,12 @@ import {
 } from '../../admin/src/utils/componentAttrs';
 import type { AnyRichTextComponentDefinition } from '../../admin/src/registry/types';
 
-const messages = { required: 'REQ', invalidJson: 'JSON', invalidNumber: 'NUM' };
+const messages = {
+  required: 'REQ',
+  invalidJson: 'JSON',
+  invalidNumber: 'NUM',
+  outOfRange: 'RANGE',
+};
 
 const definition: AnyRichTextComponentDefinition = {
   name: 'widget',
@@ -72,6 +77,24 @@ describe('validateAttrs', () => {
       size: 'NUM',
     });
     expect(validateAttrs(definition, { title: 'x', size: '' }, messages).values.size).toBeNull();
+  });
+
+  it('rejects numbers outside the declared min/max', () => {
+    const bounded = {
+      ...definition,
+      attributes: {
+        ...definition.attributes,
+        size: { default: null, form: { type: 'number' as const, label: 'Size', min: 1, max: 10 } },
+      },
+    };
+    expect(validateAttrs(bounded, { title: 'x', size: 0 }, messages).errors).toStrictEqual({
+      size: 'RANGE',
+    });
+    expect(validateAttrs(bounded, { title: 'x', size: '11' }, messages).errors).toStrictEqual({
+      size: 'RANGE',
+    });
+    expect(validateAttrs(bounded, { title: 'x', size: 10 }, messages).errors).toStrictEqual({});
+    expect(validateAttrs(bounded, { title: 'x', size: 10 }, messages).values.size).toBe(10);
   });
 
   it('parses json strings, keeps already-parsed values and reports invalid json', () => {

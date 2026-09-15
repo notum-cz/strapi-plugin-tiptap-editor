@@ -10,6 +10,7 @@ export interface ValidationMessages {
   required: string;
   invalidJson: string;
   invalidNumber: string;
+  outOfRange: string;
 }
 
 export const isContainerComponent = (definition: AnyRichTextComponentDefinition): boolean =>
@@ -91,8 +92,16 @@ export function validateAttrs(
           break;
         }
         const parsed = typeof raw === 'number' ? raw : Number(raw);
-        if (Number.isNaN(parsed)) errors[key] = messages.invalidNumber;
-        else values[key] = parsed;
+        if (Number.isNaN(parsed)) {
+          errors[key] = messages.invalidNumber;
+        } else if (
+          (field.min !== undefined && parsed < field.min) ||
+          (field.max !== undefined && parsed > field.max)
+        ) {
+          errors[key] = messages.outOfRange;
+        } else {
+          values[key] = parsed;
+        }
         break;
       }
       case 'boolean':

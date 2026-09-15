@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Extensions, JSONContent, getSchema } from '@tiptap/core';
 import { useEditor } from '@tiptap/react';
 import { type InputProps, useField } from '@strapi/strapi/admin';
@@ -93,13 +93,19 @@ export function useTiptapEditor(
     );
   }, [removedContent, name]);
 
+  // A ref, not state: the error fires synchronously inside `useEditor` on the first render, before
+  // this hook returns, so the flag is already readable. Editing stays allowed: locking the editor
+  // would leave the user no way to repair the entry.
+  const contentError = useRef(false);
+
   const editor = useEditor({
     extensions: extensions,
     content: prepared.content,
     // Safety net for shapes the sanitizer can't fix (invalid attrs, content expression mismatch).
-    // `enableContentCheck` stays off so the editor still mounts.
+    // `enableContentCheck` stays off so the editor still mounts with whatever Tiptap can recover.
     emitContentError: true,
     onContentError: ({ error }) => {
+      contentError.current = true;
       console.error(`[TiptapEditor] Invalid content in field "${name}":`, error);
     },
     onUpdate: ({ editor }) => {
@@ -108,5 +114,5 @@ export function useTiptapEditor(
     },
   });
 
-  return { editor, field, removedContent };
+  return { editor, field, removedContent, contentError: contentError.current };
 }

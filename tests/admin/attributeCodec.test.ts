@@ -11,10 +11,24 @@ describe('attributeCodec', () => {
     expect(dataAttributeName('href')).toBe('data-href');
   });
 
-  it('keeps strings raw and json-encodes everything else', () => {
-    expect(encodeAttribute('a "quoted" value')).toBe('a "quoted" value');
-    expect(encodeAttribute(false)).toBe('false');
-    expect(encodeAttribute([1, { a: 2 }])).toBe('[1,{"a":2}]');
+  it('keeps strings raw under a string default and json-encodes everything else', () => {
+    expect(encodeAttribute('a "quoted" value', '')).toBe('a "quoted" value');
+    expect(encodeAttribute(false, false)).toBe('false');
+    expect(encodeAttribute([1, { a: 2 }], [])).toBe('[1,{"a":2}]');
+  });
+
+  it('json-quotes strings under a null default so they never decode as another type', () => {
+    expect(encodeAttribute('12', null)).toBe('"12"');
+    expect(encodeAttribute('true', null)).toBe('"true"');
+    expect(encodeAttribute('/x', null)).toBe('"/x"');
+    expect(encodeAttribute(12, null)).toBe('12');
+    expect(encodeAttribute(null, null)).toBe('null');
+  });
+
+  it('round-trips every value type under a null default', () => {
+    for (const value of ['12', 'true', 'null', '{"a":1}', '/x', 12, true, null, { a: 1 }]) {
+      expect(decodeAttribute(encodeAttribute(value, null), null)).toStrictEqual(value);
+    }
   });
 
   it('decodes according to the default value type', () => {

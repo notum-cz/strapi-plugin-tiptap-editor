@@ -44,7 +44,11 @@ export function stripUnknownContent(content: JSONContent, schema: SanitizeSchema
       ? node.content.flatMap((child) => visit(child))
       : undefined;
 
-    if (typeof type === 'string' && !has(schema.nodes, type)) {
+    // A node without a string type has no name to report, but keeping it would make the schema
+    // throw and Tiptap would then mount an empty document.
+    if (typeof type !== 'string') return children ?? [];
+
+    if (!has(schema.nodes, type)) {
       unknownNodeTypes.add(type);
       return children ?? [];
     }

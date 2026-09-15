@@ -79,6 +79,19 @@ describe('prepareEditorContent', () => {
     expect(() => schema.nodeFromJSON(result.content)).not.toThrow();
   });
 
+  it('removes a node without a type so the schema can parse the rest', () => {
+    const doc = { type: 'doc', content: [paragraph('before'), { attrs: {} }, paragraph('after')] };
+    expect(() => schema.nodeFromJSON(doc)).toThrow();
+
+    const result = prepareEditorContent(doc, schema);
+
+    expect(result.content).toEqual({
+      type: 'doc',
+      content: [paragraph('before'), paragraph('after')],
+    });
+    expect(() => schema.nodeFromJSON(result.content)).not.toThrow();
+  });
+
   it('still yields the malformed-content fallback for unparseable JSON', () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
     const result = prepareEditorContent('{not json', schema);

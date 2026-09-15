@@ -71,7 +71,7 @@ export function createComponentExtension(
               if (value === undefined || (value === null && typeof spec.default === 'string')) {
                 return {};
               }
-              return { [dataAttributeName(key)]: encodeAttribute(value) };
+              return { [dataAttributeName(key)]: encodeAttribute(value, spec.default) };
             },
           },
         ])
@@ -85,15 +85,21 @@ export function createComponentExtension(
   });
 }
 
-/** Inserts a node at the cursor; containers start with one empty paragraph so the cursor has somewhere to go. */
+/**
+ * Inserts a node at the cursor. `createAndFill` gives a container whatever its content expression
+ * requires (one empty paragraph for `block+`), so the cursor has somewhere to go and the node is valid.
+ */
 export function insertRichTextComponent(
   editor: Editor,
   definition: AnyRichTextComponentDefinition,
   attrs: AttributeValues
 ): boolean {
-  const node = isContainerComponent(definition)
-    ? { type: definition.name, attrs, content: [{ type: 'paragraph' }] }
-    : { type: definition.name, attrs };
+  const filled = editor.schema.nodes[definition.name]?.createAndFill(attrs);
+  const node =
+    filled?.toJSON() ??
+    (isContainerComponent(definition)
+      ? { type: definition.name, attrs, content: [{ type: 'paragraph' }] }
+      : { type: definition.name, attrs });
   return editor.chain().focus().insertContent(node).run();
 }
 
@@ -126,8 +132,11 @@ export function useRichTextComponents(
         startIcon={<PuzzlePiece />}
       >
         {enabled.map((resolved) => (
-          <MenuItem key={resolved.definition.name} onSelect={() => setActive(resolved)}>
-            {resolved.definition.icon}
+          <MenuItem
+            key={resolved.definition.name}
+            onSelect={() => setActive(resolved)}
+            startIcon={resolved.definition.icon}
+          >
             {formatLabel(resolved.definition.label, formatMessage)}
           </MenuItem>
         ))}

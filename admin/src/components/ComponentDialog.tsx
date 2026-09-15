@@ -76,6 +76,10 @@ export const ComponentDialog: React.FC<ComponentDialogProps> = ({
         id: 'tiptap-editor.components.dialog.invalidNumber',
         defaultMessage: 'Enter a number',
       }),
+      outOfRange: formatMessage({
+        id: 'tiptap-editor.components.dialog.outOfRange',
+        defaultMessage: 'Enter a number within the allowed range',
+      }),
     });
     if (Object.keys(result.errors).length > 0) {
       setErrors(result.errors);

@@ -537,7 +537,7 @@ same entry, so one import covers both:
 ```tsx
 import { Node, getSchema } from '@tiptap/core';
 import { renderToReactElement } from '@tiptap/static-renderer/pm/react';
-import { buttonSchema, calloutSchema, toNodeSpec } from '@repo/rich-text';
+import { buttonSchema, calloutSchema, stripUnknownContent, toNodeSpec } from '@repo/rich-text';
 
 function rendererNode(schema) {
   const spec = toNodeSpec(schema); // drops the form metadata; keeps name/atom/content/attr defaults
