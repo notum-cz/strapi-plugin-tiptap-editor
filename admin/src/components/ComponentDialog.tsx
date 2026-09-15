@@ -86,6 +86,9 @@ export const ComponentDialog: React.FC<ComponentDialogProps> = ({
   };
 
   const Form = definition.form;
+  // A custom width only makes sense for a definition's own form; the generated one fits the default.
+  const dialogWidth = Form ? definition.dialog?.width : undefined;
+  const contentStyle = dialogWidth ? { width: dialogWidth, maxWidth: dialogWidth } : undefined;
 
   return (
     <Dialog.Root
@@ -95,9 +98,10 @@ export const ComponentDialog: React.FC<ComponentDialogProps> = ({
       }}
     >
       {open && (
-        <Dialog.Content>
+        <Dialog.Content style={contentStyle}>
           <Dialog.Header>{title}</Dialog.Header>
-          <Dialog.Body>
+          {/* Dialog.Content clips overflow, so the body scrolls: tall forms vertically, wide ones horizontally. */}
+          <Dialog.Body overflow="auto" maxHeight="calc(100vh - 16rem)">
             {Form ? (
               <Form
                 attrs={attrs}

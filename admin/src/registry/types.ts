@@ -56,6 +56,13 @@ export interface RichTextComponentDefinition<
   preview?: ComponentType<RichTextComponentPreviewProps<A>>;
   /** Replaces the generated dialog body. */
   form?: ComponentType<RichTextComponentFormProps<A>>;
+  dialog?: {
+    /**
+     * CSS width for the insert/edit dialog, for forms wider than the default Strapi Dialog
+     * (e.g. `"min(80rem, 95vw)"`). Only honoured when the definition has its own `form`.
+     */
+    width?: string;
+  };
   /** Full escape hatch: build the Tiptap extension yourself; name/label/icon still drive the menu. */
   extension?: (helpers: RichTextComponentHelpers, ctx: RichTextComponentContext) => AnyExtension;
 }

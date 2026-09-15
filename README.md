@@ -386,6 +386,7 @@ A definition builds on the same `name` / `content` / `attributes` shape as `Rich
   ```
 
 - **`form`** — replaces the generated dialog body entirely with your own component, receiving `{ attrs, onChange, errors, mode, options }`. Use this when an attribute needs a control the generated dialog doesn't have (a media picker, a rich color swatch, cross-field logic); otherwise the generated form (see [Editor UX](#editor-ux)) is usually enough.
+- **`dialog`** — `{ width?: string }`; a CSS width for the insert/edit dialog when your `form` needs more room than the default Strapi Dialog (`max-width: 42rem`), e.g. `dialog: { width: 'min(80rem, 95vw)' }`. Only honoured when the definition has its own `form`; the dialog body scrolls vertically when the form is tall and horizontally when its content is wider than the dialog.
 
 ### The `extension()` Escape Hatch
 
