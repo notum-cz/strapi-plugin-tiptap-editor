@@ -45,6 +45,12 @@ vi.mock('../../admin/src/components/ComponentAttributeForm', () => ({
   default: 'ComponentAttributeForm',
 }));
 
+// ─── Mock the theme palette ───────────────────────────────────────────────────
+const PALETTE = [{ label: 'Primary', color: 'var(--color-primary)' }];
+vi.mock('../../admin/src/hooks/useThemeConfig', () => ({
+  useThemeConfig: () => ({ colors: PALETTE }),
+}));
+
 // ─── Import the module under test ─────────────────────────────────────────────
 import { ComponentDialog } from '../../admin/src/components/ComponentDialog';
 import type { AnyRichTextComponentDefinition } from '../../admin/src/registry/types';
@@ -108,5 +114,12 @@ describe('ComponentDialog width', () => {
     const body = find(render({ ...base, form: CustomForm }), byType('Dialog.Body'));
     expect(body.props.overflow).toBe('auto');
     expect(body.props.maxHeight).toBeDefined();
+  });
+});
+
+describe('ComponentDialog palette', () => {
+  it('hands the theme colours to a custom form', () => {
+    const form = find(render({ ...base, form: CustomForm }), byType(CustomForm as any));
+    expect(form.props.colors).toStrictEqual(PALETTE);
   });
 });

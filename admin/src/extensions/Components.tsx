@@ -8,12 +8,15 @@ import {
   type AnyExtension,
   type Editor,
 } from '@tiptap/core';
+import { Plugin, PluginKey } from '@tiptap/pm/state';
 import { NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react';
 import { MenuItem, SimpleMenu } from '@strapi/design-system';
 import { PuzzlePiece } from '@strapi/icons';
 import type { TiptapPresetConfig } from '../../../shared/src/types';
 import ComponentDialog from '../components/ComponentDialog';
 import { GenericComponentNodeView } from '../components/ComponentNodeView';
+import { InlineComponentNodeView } from '../components/InlineComponentNodeView';
+import { isInlineComponent } from '../../../shared/src/components/toNodeSpec';
 import { resolveRichTextComponents } from '../registry/richTextComponents';
 import type {
   AnyRichTextComponentDefinition,
@@ -46,6 +49,70 @@ export function createComponentExtension(
   }
   const { name, content, attributes } = definition;
   const isContainer = isContainerComponent(definition);
+  const addOptions = () => ({ enabled: ctx.enabled, component: ctx.options });
+  const addAttributes = () =>
+    Object.fromEntries(
+      Object.entries(attributes).map(([key, spec]) => [
+        key,
+        {
+          default: spec.default,
+          parseHTML: (element: HTMLElement) =>
+            decodeAttribute(element.getAttribute(dataAttributeName(key)), spec.default),
+          renderHTML: (attrs: Record<string, unknown>) => {
+            const value = attrs[key];
+            // A cleared value is written out as `data-x="null"`: dropping the attribute would make
+            // the clipboard restore the schema default instead. String defaults are the exception,
+            // since there an absent attribute already decodes back to the default.
+            if (value === undefined || (value === null && typeof spec.default === 'string')) {
+              return {};
+            }
+            return { [dataAttributeName(key)]: encodeAttribute(value, spec.default) };
+          },
+        },
+      ])
+    );
+
+  if (isInlineComponent(definition)) {
+    return Node.create({
+      name,
+      group: 'inline',
+      inline: true,
+      atom: true,
+      // No marks: a link or colour around an inline atom has nothing to style, and a linked
+      // glyph would be an anchor without an accessible name. The node's own attributes carry
+      // whatever styling it needs.
+      marks: '',
+      // `marks: ''` only governs children, so a mark applied over a selection that spans the
+      // atom still lands on it. Strip it after every change that touched the document.
+      addProseMirrorPlugins: () => [
+        new Plugin({
+          key: new PluginKey(`${name}-strip-marks`),
+          appendTransaction: (transactions, _oldState, newState) => {
+            if (!transactions.some((tr) => tr.docChanged)) {
+              return null;
+            }
+            const tr = newState.tr;
+            newState.doc.descendants((node, pos) => {
+              if (node.type.name === name && node.marks.length > 0) {
+                tr.removeMark(pos, pos + node.nodeSize);
+              }
+            });
+            return tr.steps.length > 0 ? tr : null;
+          },
+        }),
+      ],
+      draggable: false,
+      selectable: true,
+      addOptions,
+      addAttributes,
+      parseHTML: () => [{ tag: `span[data-type="${name}"]` }],
+      renderHTML: ({ HTMLAttributes }) => [
+        'span',
+        mergeAttributes({ 'data-type': name }, HTMLAttributes),
+      ],
+      addNodeView: () => ReactNodeViewRenderer(InlineComponentNodeView),
+    });
+  }
 
   return Node.create({
     name,
@@ -54,28 +121,8 @@ export function createComponentExtension(
     atom: !isContainer,
     draggable: true,
     selectable: true,
-    addOptions: () => ({ enabled: ctx.enabled, component: ctx.options }),
-    addAttributes: () =>
-      Object.fromEntries(
-        Object.entries(attributes).map(([key, spec]) => [
-          key,
-          {
-            default: spec.default,
-            parseHTML: (element: HTMLElement) =>
-              decodeAttribute(element.getAttribute(dataAttributeName(key)), spec.default),
-            renderHTML: (attrs: Record<string, unknown>) => {
-              const value = attrs[key];
-              // A cleared value is written out as `data-x="null"`: dropping the attribute would make
-              // the clipboard restore the schema default instead. String defaults are the exception,
-              // since there an absent attribute already decodes back to the default.
-              if (value === undefined || (value === null && typeof spec.default === 'string')) {
-                return {};
-              }
-              return { [dataAttributeName(key)]: encodeAttribute(value, spec.default) };
-            },
-          },
-        ])
-      ),
+    addOptions,
+    addAttributes,
     parseHTML: () => [{ tag: `div[data-type="${name}"]` }],
     renderHTML: ({ HTMLAttributes }) =>
       isContainer

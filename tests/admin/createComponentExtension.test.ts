@@ -27,9 +27,14 @@ vi.mock('../../admin/src/components/ComponentDialog', () => ({ default: 'Compone
 vi.mock('../../admin/src/components/ComponentNodeView', () => ({
   GenericComponentNodeView: 'GenericComponentNodeView',
 }));
+vi.mock('../../admin/src/components/InlineComponentNodeView', () => ({
+  InlineComponentNodeView: 'InlineComponentNodeView',
+}));
 
 // ─── Import the modules under test ────────────────────────────────────────────
 import { getSchema } from '@tiptap/core';
+import { EditorState } from '@tiptap/pm/state';
+import { Transform } from '@tiptap/pm/transform';
 import { ReactNodeViewRenderer } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import {
@@ -51,7 +56,89 @@ const container = defineRichTextComponent({
   content: 'block+',
   attributes: { tone: { default: 'info' } },
 });
+const inline = defineRichTextComponent({
+  name: 'badge',
+  label: 'Badge',
+  inline: true,
+  attributes: { tone: { default: 'info' } },
+});
 const ctx = { enabled: true, options: { x: 1 } };
+
+describe('createComponentExtension inline', () => {
+  it('builds a selectable inline atom that takes no marks and is not draggable', () => {
+    const ext = createComponentExtension(inline, ctx) as any;
+    expect(ext.name).toBe('badge');
+    expect(ext.config.group).toBe('inline');
+    expect(ext.config.inline).toBe(true);
+    expect(ext.config.atom).toBe(true);
+    expect(ext.config.marks).toBe('');
+    expect(ext.config.draggable).toBe(false);
+    expect(ext.config.selectable).toBe(true);
+  });
+
+  it('renders and parses a span carrying the data attributes', () => {
+    const ext = createComponentExtension(inline, ctx) as any;
+    expect(ext.config.parseHTML()).toStrictEqual([{ tag: 'span[data-type="badge"]' }]);
+    const html = ext.config.renderHTML({ HTMLAttributes: { 'data-tone': 'warn' } });
+    expect(html).toStrictEqual(['span', { 'data-type': 'badge', 'data-tone': 'warn' }]);
+    expect(ext.config.addAttributes().tone.renderHTML({ tone: 'warn' })).toStrictEqual({
+      'data-tone': 'warn',
+    });
+  });
+
+  it('uses the inline node view', () => {
+    const ext = createComponentExtension(inline, ctx) as any;
+    expect(ext.config.addNodeView()).toBe('nodeview');
+    expect(ReactNodeViewRenderer).toHaveBeenCalledWith('InlineComponentNodeView');
+  });
+
+  it('is accepted inside paragraphs and refused at document level', () => {
+    const schema = getSchema([StarterKit, createComponentExtension(inline, ctx)]);
+    const badge = schema.nodes.badge;
+    expect(badge.isInline).toBe(true);
+    expect(badge.isAtom).toBe(true);
+    expect(schema.nodes.paragraph.contentMatch.matchType(badge)).toBeTruthy();
+    expect(schema.nodes.doc.contentMatch.matchType(badge)).toBeNull();
+  });
+
+  // `marks: ''` only governs a node's children, so a mark applied over a selection that spans
+  // the atom still lands on it. The appended transaction is what keeps the stored JSON clean.
+  it('strips a mark applied across the node and keeps it on the text around it', () => {
+    const ext = createComponentExtension(inline, ctx) as any;
+    const schema = getSchema([StarterKit, ext]);
+    const doc = schema.nodes.doc.create(null, [
+      schema.nodes.paragraph.create(null, [
+        schema.text('Trust Score '),
+        schema.nodes.badge.create({ tone: 'warn' }),
+        schema.text(' helps'),
+      ]),
+    ]);
+    const state = EditorState.create({ schema, doc, plugins: ext.config.addProseMirrorPlugins() });
+    const link = schema.marks.link.create({ href: '/trust' });
+    const next = state.apply(state.tr.addMark(0, doc.content.size, link));
+
+    const [text, badge, tail] = next.doc.firstChild!.content.content;
+    expect(text.marks.map((m) => m.type.name)).toStrictEqual(['link']);
+    expect(badge.type.name).toBe('badge');
+    expect(badge.marks).toHaveLength(0);
+    expect(tail.marks.map((m) => m.type.name)).toStrictEqual(['link']);
+  });
+
+  it('wraps an inline node in a paragraph when inserted at a block boundary', () => {
+    const schema = getSchema([StarterKit, createComponentExtension(inline, ctx)]);
+    const doc = schema.nodes.doc.createAndFill()!;
+    const tr = new Transform(doc).replaceWith(
+      0,
+      doc.content.size,
+      schema.nodes.badge.create({ tone: 'warn' })
+    );
+    // `toEqual`, not `toStrictEqual`: ProseMirror's toJSON output carries no Object prototype.
+    expect(tr.doc.toJSON()).toEqual({
+      type: 'doc',
+      content: [{ type: 'paragraph', content: [{ type: 'badge', attrs: { tone: 'warn' } }] }],
+    });
+  });
+});
 
 describe('createComponentExtension', () => {
   it('names the node after the schema and makes atoms atomic block nodes', () => {

@@ -78,3 +78,5 @@ export type {
   RichTextComponentPreviewProps,
 } from './registry/types';
 export type { ButtonAttrs } from './builtins/button';
+export { ColorPickerPopover } from './components/ColorPickerPopover';
+export type { ThemeColorEntry } from '../../shared/src/types';

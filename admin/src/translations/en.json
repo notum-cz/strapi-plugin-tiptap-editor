@@ -73,6 +73,7 @@
   "tiptap-editor.components.dialog.invalidNumber": "Enter a number",
   "tiptap-editor.components.dialog.outOfRange": "Enter a number within the allowed range",
   "tiptap-editor.components.nodeView.edit": "Edit component",
+  "tiptap-editor.components.nodeView.editInline": "Edit {label}",
   "tiptap-editor.components.nodeView.delete": "Delete component",
   "tiptap-editor.components.nodeView.readOnly": "Read-only in this preset",
   "tiptap-editor.components.button.label": "Button",

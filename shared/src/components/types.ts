@@ -32,14 +32,23 @@ export interface RichTextComponentSchema {
   label: string;
   /** ProseMirror content expression, e.g. 'block+'. Present means container, absent means atom. */
   content?: string;
+  /**
+   * Sits inside a paragraph instead of between blocks. Always an atom (cannot combine with
+   * `content`) and takes no marks: a linked or coloured inline atom has nothing for the mark to
+   * style, and a link around it would be an anchor without an accessible name.
+   */
+  inline?: boolean;
   attributes: Record<string, RichTextAttributeSpec>;
 }
 
 /** Framework-neutral node description both the editor and a renderer turn into a Tiptap Node. */
 export interface RichTextNodeSpec {
   name: string;
-  group: 'block';
+  group: 'block' | 'inline';
+  inline: boolean;
   atom: boolean;
+  /** Only present for inline nodes, where it is the empty mark set. */
+  marks?: '';
   content?: string;
   attributes: Record<string, { default: RichTextAttributeValue }>;
 }
