@@ -280,4 +280,30 @@ export const TiptapInputStyles = styled.div`
   .rich-text-component__content {
     min-height: 1.5em;
   }
+  /* Inline components sit inside running text, so nothing here may change the line height. */
+  .rich-text-component--inline {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0 2px;
+    line-height: 1;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+  }
+  .rich-text-component__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .rich-text-component__chip:disabled {
+    cursor: default;
+  }
 `;

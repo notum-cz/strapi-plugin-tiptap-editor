@@ -55,6 +55,18 @@ describe('registry', () => {
       /reserved/
     );
   });
+
+  it('refuses to register an inline container', () => {
+    expect(() =>
+      registerRichTextComponent({
+        name: 'badge',
+        label: 'Badge',
+        inline: true,
+        content: 'inline*',
+        attributes: {},
+      })
+    ).toThrow('[TiptapEditor] "badge" cannot be both inline and a container');
+  });
 });
 
 describe('resolveRichTextComponents', () => {

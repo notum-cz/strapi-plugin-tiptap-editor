@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Dialog } from '@strapi/design-system';
 import { useIntl } from 'react-intl';
 import ComponentAttributeForm from './ComponentAttributeForm';
+import { useThemeConfig } from '../hooks/useThemeConfig';
 import type { AnyRichTextComponentDefinition } from '../registry/types';
 import {
   toFormValues,
@@ -32,6 +33,7 @@ export const ComponentDialog: React.FC<ComponentDialogProps> = ({
   onSubmit,
 }) => {
   const { formatMessage } = useIntl();
+  const colors = useThemeConfig()?.colors ?? [];
   const [attrs, setAttrs] = React.useState<AttributeValues>(() =>
     toFormValues(definition, initialAttrs)
   );
@@ -113,6 +115,7 @@ export const ComponentDialog: React.FC<ComponentDialogProps> = ({
                 errors={errors}
                 mode={mode}
                 options={options}
+                colors={colors}
               />
             ) : (
               <ComponentAttributeForm

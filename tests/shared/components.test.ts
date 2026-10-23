@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   toNodeSpec,
+  isInlineComponent,
   isValidComponentName,
   isReservedNodeName,
   RESERVED_NODE_NAMES,
@@ -45,6 +46,42 @@ describe('toNodeSpec', () => {
       href: { default: '' },
       count: { default: 0 },
     });
+  });
+});
+
+const inline: RichTextComponentSchema = {
+  name: 'badge',
+  label: 'Badge',
+  inline: true,
+  attributes: { tone: { default: 'info' } },
+};
+
+describe('toNodeSpec inline', () => {
+  it('maps the inline flag to an inline atom with no marks', () => {
+    const spec = toNodeSpec(inline);
+    expect(spec.group).toBe('inline');
+    expect(spec.inline).toBe(true);
+    expect(spec.atom).toBe(true);
+    expect(spec.marks).toBe('');
+    expect(spec.content).toBeUndefined();
+  });
+
+  it('keeps block components as they were', () => {
+    const spec = toNodeSpec(atom);
+    expect(spec.group).toBe('block');
+    expect(spec.inline).toBe(false);
+    expect(spec).not.toHaveProperty('marks');
+  });
+
+  it('rejects an inline component with content', () => {
+    expect(() => toNodeSpec({ ...inline, content: 'inline*' })).toThrow(
+      'Component "badge" cannot be both inline and a container'
+    );
+  });
+
+  it('isInlineComponent reads the flag', () => {
+    expect(isInlineComponent(inline)).toBe(true);
+    expect(isInlineComponent(atom)).toBe(false);
   });
 });
 

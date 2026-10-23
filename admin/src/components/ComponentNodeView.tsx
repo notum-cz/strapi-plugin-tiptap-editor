@@ -4,6 +4,7 @@ import { NodeViewContent, NodeViewWrapper, type NodeViewProps } from '@tiptap/re
 import { Flex, IconButton, Status, Typography } from '@strapi/design-system';
 import { Pencil, Trash } from '@strapi/icons';
 import ComponentDialog from './ComponentDialog';
+import { useThemeConfig } from '../hooks/useThemeConfig';
 import { getRichTextComponent } from '../registry/richTextComponents';
 import { attributeSummary, isContainerComponent } from '../utils/componentAttrs';
 import { formatLabel } from '../utils/formatLabel';
@@ -18,6 +19,7 @@ export function GenericComponentNodeView(props: NodeViewProps) {
   const options = (props.extension.options.component ?? {}) as Record<string, unknown>;
   const attrs = props.node.attrs as Record<string, unknown>;
   const isContainer = definition ? isContainerComponent(definition) : false;
+  const colors = useThemeConfig()?.colors ?? [];
   const Preview = definition?.preview;
   const content = isContainer ? (
     <NodeViewContent className="rich-text-component__content" />
@@ -69,7 +71,13 @@ export function GenericComponentNodeView(props: NodeViewProps) {
       </div>
       <div className="rich-text-component__body">
         {Preview ? (
-          <Preview attrs={attrs} options={options} enabled={enabled} selected={props.selected}>
+          <Preview
+            attrs={attrs}
+            options={options}
+            enabled={enabled}
+            selected={props.selected}
+            colors={colors}
+          >
             {content}
           </Preview>
         ) : (

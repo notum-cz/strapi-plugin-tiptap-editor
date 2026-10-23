@@ -4,6 +4,7 @@ import {
   type TiptapPresetConfig,
 } from '../../../shared/src/types';
 import { isReservedNodeName, isValidComponentName } from '../../../shared/src/components/names';
+import { isInlineComponent } from '../../../shared/src/components/toNodeSpec';
 import type {
   AnyRichTextComponentDefinition,
   ResolvedRichTextComponent,
@@ -28,6 +29,9 @@ export function registerRichTextComponent(definition: AnyRichTextComponentDefini
   }
   if (!isValidComponentName(name)) {
     throw new Error(`[TiptapEditor] "${name}" is an invalid component name`);
+  }
+  if (isInlineComponent(definition) && definition.content) {
+    throw new Error(`[TiptapEditor] "${name}" cannot be both inline and a container`);
   }
   if (registry.has(name)) {
     console.info(`[TiptapEditor] Replacing rich-text component "${name}"`);

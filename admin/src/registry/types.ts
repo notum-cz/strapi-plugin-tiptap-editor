@@ -2,6 +2,7 @@ import type { ComponentType, ReactNode } from 'react';
 import type { AnyExtension, Extension, Mark, Node, mergeAttributes } from '@tiptap/core';
 import type { NodeViewContent, NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react';
 import type { RichTextComponentSchema } from '../../../shared/src/components/types';
+import type { ThemeColorEntry } from '../../../shared/src/types';
 
 export type IntlLabel = string | { id: string; defaultMessage: string };
 
@@ -19,6 +20,8 @@ export interface RichTextComponentPreviewProps<
   options: Record<string, unknown>;
   enabled: boolean;
   selected: boolean;
+  /** The configured `theme.colors` palette, empty when the plugin has none. */
+  colors: ThemeColorEntry[];
   /** Editable content slot; only passed for container components. */
   children?: ReactNode;
 }
@@ -31,6 +34,8 @@ export interface RichTextComponentFormProps<
   errors: Partial<Record<keyof A, string>>;
   mode: 'insert' | 'edit';
   options: Record<string, unknown>;
+  /** The configured `theme.colors` palette, so a form can offer the same swatches as text colour. */
+  colors: ThemeColorEntry[];
 }
 
 /** The bundled Tiptap primitives, handed to escape-hatch extensions so hosts never import @tiptap themselves. */

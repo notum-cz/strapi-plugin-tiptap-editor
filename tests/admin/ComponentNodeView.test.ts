@@ -51,6 +51,12 @@ vi.mock('../../admin/src/components/ComponentDialog', () => ({
   default: 'ComponentDialog',
 }));
 
+// ─── Mock the theme palette ───────────────────────────────────────────────────
+const PALETTE = [{ label: 'Primary', color: 'var(--color-primary)' }];
+vi.mock('../../admin/src/hooks/useThemeConfig', () => ({
+  useThemeConfig: () => ({ colors: PALETTE }),
+}));
+
 // ─── Import the module under test ─────────────────────────────────────────────
 import { GenericComponentNodeView } from '../../admin/src/components/ComponentNodeView';
 import {
@@ -159,5 +165,16 @@ describe('GenericComponentNodeView', () => {
     const tree = GenericComponentNodeView(buildProps('button', { label: 'Read more', href: '/d' }));
     expect(find(tree, byType('NodeViewContent'))).toBeUndefined();
     expect(find(tree, containsText('Typography', 'Label: Read more · URL: /d'))).toBeDefined();
+  });
+
+  it('hands the theme colours to the definition preview', () => {
+    registerRichTextComponent({
+      name: 'swatch',
+      label: 'Swatch',
+      preview: 'SwatchPreview',
+      attributes: {},
+    } as any);
+    const preview = find(GenericComponentNodeView(buildProps('swatch', {})), byType('SwatchPreview'));
+    expect(preview.props.colors).toStrictEqual(PALETTE);
   });
 });

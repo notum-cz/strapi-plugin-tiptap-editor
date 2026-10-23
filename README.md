@@ -368,7 +368,7 @@ A definition builds on the same `name` / `content` / `attributes` shape as `Rich
 - **`icon`** — a `ReactNode` shown next to the label in the menu and on the component's card.
 - **`defaultAttrs`** — overrides the schema's own attribute defaults for a freshly inserted node.
 - **`validate`** — runs after the generated field checks on submit; return `{ [attribute]: message }` for the ones that fail, or `null`/nothing.
-- **`preview`** — rendered inside the generic card instead of the default attribute summary. Receives `{ attrs, options, enabled, selected, children }`; `children` is the editable content slot, passed only for containers (components with `content`):
+- **`preview`** — rendered inside the generic card instead of the default attribute summary. Receives `{ attrs, options, enabled, selected, colors, children }`; `children` is the editable content slot, passed only for containers (components with `content`):
 
   ```tsx
   // src/admin/components/CalloutPreview.tsx
@@ -385,8 +385,37 @@ A definition builds on the same `name` / `content` / `attributes` shape as `Rich
   }
   ```
 
-- **`form`** — replaces the generated dialog body entirely with your own component, receiving `{ attrs, onChange, errors, mode, options }`. Use this when an attribute needs a control the generated dialog doesn't have (a media picker, a rich color swatch, cross-field logic); otherwise the generated form (see [Editor UX](#editor-ux)) is usually enough.
+- **`form`** — replaces the generated dialog body entirely with your own component, receiving `{ attrs, onChange, errors, mode, options, colors }`. Use this when an attribute needs a control the generated dialog doesn't have (a media picker, a rich color swatch, cross-field logic); otherwise the generated form (see [Editor UX](#editor-ux)) is usually enough.
 - **`dialog`** — `{ width?: string }`; a CSS width for the insert/edit dialog when your `form` needs more room than the default Strapi Dialog (`max-width: 42rem`), e.g. `dialog: { width: 'min(80rem, 95vw)' }`. Only honoured when the definition has its own `form`; the dialog body scrolls vertically when the form is tall and horizontally when its content is wider than the dialog.
+
+### Inline components
+
+A schema with `inline: true` becomes an **inline atom** instead of a block: it sits inside a paragraph, a heading or a list item, between words, and is inserted at the cursor from the same Insert menu. Use it for a glyph, a badge, a footnote marker — anything that belongs in the flow of a sentence.
+
+```ts
+export const badgeSchema: RichTextComponentSchema = {
+  name: 'badge',
+  label: 'Badge',
+  inline: true,
+  attributes: {
+    tone: {
+      default: 'info',
+      form: { type: 'select', label: 'Tone', options: [{ value: 'info', label: 'Info' }] },
+    },
+  },
+};
+```
+
+What changes compared to a block component:
+
+- **Always an atom.** `inline` and `content` do not combine; `registerRichTextComponent` (and `toNodeSpec`) throw when a schema has both.
+- **No marks.** Bold, link, colour and highlight never stay on the node: an inline atom has nothing for a mark to style, and a link wrapped around a glyph would be an anchor without an accessible name. The node is created with `marks: ''`, and because that only governs a node's children, an appended transaction also strips any mark applied over a selection that spans the node. Linking such a selection links the text around it and leaves the node alone. Whatever styling the node needs (a colour, a size) belongs in its own attributes. In the editor the chip is middle-aligned to the line, the frontend decides the exact baseline.
+- **Markup.** Clipboard HTML is `<span data-type="name" data-…>` instead of a `div`, with the same `data-<attribute>` encoding.
+- **Chip instead of card.** The node renders as a compact `<span>` chip showing the definition's `preview` (which receives no `children`), or its icon and label when there is none. The chip is a button: clicking it opens the edit dialog when the active preset enables the component, and it is disabled (still visible, still deletable with Backspace/Delete) when the preset does not. There is no drag handle, nothing in the chip changes the line height of the surrounding text.
+
+### Palette in custom forms
+
+Both `form` and `preview` receive `colors`, the `theme.colors` palette from the plugin config (see [Colors](#colors)), as `ThemeColorEntry[]` (`{ label, color }`), empty when none is configured. The `./strapi-admin` entry also exports `ColorPickerPopover`, the same swatch grid the text-colour and highlight buttons use (`{ colors, activeColor, onSelect, onRemove }`), so a form can offer "pick from the brand palette" inside a `Popover` from `@strapi/design-system` without rebuilding it. Store the picked `color` string as-is, it is whatever the config lists (a hex value or a `var(--token)`), exactly as the text-colour mark stores it.
 
 ### The `extension()` Escape Hatch
 
@@ -436,18 +465,18 @@ const calloutComponent = defineRichTextComponent<CalloutAttrs>({
 
   An attribute with no `form` is stored and round-tripped but never shown in the dialog.
 
-- **Generic card** — every component node renders inside the same card shape: a header (drag handle, icon, label, and Edit/Delete actions) and a body (the definition's `preview`, or a generated "Label: value" summary of its form-visible attributes when there's no `preview`). A container's editable ProseMirror content flows into `preview` as `children`; without a `preview`, it renders directly below the summary.
+- **Generic card** — every block component node renders inside the same card shape: a header (drag handle, icon, label, and Edit/Delete actions) and a body (the definition's `preview`, or a generated "Label: value" summary of its form-visible attributes when there's no `preview`). A container's editable ProseMirror content flows into `preview` as `children`; without a `preview`, it renders directly below the summary. Inline components render as a chip instead, see [Inline components](#inline-components).
 - **Read-only behaviour** — a component your project has registered but the *active preset* doesn't enable still renders: its card shows a "Read-only in this preset" badge, the Edit button is hidden, and Delete stays available. This is because **every registered component is always part of the editor's schema** — the preset only gates *inserting and editing*, never *reading*. A document written under a richer preset (or before a component was disabled) keeps round-tripping through a narrower one instead of silently losing nodes on save.
 - **Unknown content notice** — if a stored document contains a node or mark the editor doesn't know (for example a component that was unregistered or renamed), the editor hides it, shows a warning above the toolbar, and removes it permanently only when the entry is saved. `stripUnknownContent` from `@notum-cz/strapi-plugin-tiptap-editor/shared` gives the frontend the same behaviour.
 
-Under the hood, a component's clipboard HTML is `<div data-type="name">` with one `data-<attribute-in-kebab-case>` attribute per schema attribute (e.g. `openInNewTab` becomes `data-open-in-new-tab`) — attributes whose schema default is a string are written raw, everything else (including strings under a `null` default) as JSON. Clearing an attribute back to `null` still writes `data-open-in-new-tab="null"` rather than dropping the attribute, for any attribute whose schema default isn't itself a string; for a string-typed attribute, clearing it is indistinguishable from leaving it at the default, so the attribute is simply omitted.
+Under the hood, a component's clipboard HTML is `<div data-type="name">` (`<span data-type="name">` for an inline component) with one `data-<attribute-in-kebab-case>` attribute per schema attribute (e.g. `openInNewTab` becomes `data-open-in-new-tab`) — attributes whose schema default is a string are written raw, everything else (including strings under a `null` default) as JSON. Clearing an attribute back to `null` still writes `data-open-in-new-tab="null"` rather than dropping the attribute, for any attribute whose schema default isn't itself a string; for a string-typed attribute, clearing it is indistinguishable from leaving it at the default, so the attribute is simply omitted.
 
 ### Rendering Components on the Frontend
 
 The published `@notum-cz/strapi-plugin-tiptap-editor/shared` entry is meant to be imported from both your Strapi admin customizations and your frontend, so a component's shape is defined exactly once. Alongside the config helpers above, it exports:
 
 - **`RichTextComponentSchema`**, **`RichTextAttributeSpec`**, **`RichTextAttributeFormField`** — the plain-object schema shape (no React, no Tiptap) used to register a component and, via `toNodeSpec`, to render it.
-- **`toNodeSpec(schema)`** — reduces a `RichTextComponentSchema` to a `RichTextNodeSpec`: `name`, `group: 'block'`, `atom` (true when there's no `content`), the `content` expression if any, and attribute defaults with the `form` metadata dropped — everything a ProseMirror schema needs, nothing else.
+- **`toNodeSpec(schema)`** — reduces a `RichTextComponentSchema` to a `RichTextNodeSpec`: `name`, `group` (`'block'`, or `'inline'` for an inline component), `inline`, `atom` (true when there's no `content`), `marks: ''` for inline components, the `content` expression if any, and attribute defaults with the `form` metadata dropped — everything a ProseMirror schema needs, nothing else. `isInlineComponent(schema)` reads the flag.
 - **`buttonSchema`** (and `BUILT_IN_COMPONENT_SCHEMAS`) — the plugin's own built-in schemas, so a frontend can render `button` without redefining it.
 - **`isValidComponentName`**, **`isReservedNodeName`**, **`RESERVED_NODE_NAMES`** — the same name rules [Config Validation](#config-validation) enforces on the server.
 
@@ -479,7 +508,9 @@ function rendererNode(schema: RichTextComponentSchema) {
   return Node.create({
     name: spec.name,
     group: spec.group,
+    inline: spec.inline,
     atom: spec.atom,
+    marks: spec.marks,
     content: spec.content,
     addAttributes: () => spec.attributes,
   });
