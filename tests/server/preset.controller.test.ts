@@ -11,7 +11,8 @@ const makeStrapi = (presets: Record<string, unknown>) => ({
       // Inline the service logic so controller tests are self-contained
       return {
         listPresetNames: () => Object.keys(presets),
-        getPreset: (name: string) => (presets as any)[name] ?? null,
+        getPreset: (name: string) =>
+          Object.prototype.hasOwnProperty.call(presets, name) ? (presets as any)[name] : null,
       };
     }),
   }),
@@ -50,6 +51,16 @@ describe('preset controller (SERVER-03)', () => {
     const ctx: any = makeCtx({ params: { name: 'does-not-exist' } });
     await controller.findOne(ctx);
     expect(ctx.body).toStrictEqual(MINIMAL_PRESET_CONFIG);
+  });
+
+  it('findOne ignores inherited Object.prototype keys like constructor and toString', async () => {
+    const strapi = makeStrapi({ rich: { bold: true } }) as any;
+    const controller = controllers.preset({ strapi });
+    for (const protoKey of ['constructor', 'toString']) {
+      const ctx: any = makeCtx({ params: { name: protoKey } });
+      await controller.findOne(ctx);
+      expect(ctx.body).toStrictEqual(MINIMAL_PRESET_CONFIG);
+    }
   });
 
   it('findOne throws 400 when name param is missing', async () => {

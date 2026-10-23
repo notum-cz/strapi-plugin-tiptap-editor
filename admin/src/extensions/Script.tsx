@@ -2,7 +2,12 @@ import { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import { ToolbarButton } from '../components/ToolbarButton';
 import { useIntl } from 'react-intl';
+import { SubScript } from '../icons/SubScript';
+import { SuperScript } from '../icons/SuperScript';
 
+/**
+ * Provides toolbar toggle buttons for superscript and subscript marks.
+ */
 export function useScript(
   editor: Editor | null,
   props: { disabled?: boolean } = { disabled: false }
@@ -19,16 +24,11 @@ export function useScript(
           canToggleSubscript: false,
         };
       }
-      const ed = ctx.editor;
-      const canPerformAction = (cmd: string): boolean => {
-        const chain = ed.can().chain() as Record<string, any>;
-        return typeof chain[cmd] === 'function' ? chain[cmd]().run() : false;
-      };
       return {
         isSuperscript: ctx.editor.isActive('superscript') ?? false,
-        canToggleSuperscript: canPerformAction('toggleSuperscript'),
+        canToggleSuperscript: ctx.editor.can().toggleSuperscript?.() ?? false,
         isSubscript: ctx.editor.isActive('subscript') ?? false,
-        canToggleSubscript: canPerformAction('toggleSubscript'),
+        canToggleSubscript: ctx.editor.can().toggleSubscript?.() ?? false,
       };
     },
   });
@@ -45,12 +45,9 @@ export function useScript(
     superscriptButton: (
       <ToolbarButton
         onClick={toggleSuperscript}
-        icon={
-          <>
-            x<sup>2</sup>
-          </>
-        }
+        icon={<SuperScript />}
         active={editorState?.isSuperscript ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canToggleSuperscript}
         tooltip={formatMessage({
           id: 'tiptap-editor.toolbar.superscript',
@@ -61,12 +58,9 @@ export function useScript(
     subscriptButton: (
       <ToolbarButton
         onClick={toggleSubscript}
-        icon={
-          <>
-            x<sub>2</sub>
-          </>
-        }
+        icon={<SubScript />}
         active={editorState?.isSubscript ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canToggleSubscript}
         tooltip={formatMessage({
           id: 'tiptap-editor.toolbar.subscript',

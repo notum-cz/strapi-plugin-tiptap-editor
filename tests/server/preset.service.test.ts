@@ -28,9 +28,13 @@ describe('preset service (SERVER-02, SERVER-03)', () => {
     expect(service.getPreset('rich')).toStrictEqual(richConfig);
   });
 
-  it('getPreset() returns null for unknown name', () => {
+  it('getPreset() and getEffectivePreset() return null for unknown and inherited prototype names', async () => {
     const strapi = makeStrapi({ rich: { bold: true } }) as any;
     const service = services.preset({ strapi });
     expect(service.getPreset('unknown')).toBeNull();
+    expect(service.getPreset('constructor')).toBeNull();
+    expect(service.getPreset('toString')).toBeNull();
+    expect(await service.getEffectivePreset('constructor')).toBeNull();
+    expect(await service.getEffectivePreset('toString')).toBeNull();
   });
 });

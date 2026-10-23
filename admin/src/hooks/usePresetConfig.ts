@@ -10,6 +10,10 @@ export type PresetConfigResult = {
   isLoading: boolean;
 };
 
+/**
+ * React hook that fetches the effective TipTap preset configuration from the backend,
+ * falling back to `MINIMAL_PRESET_CONFIG` if no preset is specified or the request fails.
+ */
 export function usePresetConfig(presetName?: string): PresetConfigResult {
   const { get } = useFetchClient();
   const normalizedPresetName = useMemo(

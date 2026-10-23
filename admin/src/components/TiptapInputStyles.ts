@@ -1,6 +1,26 @@
 import styled from 'styled-components';
 
 export const TiptapInputStyles = styled.div`
+  .tiptap-editor-wrapper.is-fullscreen {
+    position: fixed;
+    inset: 16px;
+    z-index: 250;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    background: ${({ theme }) => theme.colors.neutral100};
+  }
+
+  .tiptap-editor-wrapper.is-fullscreen .editor-content {
+    flex-grow: 1;
+    overflow-y: auto;
+  }
+
+  .tiptap-editor-wrapper.is-fullscreen .ProseMirror {
+    max-height: none;
+    min-height: 70vh;
+  }
+
   .editor-toolbar {
     margin-bottom: 0.25rem;
     padding-bottom: 0.25rem;
@@ -15,6 +35,19 @@ export const TiptapInputStyles = styled.div`
     padding: 1rem;
   }
 
+  .ProseMirror p.is-editor-empty:first-child::before {
+    color: ${({ theme }) => theme.colors.neutral500};
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+
+  .ProseMirror:focus-visible {
+    box-shadow: inset 0 0 0 2px ${({ theme }) => theme.colors.primary600};
+    border-radius: 4px;
+  }
+
   /* Remove unnecessary margin at the top of the editor */
   .ProseMirror *:first-child {
     margin-top: 0;
@@ -24,6 +57,14 @@ export const TiptapInputStyles = styled.div`
 
   .ProseMirror p {
     margin: 0 0 12px;
+  }
+
+  .ProseMirror p.lead-paragraph,
+  .ProseMirror p[data-lead="true"] {
+    font-size: 1.75rem;
+    line-height: 1.55;
+    color: ${({ theme }) => theme.colors.neutral700};
+    font-weight: 400;
   }
 
   .ProseMirror p:last-child {
@@ -73,6 +114,11 @@ export const TiptapInputStyles = styled.div`
     margin: 0.25em 0;
   }
 
+  .ProseMirror ul.tiptap-task-list {
+    list-style: none;
+    padding-left: 0.25rem;
+  }
+
   .ProseMirror blockquote {
     border-left: 3px solid ${({ theme }) => theme.colors.neutral500};
     margin: 1em 0;
@@ -92,9 +138,34 @@ export const TiptapInputStyles = styled.div`
     font-size: 0.9em;
   }
 
+  .ProseMirror pre {
+    background: ${({ theme }) => theme.colors.neutral800};
+    color: ${({ theme }) => theme.colors.neutral100};
+    padding: 12px 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 0.75em 0;
+  }
+
+  .ProseMirror pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
   .ProseMirror a {
-    color: #0c75af;
+    color: ${({ theme }) => theme.colors.primary600};
     text-decoration: underline;
+  }
+
+  .ProseMirror abbr[title] {
+    text-decoration: underline dotted ${({ theme }) => theme.colors.primary600};
+    cursor: help;
+  }
+
+  .ProseMirror [dir="rtl"] {
+    direction: rtl;
+    unicode-bidi: isolate;
   }
 
   .ProseMirror strong {
@@ -113,6 +184,76 @@ export const TiptapInputStyles = styled.div`
     text-decoration: line-through;
   }
 
+  /* --- Accordion (<details> / <summary>) --- */
+  .ProseMirror details.tiptap-details {
+    border: 1px solid ${({ theme }) => theme.colors.neutral200};
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin: 0.75em 0;
+    background: ${({ theme }) => theme.colors.neutral0};
+  }
+
+  .ProseMirror summary.tiptap-details-summary {
+    font-weight: 600;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+
+  .ProseMirror .tiptap-details-content {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid ${({ theme }) => theme.colors.neutral200};
+  }
+
+  /* --- Conversation History --- */
+  .ProseMirror .tiptap-conversation-history {
+    border-left: 3px solid ${({ theme }) => theme.colors.primary600};
+    background: ${({ theme }) => theme.colors.neutral100};
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+    margin: 0.75em 0;
+  }
+
+  /* --- Multi-Column Layout --- */
+  .ProseMirror .tiptap-layout-container {
+    display: grid;
+    gap: 16px;
+    margin: 0.75em 0;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ProseMirror .tiptap-layout-container[data-columns="1:1:1"] {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .ProseMirror .tiptap-layout-container[data-columns="1:2"] {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .ProseMirror .tiptap-layout-container[data-columns="2:1"] {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .ProseMirror .tiptap-layout-column {
+    border: 1px dashed ${({ theme }) => theme.colors.neutral200};
+    border-radius: 6px;
+    padding: 10px;
+    min-width: 0;
+  }
+
+  /* --- Page Break --- */
+  .ProseMirror .tiptap-page-break {
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.neutral600};
+    border-top: 2px dashed ${({ theme }) => theme.colors.neutral200};
+    border-bottom: 2px dashed ${({ theme }) => theme.colors.neutral200};
+    padding: 4px 0;
+    margin: 1em 0;
+    user-select: none;
+  }
+
   /* --- Images --- */
 
   .ProseMirror img {
@@ -123,7 +264,7 @@ export const TiptapInputStyles = styled.div`
 
   /* Selection ring for selected image node */
   .ProseMirror .ProseMirror-selectednode img {
-    outline: 2px solid #4945ff;
+    outline: 2px solid ${({ theme }) => theme.colors.primary600};
     outline-offset: 2px;
   }
 
@@ -141,14 +282,12 @@ export const TiptapInputStyles = styled.div`
     text-align: right;
   }
 
-  /* data-align="left" and null: natural left flow, no rule needed */
-
   /* Inline-block wrapper for positioning the resize handle relative to the image */
   .image-wrapper {
     position: relative;
     display: inline-block;
     max-width: 100%;
-    line-height: 0; /* prevent extra space below img */
+    line-height: 0;
   }
 
   .image-wrapper img {
@@ -164,8 +303,8 @@ export const TiptapInputStyles = styled.div`
     bottom: -4px;
     width: 12px;
     height: 12px;
-    background: #4945ff;
-    border: 2px solid #fff;
+    background: ${({ theme }) => theme.colors.primary600};
+    border: 2px solid ${({ theme }) => theme.colors.neutral0};
     border-radius: 50%;
     cursor: nwse-resize;
     opacity: 0;
@@ -179,8 +318,6 @@ export const TiptapInputStyles = styled.div`
     opacity: 1;
   }
 
-  // Source: https://tiptap.dev/docs/editor/extensions/nodes/table
-
   .ProseMirror {
     table {
       border-collapse: collapse;
@@ -191,7 +328,7 @@ export const TiptapInputStyles = styled.div`
 
       td,
       th {
-        border: 1px solid #ddd;
+        border: 1px solid ${({ theme }) => theme.colors.neutral200};
         box-sizing: border-box;
         min-width: 1em;
         padding: 6px 8px;
@@ -203,9 +340,6 @@ export const TiptapInputStyles = styled.div`
         }
       }
 
-      /* It is not possible to distinguish header vs body cells when rendering
-      content in React. So we render all as td and the user should use bold text
-      in cells. */
       th {
         background-color: inherit;
         font-weight: normal;
@@ -245,9 +379,6 @@ export const TiptapInputStyles = styled.div`
       cursor: col-resize;
     }
   }
-
-  /* --- Only Cursive --- */
-  /* How the only cursive text looks like in editor */
 
   .only-cursive {
     font-style: italic;

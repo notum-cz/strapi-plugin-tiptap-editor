@@ -1,7 +1,13 @@
-import createPresetService from './preset';
-import createThemeService from './theme';
+import preset from './preset';
+import theme from './theme';
+import settings from './settings';
+import search from './search';
+import media from './media';
 
 export default {
-  preset: createPresetService,
-  theme: createThemeService,
+  preset,
+  theme,
+  settings,
+  search,
+  media,
 };

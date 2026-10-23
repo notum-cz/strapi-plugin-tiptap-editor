@@ -95,4 +95,13 @@ describe('richTextField', () => {
   it('richTextField.pluginId is "tiptap-editor"', () => {
     expect(richTextField.pluginId).toBe('tiptap-editor');
   });
+
+  it('"options.outputFormat" item does not define a hardcoded defaultValue so runtime defaultOutputFormat applies', () => {
+    const base = (richTextField as any).options.base;
+    const outputFormatItem = base
+      .flatMap((section: any) => section.items || [section])
+      .find((item: any) => item.name === 'options.outputFormat');
+    expect(outputFormatItem).toBeDefined();
+    expect(outputFormatItem.defaultValue).toBeUndefined();
+  });
 });

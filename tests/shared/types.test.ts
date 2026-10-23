@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
   PRESET_FEATURE_KEYS,
   MINIMAL_PRESET_CONFIG,
+  BUILT_IN_PRESETS,
   isFeatureEnabled,
   getFeatureOptions,
   ThemeColorEntry,
@@ -9,8 +10,8 @@ import {
 } from '../../shared/types';
 
 describe('PRESET_FEATURE_KEYS (TYPES-03)', () => {
-  it('contains exactly 21 keys', () => {
-    expect(PRESET_FEATURE_KEYS).toHaveLength(21);
+  it('contains exactly 48 keys', () => {
+    expect(PRESET_FEATURE_KEYS).toHaveLength(48);
   });
   it('contains all expected feature names', () => {
     expect(PRESET_FEATURE_KEYS).toContain('bold');
@@ -23,6 +24,14 @@ describe('PRESET_FEATURE_KEYS (TYPES-03)', () => {
     expect(PRESET_FEATURE_KEYS).toContain('subscript');
     expect(PRESET_FEATURE_KEYS).toContain('textColor');
     expect(PRESET_FEATURE_KEYS).toContain('highlightColor');
+    expect(PRESET_FEATURE_KEYS).toContain('video');
+    expect(PRESET_FEATURE_KEYS).toContain('audio');
+    expect(PRESET_FEATURE_KEYS).toContain('attachment');
+    expect(PRESET_FEATURE_KEYS).toContain('iframe');
+    expect(PRESET_FEATURE_KEYS).toContain('linker');
+    expect(PRESET_FEATURE_KEYS).toContain('mathematics');
+    expect(PRESET_FEATURE_KEYS).toContain('speechToText');
+    expect(PRESET_FEATURE_KEYS).toContain('textToSpeech');
   });
 });
 
@@ -51,9 +60,13 @@ describe('TiptapThemeConfig type (THEME-02)', () => {
   });
 });
 
-describe('MINIMAL_PRESET_CONFIG', () => {
+describe('MINIMAL_PRESET_CONFIG & BUILT_IN_PRESETS', () => {
   it('equals { bold: true, italic: true }', () => {
     expect(MINIMAL_PRESET_CONFIG).toStrictEqual({ bold: true, italic: true });
+  });
+  it('gives edifice its own copy of FULL_PRESET_CONFIG', () => {
+    expect(BUILT_IN_PRESETS.edifice).toEqual(BUILT_IN_PRESETS.full);
+    expect(BUILT_IN_PRESETS.edifice).not.toBe(BUILT_IN_PRESETS.full);
   });
 });
 

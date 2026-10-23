@@ -3,7 +3,7 @@
   "content": [
     {
       "type": "heading",
-      "attrs": { "level": 1, "tag": "h1", "textAlign": "left" },
+      "attrs": { "level": 1, "tag": "h1", "id": "lorem-ipsum-dolor-sit-amet", "textAlign": "left" },
       "content": [{ "type": "text", "text": "Lorem Ipsum Dolor Sit Amet" }]
     },
     {
@@ -449,7 +449,12 @@
             },
             {
               "type": "tableCell",
-              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "attrs": {
+                "colspan": 1,
+                "rowspan": 1,
+                "colwidth": null,
+                "backgroundColor": "#eaf5ff"
+              },
               "content": [
                 {
                   "type": "paragraph",
@@ -464,7 +469,7 @@
     },
     {
       "type": "heading",
-      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "attrs": { "level": 2, "tag": "h2", "id": "hard-break", "textAlign": "left" },
       "content": [{ "type": "text", "text": "Hard Break" }]
     },
     {
@@ -472,13 +477,15 @@
       "attrs": { "textAlign": "left" },
       "content": [
         { "type": "text", "text": "First line of text." },
+        { "type": "hardBreak" },
         { "type": "text", "text": "Second line after a hard break." },
+        { "type": "hardBreak" },
         { "type": "text", "text": "Third line after another hard break." }
       ]
     },
     {
       "type": "heading",
-      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "attrs": { "level": 2, "tag": "h2", "id": "text-highlight-colors", "textAlign": "left" },
       "content": [{ "type": "text", "text": "Text & Highlight Colors" }]
     },
     {
@@ -503,8 +510,10 @@
       "attrs": {
         "src": "https://example.com/test-image.jpg",
         "alt": "Test image alt text",
-        "title": null,
+        "title": "Test image title",
+        "caption": "Test image caption",
         "data-asset-id": 42,
+        "data-document-id": "doc-img-42",
         "data-align": "center",
         "width": 400,
         "height": 300
@@ -516,7 +525,9 @@
         "src": "https://example.com/another-image.jpg",
         "alt": null,
         "title": null,
+        "caption": null,
         "data-asset-id": null,
+        "data-document-id": null,
         "data-align": null,
         "width": null,
         "height": null
@@ -528,7 +539,9 @@
         "src": "https://example.com/right-aligned-image.jpg",
         "alt": "Right-aligned test image",
         "title": null,
+        "caption": "Right-aligned image caption",
         "data-asset-id": 99,
+        "data-document-id": "doc-img-99",
         "data-align": "right",
         "width": 250,
         "height": 180
@@ -540,7 +553,9 @@
         "src": "https://example.com/left-aligned-image.jpg",
         "alt": "Explicitly left-aligned test image",
         "title": null,
+        "caption": null,
         "data-asset-id": 100,
+        "data-document-id": "doc-img-100",
         "data-align": "left",
         "width": null,
         "height": null
@@ -548,7 +563,7 @@
     },
     {
       "type": "heading",
-      "attrs": { "level": 2, "tag": "h2", "textAlign": "left" },
+      "attrs": { "level": 2, "tag": "h2", "id": "combined-formatting", "textAlign": "left" },
       "content": [{ "type": "text", "text": "Combined Formatting" }]
     },
     {
@@ -593,6 +608,257 @@
         },
         { "type": "text", "text": " for good measure." }
       ]
+    },
+    {
+      "type": "leadParagraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "This is a lead paragraph with semantic Marks: "
+        },
+        {
+          "type": "text",
+          "marks": [{ "type": "abbr", "attrs": { "title": "Web Content Accessibility Guidelines" } }],
+          "text": "WCAG"
+        },
+        { "type": "text", "text": " and " },
+        {
+          "type": "text",
+          "marks": [{ "type": "language", "attrs": { "lang": "fr", "dir": "ltr" } }],
+          "text": "Bonjour le monde"
+        },
+        { "type": "text", "text": " and custom typography " },
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "textStyle",
+              "attrs": {
+                "fontFamily": "Georgia, serif",
+                "fontSize": "18px",
+                "lineHeight": "1.75"
+              }
+            }
+          ],
+          "text": "styled serif text"
+        }
+      ]
+    },
+    {
+      "type": "informationPane",
+      "attrs": { "variant": "info", "title": "Information Notice" },
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "Important callout inside an Information Pane." }]
+        }
+      ]
+    },
+    {
+      "type": "conversationHistory",
+      "attrs": { "author": "Editor Team", "timestamp": "2026-10-09 10:00" },
+      "content": [
+        {
+          "type": "paragraph",
+          "content": [{ "type": "text", "text": "Logged discussion note in conversation history." }]
+        }
+      ]
+    },
+    {
+      "type": "details",
+      "attrs": { "open": true },
+      "content": [
+        {
+          "type": "detailsSummary",
+          "content": [{ "type": "text", "text": "Expandable Accordion Section" }]
+        },
+        {
+          "type": "detailsContent",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Hidden details content revealed on click." }]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "layoutContainer",
+      "attrs": { "columns": "1:1" },
+      "content": [
+        {
+          "type": "layoutColumn",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Left column content." }]
+            }
+          ]
+        },
+        {
+          "type": "layoutColumn",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Right column content." }]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "layoutContainer",
+      "attrs": { "columns": "1:1:1" },
+      "content": [
+        {
+          "type": "layoutColumn",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Column 1 content." }]
+            }
+          ]
+        },
+        {
+          "type": "layoutColumn",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Column 2 content." }]
+            }
+          ]
+        },
+        {
+          "type": "layoutColumn",
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Column 3 content." }]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "taskList",
+      "content": [
+        {
+          "type": "taskItem",
+          "attrs": { "checked": true },
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Completed checklist task" }]
+            }
+          ]
+        },
+        {
+          "type": "taskItem",
+          "attrs": { "checked": false },
+          "content": [
+            {
+              "type": "paragraph",
+              "content": [{ "type": "text", "text": "Pending checklist task" }]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        { "type": "text", "text": "Energy: " },
+        { "type": "mathematics", "attrs": { "latex": "E = mc^2", "displayMode": "inline" } }
+      ]
+    },
+    {
+      "type": "video",
+      "attrs": {
+        "src": "https://example.com/demo-video.mp4",
+        "title": "Demo Video",
+        "caption": "Video caption",
+        "embedType": "file",
+        "data-asset-id": 201,
+        "data-document-id": "doc-video-201",
+        "data-align": "center",
+        "width": 640,
+        "height": 360
+      }
+    },
+    {
+      "type": "video",
+      "attrs": {
+        "src": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+        "title": "Embedded YouTube Video",
+        "caption": "YouTube Embed",
+        "embedType": "embed",
+        "data-asset-id": null,
+        "data-document-id": null,
+        "data-align": "center",
+        "width": 640,
+        "height": 360
+      }
+    },
+    {
+      "type": "audio",
+      "attrs": {
+        "src": "https://example.com/demo-audio.webm",
+        "title": "Voice Note",
+        "caption": "Recorded in browser",
+        "mime": "audio/webm",
+        "data-asset-id": 202,
+        "data-document-id": "doc-audio-202",
+        "data-align": "left"
+      }
+    },
+    {
+      "type": "attachment",
+      "attrs": {
+        "href": "https://example.com/handbook.pdf",
+        "src": "https://example.com/handbook.pdf",
+        "title": "Company Handbook",
+        "filename": "handbook.pdf",
+        "mime": "application/pdf",
+        "size": 1048576,
+        "ext": ".pdf",
+        "data-asset-id": 203,
+        "data-document-id": "doc-file-203"
+      }
+    },
+    {
+      "type": "iframe",
+      "attrs": {
+        "src": "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        "title": "Embedded Video",
+        "width": 640,
+        "height": 400,
+        "data-align": "center"
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": [
+        { "type": "text", "text": "Reference to internal Strapi entry: " },
+        {
+          "type": "linker",
+          "attrs": {
+            "collectionName": "api::article.article",
+            "documentId": "doc-article-99",
+            "label": "Architecture Guide",
+            "href": "strapi://api::article.article/doc-article-99",
+            "status": "published"
+          }
+        }
+      ]
+    },
+    {
+      "type": "tableOfContents",
+      "attrs": { "headings": [] }
+    },
+    {
+      "type": "pageBreak"
     }
   ]
 }
+

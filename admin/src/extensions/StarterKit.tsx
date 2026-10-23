@@ -14,6 +14,10 @@ import {
 import { ToolbarButton } from '../components/ToolbarButton';
 import { useIntl } from 'react-intl';
 
+/**
+ * Provides toolbar toggle buttons for core StarterKit marks and blocks (bold, italic, underline,
+ * strikethrough, inline code, bullet list, ordered list, blockquote).
+ */
 export function useStarterKit(
   editor: Editor | null,
   props: { disabled?: boolean } = { disabled: false }
@@ -83,6 +87,7 @@ export function useStarterKit(
         onClick={toggleBold}
         icon={<BoldIcon />}
         active={editorState?.isBold ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canBold}
         tooltip={formatMessage({ id: 'tiptap-editor.toolbar.bold', defaultMessage: 'Bold' })}
       />
@@ -92,6 +97,7 @@ export function useStarterKit(
         onClick={toggleItalic}
         icon={<ItalicIcon />}
         active={editorState?.isItalic ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canItalic}
         tooltip={formatMessage({ id: 'tiptap-editor.toolbar.italic', defaultMessage: 'Italic' })}
       />
@@ -101,6 +107,7 @@ export function useStarterKit(
         onClick={toggleUnderline}
         icon={<UnderlineIcon />}
         active={editorState?.isUnderline ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canUnderline}
         tooltip={formatMessage({
           id: 'tiptap-editor.toolbar.underline',
@@ -113,6 +120,7 @@ export function useStarterKit(
         onClick={toggleStrike}
         icon={<StrikeThroughIcon />}
         active={editorState?.isStrike ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canStrike}
         tooltip={formatMessage({
           id: 'tiptap-editor.toolbar.strikethrough',
@@ -125,6 +133,7 @@ export function useStarterKit(
         onClick={toggleBulletList}
         icon={<BulletListIcon />}
         active={editorState?.isBulletList ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canToggleBulletList}
         tooltip={formatMessage({
           id: 'tiptap-editor.toolbar.bulletList',
@@ -137,6 +146,7 @@ export function useStarterKit(
         onClick={toggleOrderedList}
         icon={<NumberListIcon />}
         active={editorState?.isOrderedList ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canToggleOrderedList}
         tooltip={formatMessage({
           id: 'tiptap-editor.toolbar.numberedList',
@@ -149,6 +159,7 @@ export function useStarterKit(
         onClick={toggleCode}
         icon={<CodeIcon />}
         active={editorState?.isCode ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canCode}
         tooltip={formatMessage({
           id: 'tiptap-editor.toolbar.inlineCode',
@@ -161,6 +172,7 @@ export function useStarterKit(
         onClick={toggleBlockquote}
         icon={<QuotesIcon />}
         active={editorState?.isBlockquote ?? false}
+        toggle
         disabled={props.disabled || !editor || !editorState?.canToggleBlockquote}
         tooltip={formatMessage({ id: 'tiptap-editor.toolbar.quote', defaultMessage: 'Quote' })}
       />

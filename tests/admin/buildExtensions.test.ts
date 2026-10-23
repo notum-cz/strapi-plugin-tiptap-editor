@@ -2,11 +2,37 @@ import { describe, it, expect, vi } from 'vitest';
 
 // Mock Strapi design system and React hooks used by Heading.tsx (not needed for buildExtensions)
 vi.mock('@strapi/design-system', () => ({
+  Box: 'Box',
+  Button: 'Button',
+  Dialog: {
+    Root: 'DialogRoot',
+    Content: 'DialogContent',
+    Header: 'DialogHeader',
+    Body: 'DialogBody',
+    Footer: 'DialogFooter',
+    Cancel: 'DialogCancel',
+    Action: 'DialogAction',
+  },
+  Field: { Root: 'FieldRoot', Label: 'FieldLabel', Hint: 'FieldHint', Error: 'FieldError' },
+  Flex: 'Flex',
+  IconButton: 'IconButton',
+  Popover: { Root: 'PopoverRoot', Trigger: 'PopoverTrigger', Content: 'PopoverContent' },
   SingleSelect: 'SingleSelect',
   SingleSelectOption: 'SingleSelectOption',
+  TextInput: 'TextInput',
+  Textarea: 'Textarea',
+  Tooltip: 'Tooltip',
+  Typography: 'Typography',
+}));
+vi.mock('@strapi/strapi/admin', () => ({
+  useField: vi.fn(() => ({ value: '', onChange: vi.fn(), error: undefined })),
+  useFetchClient: vi.fn(() => ({ get: vi.fn(), post: vi.fn(), put: vi.fn() })),
 }));
 vi.mock('@tiptap/react', () => ({
   useEditorState: vi.fn(),
+  ReactNodeViewRenderer: vi.fn(),
+  NodeViewWrapper: 'div',
+  NodeViewContent: 'div',
 }));
 
 import { buildExtensions } from '../../admin/src/utils/buildExtensions';
@@ -49,6 +75,16 @@ describe('buildExtensions', () => {
     const heading = extensions.find((ext: any) => ext.name === 'heading');
     expect(heading).toBeDefined();
     expect((heading as any).options.levels).toEqual([2, 3]);
+    expect((heading as any).options.autoSlugId).toBe(true);
+  });
+
+  it('passes autoSlugId: false to HeadingWithSEOTag and omits headingAutoId plugin when configured', () => {
+    const extensions = buildExtensions({ heading: { levels: [1, 2], autoSlugId: false } });
+    const heading = extensions.find((ext: any) => ext.name === 'heading') as any;
+    expect(heading).toBeDefined();
+    expect(heading.options.autoSlugId).toBe(false);
+    const plugins = heading.config.addProseMirrorPlugins.call(heading);
+    expect(plugins).toEqual([]);
   });
 
   it('does not include HeadingWithSEOTag when heading is false', () => {
@@ -112,18 +148,20 @@ describe('buildExtensions', () => {
 
   it('includes TableKit when table is true', () => {
     const extensions = buildExtensions({ table: true });
-    const hasTable = extensions.some(
+    const tableKit = extensions.find(
       (ext: any) => ext.name === 'tableKit'
     );
-    expect(hasTable).toBe(true);
+    expect(tableKit).toBeDefined();
+    expect((tableKit as any).options.table.resizable).toBe(true);
   });
 
-  it('does not include TableKit when table is false', () => {
+  it('always includes TableKit with resizable: false when table is false (Zero-Data-Loss)', () => {
     const extensions = buildExtensions({ table: false });
-    const hasTable = extensions.some(
+    const tableKit = extensions.find(
       (ext: any) => ext.name === 'tableKit'
     );
-    expect(hasTable).toBe(false);
+    expect(tableKit).toBeDefined();
+    expect((tableKit as any).options.table.resizable).toBe(false);
   });
 
   it('includes TextAlign when textAlign is true', () => {
@@ -237,10 +275,10 @@ describe('buildExtensions', () => {
 
     expect(names).toContain('starterKit');
     expect(names).toContain('gapCursor');
+    expect(names).toContain('tableKit');
     expect(names).not.toContain('heading');
     expect(names).not.toContain('superscript');
     expect(names).not.toContain('subscript');
-    expect(names).not.toContain('tableKit');
     expect(names).not.toContain('textAlign');
     expect(names).not.toContain('textStyle');
     expect(names).not.toContain('color');
@@ -311,5 +349,26 @@ describe('buildExtensions', () => {
 
     expect(names).toContain('highlight');
     expect(names).not.toContain('color');
+  });
+
+  it('does not include characterCount when characterCount is { enabled: false, limit: 500 } and no field characterLimit is set', () => {
+    const extensions = buildExtensions({
+      characterCount: { enabled: false, limit: 500 },
+    });
+    const names = extensions.map((ext: any) => ext.name);
+
+    expect(names).not.toContain('characterCount');
+  });
+
+  it('registers the strapi protocol on StarterKit link when allowInternalLinks is true', () => {
+    const extensions = buildExtensions({
+      link: { openOnClick: false, allowInternalLinks: true },
+    });
+    const starterKit = extensions.find((ext: any) => ext.name === 'starterKit') as any;
+    expect(starterKit).toBeDefined();
+    expect(starterKit.options.link).toEqual({
+      openOnClick: false,
+      protocols: [{ scheme: 'strapi', optionalSlashes: false }],
+    });
   });
 });

@@ -137,3 +137,9 @@ yarn-error.log
 
 coverage
 .planning/
+
+############################
+# CodeGraph
+############################
+
+.codegraph/

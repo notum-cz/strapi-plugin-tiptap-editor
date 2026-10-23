@@ -1,7 +1,13 @@
-import createPresetController from './preset';
-import createThemeController from './theme';
+import preset from './preset';
+import theme from './theme';
+import settings from './settings';
+import search from './search';
+import media from './media';
 
 export default {
-  preset: createPresetController,
-  theme: createThemeController,
+  preset,
+  theme,
+  settings,
+  search,
+  media,
 };

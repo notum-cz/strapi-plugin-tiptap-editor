@@ -3,7 +3,7 @@
     <img src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/notum-tiptap-icon.png" height="250" alt="Notum Tiptap Plugin Logo"/>
   </picture>
 
-  <h1>TipTap Editor Plugin for Strapi V5</h1>
+  <h1>TipTap v3 + Edifice IO Editor Plugin for Strapi v5</h1>
   <p>by<br />
   <a href="https://notum.tech/?utm_source=strapi-plugin&utm_medium=github&utm_campaign=tiptap-readme">
     <img style="margin-top: 0.5rem" src="https://raw.githubusercontent.com/notum-cz/strapi-plugin-tiptap-editor/main/assets/notum-logo.svg" alt="Notum Technologies" />
@@ -11,118 +11,104 @@
   </p>
 
   <p>
-    A drop-in TipTap WYSIWYG editor for Strapi v5. <br />
-    Rich text, tables, images, and more, configured in minutes.
+    The ultimate drop-in TipTap v3 WYSIWYG editor for Strapi v5. <br />
+    48 rich-text features, Edifice IO multimedia &amp; structured blocks, relational media &amp; internal link sync, in-editor image studio &amp; audio recorder, speech tools, and WCAG 2.1 AA accessibility.
   </p>
 
   <!-- Badges -->
   <p>
-    <a
-      href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/graphs/contributors"
-    >
-      <img
-        src="https://img.shields.io/github/contributors/notum-cz/strapi-plugin-tiptap-editor"
-        alt="contributors"
-      />
+    <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/graphs/contributors">
+      <img src="https://img.shields.io/github/contributors/notum-cz/strapi-plugin-tiptap-editor" alt="contributors" />
     </a>
     <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/commits">
-      <img
-        src="https://img.shields.io/github/last-commit/notum-cz/strapi-plugin-tiptap-editor"
-        alt="last update"
-      />
+      <img src="https://img.shields.io/github/last-commit/notum-cz/strapi-plugin-tiptap-editor" alt="last update" />
     </a>
     <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues/">
-      <img
-        src="https://img.shields.io/github/issues/notum-cz/strapi-plugin-tiptap-editor"
-        alt="open issues"
-      />
+      <img src="https://img.shields.io/github/issues/notum-cz/strapi-plugin-tiptap-editor" alt="open issues" />
     </a>
-    <a
-      href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/blob/main/LICENSE"
-    >
-      <img
-        src="https://img.shields.io/github/license/notum-cz/strapi-plugin-tiptap-editor"
-        alt="license"
-      />
+    <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/blob/main/LICENSE">
+      <img src="https://img.shields.io/github/license/notum-cz/strapi-plugin-tiptap-editor" alt="license" />
     </a>
-    <a
-      href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/stargazers"
-    >
-      <img
-        src="https://img.shields.io/github/stars/notum-cz/strapi-plugin-tiptap-editor"
-        alt="stars"
-      />
+    <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/stargazers">
+      <img src="https://img.shields.io/github/stars/notum-cz/strapi-plugin-tiptap-editor" alt="stars" />
     </a>
   </p>
 
   <h4>
-    <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues/"
-      >Report Bug or Request Feature</a
-    >
+    <a href="https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues/">Report Bug or Request Feature</a>
   </h4>
 </div>
 
 <br />
 
-<!-- Table of Contents -->
-
 # Table of Contents
 
-- [Table of Contents](#table-of-contents)
-  - [About the Project](#about-the-project)
-    - [Features](#features)
-    - [Screenshots](#screenshots)
-    - [Supported Versions](#supported-versions)
-  - [Getting Started](#getting-started)
-    - [Installation](#installation)
-      - [1. Install the plugin via npm or yarn](#1-install-the-plugin-via-npm-or-yarn)
-      - [2. Rebuild Strapi and test the plugin](#2-rebuild-strapi-and-test-the-plugin)
-  - [Configuration](#configuration)
-    - [Defining Presets](#defining-presets)
-    - [Assigning a Preset to a Field](#assigning-a-preset-to-a-field)
-    - [Multiple Presets](#multiple-presets)
-  - [Available Extensions](#available-extensions)
-    - [Inline Formatting](#inline-formatting)
-    - [Block Elements](#block-elements)
-    - [Headings](#headings)
-    - [Links](#links)
-    - [Tables](#tables)
-    - [Text Alignment](#text-alignment)
-    - [Text Color \& Highlight Color](#text-color--highlight-color)
-    - [Images](#images)
-      - [Rendering images on the frontend](#rendering-images-on-the-frontend)
-  - [Theme](#theme)
-    - [Colors](#colors)
-    - [Custom Stylesheet](#custom-stylesheet)
-  - [Configuration Reference](#configuration-reference)
-    - [Feature Values](#feature-values)
-    - [Full Preset Example](#full-preset-example)
-    - [Config Validation](#config-validation)
-  - [🤝 Community](#-community)
-    - [Maintained by Notum Technologies](#maintained-by-notum-technologies)
-      - [Current maintainer](#current-maintainer)
-      - [Contributors](#contributors)
-    - [Contributing](#contributing)
+- [About the Project](#about-the-project)
+  - [Features](#features)
+  - [Screenshots](#screenshots)
+  - [Supported Versions](#supported-versions)
+- [Getting Started](#getting-started)
+  - [Installation](#installation)
+- [Configuration](#configuration)
+  - [Built-In Presets](#built-in-presets)
+  - [Defining Custom Presets (`config/plugins.ts`)](#defining-custom-presets-configpluginsts)
+  - [Admin Settings UI (`/settings/tiptap-editor`)](#admin-settings-ui-settingstiptap-editor)
+  - [Field-Level Options (Content-Type Builder)](#field-level-options-content-type-builder)
+- [Relational Media & Internal Links Synchronization](#relational-media--internal-links-synchronization)
+  - [Companion `<FieldName>Media` Field](#companion-fieldnamemedia-field)
+  - [Companion `<FieldName>Links` Component](#companion-fieldnamelinks-component)
+- [Available Extensions (48 Feature Keys)](#available-extensions-48-feature-keys)
+  - [Inline Formatting & Semantic Marks](#inline-formatting--semantic-marks)
+  - [Typography Controls](#typography-controls)
+  - [Block Elements & Structured Layouts](#block-elements--structured-layouts)
+  - [Headings (with SEO Tag & Auto Anchor ID)](#headings-with-seo-tag--auto-anchor-id)
+  - [Links & Internal Strapi Content Linker](#links--internal-strapi-content-linker)
+  - [Tables (with Cell Background Color & Merge/Split)](#tables-with-cell-background-color--mergesplit)
+  - [Text Alignment & Colors](#text-alignment--colors)
+  - [Edifice IO Multimedia Suite](#edifice-io-multimedia-suite)
+    - [Images & In-Editor HTML5 Canvas Image Studio](#images--in-editor-html5-canvas-image-studio-medialibrary)
+    - [Video (Media Library + YouTube/Vimeo/MP4)](#video-video)
+    - [Audio (Media Library + In-Browser Voice Recorder)](#audio-audio)
+    - [Attachment Cards](#attachment-cards-attachment)
+    - [Sandboxed HTTPS Iframes](#sandboxed-https-iframes-iframe)
+  - [Mathematics, Emoji, Slash Commands & Speech Tools](#mathematics-emoji-slash-commands--speech-tools)
+  - [Editor Modes & Footer](#editor-modes--footer)
+- [Accessibility (WCAG 2.1 AA) & Security](#accessibility-wcag-21-aa--security)
+- [Theme](#theme)
+  - [Colors](#colors)
+  - [Custom Stylesheet](#custom-stylesheet)
+- [Configuration Reference](#configuration-reference)
+  - [Feature Values](#feature-values)
+  - [Full 48-Feature Preset Example](#full-48-feature-preset-example)
+  - [Backend API Routes](#backend-api-routes)
+  - [Config Validation](#config-validation)
+- [🤝 Community](#-community)
 
-<!-- About the Project -->
+---
 
 ## About the Project
 
-<!-- Features -->
-
 ### Features
 
-- **Rich text editing** powered by [TipTap](https://tiptap.dev/) - a modern, extensible WYSIWYG editor built on ProseMirror
-- **Headings** (H1–H6), **bold**, **italic**, **underline**, **strikethrough**
-- **Ordered & unordered lists**, task lists
-- **Links**, **tables**
-- **Images** from Strapi Media Library with alt text editing and alignment
-- **Code blocks** with syntax highlighting
-- **Blockquotes**, **horizontal rules**
-- Full **keyboard shortcut** support
-- Seamless integration with Strapi's content management system
-
-<!-- Screenshots -->
+- **Powered by [TipTap v3.20+](https://tiptap.dev/)** — modern, headless ProseMirror architecture with React NodeViews and zero-side-effect state updates (`useEditorState`).
+- **48 Configurable Features** across 4 built-in presets (`minimal`, `default`, `full`, `edifice`) plus custom presets in `config/plugins.ts` and runtime overrides in Strapi Admin Settings.
+- **Multi-Format Serialization** — stores **ProseMirror JSON** by default, or outputs sanitized **HTML** or **Markdown** per field.
+- **Edifice IO Multimedia Suite**:
+  - **Images (`mediaLibrary`)** with in-editor **HTML5 Canvas Image Crop/Rotate/Flip/Zoom Studio**, `<figure>`/`<figcaption>`, alt text, alignment, and drag-resize handle.
+  - **Videos (`video`)** via Strapi Media Library or privacy-enhanced YouTube (`youtube-nocookie.com`), Vimeo, and direct MP4 URLs.
+  - **Audio (`audio`)** via Strapi Media Library or **in-browser `MediaRecorder` Voice Note Recorder** with live timer and direct upload.
+  - **Attachments (`attachment`)** with downloadable file cards, MIME badge, and formatted byte size.
+  - **Iframes (`iframe`)** with strict `https:` enforcement, `sandbox` attributes, and domain allowlisting.
+- **Relational Media & Internal Link Sync (Hashbite Lexical Pattern)**:
+  - Automatically extracts all 4 embedded media types (`image`, `video`, `audio`, `attachment`) into a companion `<FieldName>Media` field and internal Strapi links (`strapi://collectionName/documentId` & `linker` nodes) into a companion `<FieldName>Links` component.
+- **Structured Blocks & Editorial Tools**:
+  - **Information Pane / Callout (`informationPane`)** (`info`, `success`, `warning`, `danger`), **Collapsible Accordion (`accordion`)** (`<details>`/`<summary>`), **Multi-Column Layout (`columns`)** (2-col / 3-col), **Task Lists (`taskList`)**, **Conversation History (`conversationHistory`)**, **Dynamic Table of Contents (`tableOfContents`)**, **Page Break (`pageBreak`)**, **Mathematics / LaTeX (`mathematics`)**, **Emoji Picker (`emoji`)**, and **Slash Commands (`/`) (`slashCommands`)**.
+- **Typography & Semantic Accessibility Marks**:
+  - **Font Family (`fontFamily`)**, **Font Size (`fontSize`)**, **Line Height (`lineHeight`)**, **Clear Formatting (`clearFormatting`)**, **Smart Typography (`typography`)**, **Lead Paragraph (`leadParagraph`)**, **Abbreviation `<abbr>` (`abbr`)**, and **Language `<span lang="..." dir="...">` (`language`)** for WCAG 2.1 SC 3.1.2 compliance.
+- **Speech & Productivity Modes**:
+  - **Speech-to-Text Dictation (`speechToText`)**, **Text-to-Speech Read Aloud (`textToSpeech`)**, **Character & Word Count (`characterCount`)**, **Fullscreen Mode (`fullscreen`)**, **Edifice Read-Only Preview**, and **JSON / HTML / Markdown Source Inspector**.
+- **Zero-Data-Loss Content Safety**:
+  - Disabling any rich node (`mediaLibrary`, `video`, `audio`, `attachment`, `iframe`, `linker`, `informationPane`, `mathematics`) in a preset renders existing content via read-only NodeViews (`enableContentCheck: true`) — content is **never** silently stripped on save.
 
 ### Screenshots
 
@@ -133,21 +119,19 @@
   </picture>
 </div>
 
-<!-- Supported Versions -->
-
 ### Supported Versions
 
-This plugin is compatible with Strapi `v5.x.x` and has been tested on Strapi `v5.34.0`. We expect it should also work on older version of Strapi V5.
+This plugin is compatible with Strapi `v5.x.x` (tested on Strapi `v5.34.0+`) and Node.js `^20.19.0 || ^22.13.0 || >=24.0.0`.
 
-| Plugin version | Strapi Version | Full Support |
-| -------------- | -------------- | ------------ |
-| 1.0.0          | 5.34.0         | ✅           |
+| Plugin version | Strapi Version | Node.js Version                      | TipTap Version | Full Support |
+| -------------- | -------------- | ------------------------------------ | -------------- | ------------ |
+| 1.2.x+         | 5.0.0 – 5.39+  | `^20.19.0 \|\| ^22.13.0 \|\| >=24.0.0` | 3.20.1         | ✅           |
 
-<!-- Getting Started -->
+> **Node.js Dependency Compatibility Note:** Runtime dependencies `undici` (`6.29.0`) and `isomorphic-dompurify` (`3.19.0`) are intentionally pinned to their `6.x` and `3.x` release lines to preserve Node.js `20.19+` and `22.13+` compatibility across the full Strapi v5 engine range (`isomorphic-dompurify` `4.x` requires Node `>=22.22.2`).
+
+---
 
 ## Getting Started
-
-<!-- Installation -->
 
 ### Installation
 
@@ -159,103 +143,73 @@ npm i @notum-cz/strapi-plugin-tiptap-editor
 
 # Yarn
 yarn add @notum-cz/strapi-plugin-tiptap-editor
-
 ```
 
-#### 2. Rebuild Strapi and test the plugin
+#### 2. Rebuild Strapi and start the server
 
 ```bash
-  yarn build
-  yarn start
+yarn build
+yarn start
 ```
+
+---
 
 ## Configuration
 
-The plugin uses a **preset** system. A preset is a named configuration that defines which editor tools are available. You define presets in your Strapi plugin config file, then assign them to individual fields via the Content-Type Builder.
+The plugin uses a hybrid **preset + runtime settings** architecture:
 
-### Defining Presets
+1. **Built-in Presets**: `minimal`, `default`, `full`, and `edifice` work out of the box with zero configuration.
+2. **Code-first Presets (`config/plugins.ts`)**: Define custom named presets and theme options in version control.
+3. **Runtime Settings UI (`/settings/tiptap-editor`)**: Override global defaults, allowed iframe domains, relational sync, and per-preset feature toggles stored in Strapi `core-store`.
 
-Create or update the plugin configuration file at `config/plugins.ts` (or `config/plugins.js`):
+### Built-In Presets
+
+| Preset Name | Included Features |
+| ----------- | ----------------- |
+| `minimal`   | `bold`, `italic` |
+| `default`   | `bold`, `italic`, `underline`, `strike`, `code`, `codeBlock`, `blockquote`, `bulletList`, `orderedList`, `hardBreak`, `horizontalRule`, `history`, `heading`, `link`, `table`, `textAlign`, `mediaLibrary`, `characterCount` |
+| `full`      | All **48** features enabled |
+| `edifice`   | All **48** features enabled (complete Edifice IO Playground experience) |
+
+### Defining Custom Presets (`config/plugins.ts`)
+
+Create or update `config/plugins.ts` (or `config/plugins.js`):
 
 ```ts
 // config/plugins.ts
-
 export default () => ({
   'tiptap-editor': {
     config: {
       presets: {
-        // Preset name -> feature configuration
         minimal: {
           bold: true,
           italic: true,
           link: true,
         },
-      },
-    },
-  },
-});
-```
-
-Only features explicitly set to `true` (or an options object) will appear in the toolbar. Any feature not listed, or set to `false`, will be hidden.
-
-### Assigning a Preset to a Field
-
-1. In the Strapi admin, open the **Content-Type Builder**.
-2. Add or edit a field and choose the **Rich Text (Tiptap)** custom field type.
-3. In the **Advanced Settings** tab, select a preset from the **Editor Preset** dropdown.
-4. Save the content type.
-
-The editor for that field will now show only the tools defined in the selected preset.
-
-### Multiple Presets
-
-You can define as many presets as you need. Different fields (even within the same content type) can use different presets:
-
-```ts
-// config/plugins.ts
-
-export default () => ({
-  'tiptap-editor': {
-    config: {
-      presets: {
-        // A minimal preset for short-form content like titles or captions
-        minimal: {
+        editorial: {
           bold: true,
           italic: true,
           underline: true,
-        },
-
-        // A standard preset for blog posts and articles
-        standard: {
-          bold: true,
-          italic: true,
-          underline: true,
-          strike: true,
-          heading: true,
+          heading: { levels: [1, 2, 3, 4] },
+          leadParagraph: true,
+          abbr: true,
+          language: true,
           bulletList: true,
           orderedList: true,
+          taskList: true,
           blockquote: true,
+          informationPane: true,
+          accordion: true,
+          columns: true,
           link: true,
-        },
-
-        // A full preset with every feature enabled
-        full: {
-          bold: true,
-          italic: true,
-          underline: true,
-          strike: true,
-          code: true,
-          codeBlock: true,
-          heading: true,
-          blockquote: true,
-          bulletList: true,
-          orderedList: true,
-          link: true,
+          linker: true,
+          mediaLibrary: { resize: { enabled: true } },
+          video: true,
+          audio: true,
+          attachment: true,
           table: true,
-          textAlign: true,
-          superscript: true,
-          subscript: true,
-          mediaLibrary: true,
+          characterCount: { limit: 10000 },
+          fullscreen: true,
         },
       },
     },
@@ -263,262 +217,191 @@ export default () => ({
 });
 ```
 
-## Available Extensions
+### Admin Settings UI (`/settings/tiptap-editor`)
 
-### Inline Formatting
+Navigate to **Settings → Global Settings → Tiptap Editor** in the Strapi Admin panel to configure:
 
-| Key           | Description        | Toolbar      | Keyboard Shortcut      |
-| ------------- | ------------------ | ------------ | ---------------------- |
-| `bold`        | Bold text          | **B** button | `Ctrl/Cmd + B`         |
-| `italic`      | Italic text        | _I_ button   | `Ctrl/Cmd + I`         |
-| `underline`   | Underlined text    | **U** button | `Ctrl/Cmd + U`         |
-| `strike`      | Strikethrough text | ~~S~~ button | `Ctrl/Cmd + Shift + S` |
-| `code`        | Inline code        | `<>` button  | `Ctrl/Cmd + E`         |
-| `superscript` | Superscript text   | x^2 button   | `Ctrl/Cmd + .`         |
-| `subscript`   | Subscript text     | x_2 button   | `Ctrl/Cmd + ,`         |
+- **Default Preset** (`minimal`, `default`, `full`, `edifice`, or any custom preset)
+- **Default Output Format** (`json`, `html`, or `markdown`)
+- **Allowed Iframe Domains** (comma-separated hostnames, e.g. `youtube.com, player.vimeo.com`)
+- **Relational Media & Internal Links Sync** toggle
+- **Preset Feature Matrix** — interactively toggle any of the 48 features per preset
 
-**Usage:** Set to `true` to enable with defaults.
+### Field-Level Options (Content-Type Builder)
 
-```ts
-{
-  bold: true,
-  italic: true,
-  underline: true,
-  strike: true,
-  code: true,
-  superscript: true,
-  subscript: true,
-}
-```
+When adding a **Rich Text (Tiptap)** custom field in the Strapi Content-Type Builder:
 
-### Block Elements
+- **Basic Settings → Output Format (`options.outputFormat`)**: `json` (default ProseMirror JSON), `html` (sanitized HTML string), or `markdown` (Markdown string).
+- **Advanced Settings**:
+  - **Editor Preset (`options.preset`)**: Select which preset this field uses (`default`, `minimal`, `full`, `edifice`).
+  - **Character Limit (`options.characterLimit`)**: Optional maximum character count for the field.
+  - **Placeholder (`options.placeholder`)**: Custom placeholder text when the editor is empty.
 
-| Key           | Description        | Toolbar                          |
-| ------------- | ------------------ | -------------------------------- |
-| `blockquote`  | Block quotes       | Quote button                     |
-| `codeBlock`   | Fenced code blocks | (via keyboard or markdown input) |
-| `bulletList`  | Unordered lists    | Bullet list button               |
-| `orderedList` | Numbered lists     | Numbered list button             |
+---
 
-**Usage:** Set to `true` to enable.
+## Relational Media & Internal Links Synchronization
 
-```ts
-{
-  blockquote: true,
-  codeBlock: true,
-  bulletList: true,
-  orderedList: true,
-}
-```
+Inspired by `hashbite/strapi-plugin-lexical` and expanded for all 4 Edifice IO media types, the editor can automatically synchronize embedded media and internal content links with companion Strapi relation fields on the same Content-Type.
 
-### Headings
+### Companion `<FieldName>Media` Field
 
-| Key       | Description            | Toolbar                           |
-| --------- | ---------------------- | --------------------------------- |
-| `heading` | Heading levels (h1-h6) | Style dropdown + SEO tag dropdown |
+If your Rich Text field is named `content`, add a Media field named `contentMedia` (Multiple Media) to the same Content-Type. Whenever the document changes, `useRelationalSync` extracts all embedded:
 
-The heading extension includes an SEO tag selector that lets content editors set the semantic HTML tag independently from the visual heading level. This allows for proper document outline without being constrained by visual styles.
+- `image` (`data-asset-id` / `data-document-id`)
+- `video` (`data-asset-id` / `data-document-id`)
+- `audio` (`data-asset-id` / `data-document-id`)
+- `attachment` (`data-asset-id` / `data-document-id`)
 
-**Simple usage** — enables all heading levels (h1-h6):
+and updates `contentMedia` without triggering redundant form updates when relations haven't changed.
 
-```ts
-{
-  heading: true,
-}
-```
+### Companion `<FieldName>Links` Component
 
-**Custom levels** — restrict which heading levels are available:
+To use companion internal link fields, first define a `links.links` component in your Strapi project (the plugin does not create schema components during server bootstrap). Once `links.links` is defined with your target collection relations, add a repeatable or single component field named `<FieldName>Links` (e.g. `contentLinks`) using `links.links` to the Content-Type. Any internal Strapi link inserted via the **Linker (`linker`)** tool or `strapi://api::collection.collection/documentId` URI is automatically grouped by collection and synced to `<FieldName>Links`.
 
-```ts
-{
-  // Only allow h1, h2, and h3 in the style dropdown
-  heading: {
-    levels: [1, 2, 3],
-  },
-}
-```
+---
 
-The `levels` array accepts values from `1` to `6`. The SEO tag dropdown always shows all six levels (h1-h6) regardless of this setting, since the semantic tag is independent of the visual heading level.
+## Available Extensions (48 Feature Keys)
 
-### Links
+### Inline Formatting & Semantic Marks
 
-| Key    | Description | Toolbar                   |
-| ------ | ----------- | ------------------------- |
-| `link` | Hyperlinks  | Link button + link dialog |
+| Key               | Description                                                   | Toolbar / Shortcut         |
+| ----------------- | ------------------------------------------------------------- | -------------------------- |
+| `bold`            | Bold text (`<strong>`)                                        | **B** (`Ctrl/Cmd + B`)     |
+| `italic`          | Italic text (`<em>`)                                          | _I_ (`Ctrl/Cmd + I`)       |
+| `underline`       | Underlined text (`<u>`)                                       | **U** (`Ctrl/Cmd + U`)     |
+| `strike`          | Strikethrough text (`<s>`)                                    | ~~S~~ (`Ctrl/Cmd+Shift+S`) |
+| `code`            | Inline code (`<code>`)                                        | `<>` (`Ctrl/Cmd + E`)      |
+| `superscript`     | Superscript (`<sup>`)                                         | `x²` (`Ctrl/Cmd + .`)      |
+| `subscript`       | Subscript (`<sub>`)                                           | `x₂` (`Ctrl/Cmd + ,`)      |
+| `clearFormatting` | Strip all inline marks and reset block to paragraph           | Clear Formatting button    |
+| `leadParagraph`   | Lead / intro paragraph (`<p class="lead-paragraph" data-lead="true">`) | `Lead` toggle button       |
+| `abbr`            | Semantic abbreviation (`<abbr title="...">`) with modal       | `Abbr` button + dialog     |
+| `language`        | WCAG 3.1.2 language & direction (`<span lang=".." dir="..">`) | `Lang` button + dialog     |
 
-Links open a dialog where editors can enter a URL. By default, links do not open on click in the editor (to allow editing).
+### Typography Controls
 
-**Simple usage:**
+| Key          | Description                                                         | Toolbar                   |
+| ------------ | ------------------------------------------------------------------- | ------------------------- |
+| `fontFamily` | Font family selector (customizable via `{ families: [...] }`)       | Font Family dropdown      |
+| `fontSize`   | Font size selector (`12px`–`40px`, customizable via `{ sizes }`)    | Font Size dropdown        |
+| `lineHeight` | Line height selector (`1.0`–`2.0`, customizable via `{ heights }`)  | Line Height dropdown      |
+| `typography` | Smart typography input rules (`--` → `—`, `...` → `…`, `(c)` → `©`) | Automatic while typing    |
 
-```ts
-{
-  link: true,
-}
-```
+### Block Elements & Structured Layouts
 
-**With options:**
+| Key                   | Description                                                      | Toolbar                      |
+| --------------------- | ---------------------------------------------------------------- | ---------------------------- |
+| `blockquote`          | Blockquote (`<blockquote>`)                                      | Quote button                 |
+| `codeBlock`           | Fenced code block (`<pre><code>`)                                | Via `/` command or markdown  |
+| `bulletList`          | Unordered bullet list (`<ul>`)                                   | Bullet list button           |
+| `orderedList`         | Ordered numbered list (`<ol>`)                                   | Numbered list button         |
+| `taskList`            | Interactive checklist (`<ul data-type="taskList">`)              | `☑` Task list button         |
+| `hardBreak`           | Line break (`<br>`)                                              | `Shift + Enter`              |
+| `horizontalRule`      | Horizontal divider (`<hr>`)                                      | Via `/` command or `---`     |
+| `history`             | Undo / Redo history stack                                        | `Ctrl/Cmd + Z` / `Shift + Z` |
+| `informationPane`     | Edifice IO callout box (`info`, `success`, `warning`, `danger`)  | Info Pane button + variant   |
+| `accordion`           | Collapsible `<details>` / `<summary>` block                      | `▸` Accordion button         |
+| `columns`             | Responsive 2-column or 3-column CSS Grid layout                  | `⫿` Columns button           |
+| `conversationHistory` | Timestamped discussion / editorial log block                     | `💬` Conversation button     |
+| `pageBreak`           | Print / pagination break (`<div data-type="page-break">`)        | `―` Page Break button        |
+| `tableOfContents`     | Dynamic Table of Contents block generated from document headings | `TOC` button                 |
 
-```ts
-{
-  link: {
-    openOnClick: true, // Open links on click in the editor (default: false)
-    HTMLAttributes: {
-      rel: 'noopener noreferrer',
-      target: '_blank',
-    },
-  },
-}
-```
+### Headings (with SEO Tag & Auto Anchor ID)
 
-### Tables
+| Key       | Description                                                                 | Toolbar                           |
+| --------- | --------------------------------------------------------------------------- | --------------------------------- |
+| `heading` | Visual heading levels (`h1`–`h6`), independent SEO tag, and slug `id` attrs | Style dropdown + SEO tag dropdown |
 
-| Key     | Description                    | Toolbar                            |
-| ------- | ------------------------------ | ---------------------------------- |
-| `table` | Insertable and editable tables | Table button + column/row controls |
+### Links & Internal Strapi Content Linker
 
-Enables table insertion with controls for adding/removing columns and rows. Tables are resizable by default.
+| Key      | Description                                                                   | Toolbar                      |
+| -------- | ----------------------------------------------------------------------------- | ---------------------------- |
+| `link`   | External/internal hyperlinks with protocol validation (`https:`, `mailto:`)   | Link button + dialog         |
+| `linker` | Edifice IO / Hashbite internal Strapi Document Linker chip & live search modal | `🔗 Strapi` button + dialog  |
 
-```ts
-{
-  table: true,
-}
-```
+### Tables (with Cell Background Color & Merge/Split)
 
-### Text Alignment
+| Key     | Description                                                                                 | Toolbar                                                       |
+| ------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `table` | Resizable tables with row/column controls, cell background color picker, and cell merge/split | Table + Add/Remove Row/Col + Cell Color + Merge/Split buttons |
 
-| Key         | Description             | Toolbar                              |
-| ----------- | ----------------------- | ------------------------------------ |
-| `textAlign` | Text alignment controls | Left, Center, Right, Justify buttons |
+### Text Alignment & Colors
 
-Enables all four alignment buttons (left, center, right, justify).
+| Key              | Description                                           | Toolbar                              |
+| ---------------- | ----------------------------------------------------- | ------------------------------------ |
+| `textAlign`      | Align paragraphs and headings (`left`, `center`, `right`, `justify`) | 4 alignment buttons   |
+| `textColor`      | Text color picker populated from `theme.colors`       | Font color popover                   |
+| `highlightColor` | Multicolor highlight picker from `theme.colors`       | Highlight color popover              |
 
-```ts
-{
-  textAlign: true,
-}
-```
+### Edifice IO Multimedia Suite
 
-### Text Color & Highlight Color
+#### Images & In-Editor HTML5 Canvas Image Studio (`mediaLibrary`)
 
-| Key              | Description                       | Toolbar                |
-| ---------------- | --------------------------------- | ---------------------- |
-| `textColor`      | Change the color of selected text | Font color picker      |
-| `highlightColor` | Apply a background highlight      | Highlight color picker |
+- Pick images from the Strapi Media Library with prefilled `alt`, `data-asset-id`, and `data-document-id`.
+- Click any image in the editor to open the floating toolbar with:
+  - **Alignment** (`left`, `center`, `right`)
+  - **Width & Height** pixel inputs + aspect-ratio lock + **Reset**
+  - **Alt Text** & **Figure Caption (`<figcaption>`)** inputs
+  - **Edit Image (`ImageEditorModal`)**: In-editor HTML5 Canvas studio supporting **Aspect-Ratio Crop** (`Free`, `16:9`, `4:3`, `1:1`), **90° Rotation** (`-90°` / `+90°`), **Horizontal/Vertical Flip**, and **Zoom** (`1x`–`3x`), automatically uploading the edited asset back to `/upload`.
 
-Both features use a color picker popover that displays the colors defined in the [theme configuration](#colors). If no colors are configured, the buttons will not appear.
+#### Video (`video`)
 
-```ts
-{
-  textColor: true,
-  highlightColor: true,
-}
-```
+- Insert videos from the **Strapi Media Library** (`<video controls>`) or embed external **YouTube**, **Vimeo**, or direct **MP4/WebM** URLs.
+- Supports alignment, custom dimensions, captions, and read-only zero-data-loss rendering.
 
-### Images
+#### Audio (`audio`)
 
-| Key            | Description                      | Toolbar                                                   |
-| -------------- | -------------------------------- | --------------------------------------------------------- |
-| `mediaLibrary` | Images from Strapi Media Library | Image button + alt text popover + alignment + resize handle |
+- Insert audio files from the **Strapi Media Library** or record voice notes directly in the browser using the **Web `MediaRecorder` API** with a live `mm:ss` timer and automatic upload to Strapi Media Library.
 
-Enables image insertion from the Strapi Media Library. When enabled, the toolbar shows an image button that opens the Media Library picker. After selecting an image:
+#### Attachment Cards (`attachment`)
 
-- The image appears in the editor at its natural size (constrained to editor width)
-- Alt text is prefilled from the asset's `alternativeText` metadata
-- Clicking a selected image opens a popover with:
-  - Three **alignment** buttons (left, center, right)
-  - **Width** and **Height** inputs (in pixels) for precise sizing
-  - A **reset** button to restore the original dimensions
-  - **Alt text** input and a **delete** button
-- A **resize handle** (blue dot) appears at the bottom-right corner on hover — drag it to resize the image
+- Insert downloadable file cards from the Strapi Media Library displaying filename, extension badge, MIME type, and human-readable file size (`KB` / `MB`).
 
-The image stores the URL (`src`), Strapi asset ID (`data-asset-id`), alignment (`data-align`), and dimensions (`width`, `height`) in the Tiptap JSON output.
+#### Sandboxed HTTPS Iframes (`iframe`)
 
-**Content safety:** If you remove `mediaLibrary` from a preset, existing images in content are preserved and rendered read-only — they are never silently deleted.
+- Embed external interactive widgets over `https:` with strict `sandbox="allow-scripts allow-popups"`, `loading="lazy"`, and optional domain allowlisting (`allowedDomains`).
 
-```ts
-{
-  mediaLibrary: true,
-}
-```
+### Mathematics, Emoji, Slash Commands & Speech Tools
 
-**Resize** is configured through the `resize` key inside `mediaLibrary`. The options match the standard `@tiptap/extension-image` `resize` configuration. When `resize` is omitted or set to `false`, the resize handle and dimension controls are hidden.
+| Key             | Description                                                                 | Toolbar / Trigger              |
+| --------------- | --------------------------------------------------------------------------- | ------------------------------ |
+| `mathematics`   | Inline or block LaTeX math expressions (`E = mc^2`) with live preview modal | `∑` button or click            |
+| `emoji`         | Searchable Emoji Picker popover + `:shortcode:` input rules (`:rocket:` → 🚀) | 😊 button or `:shortcode:`   |
+| `slashCommands` | Quick-insert command palette for headings, lists, callouts, TOC             | `+` toolbar button             |
+| `speechToText`  | Web Speech API (`SpeechRecognition`) live voice dictation into the editor   | 🎙️ Dictate toggle button      |
+| `textToSpeech`  | Web Speech API (`speechSynthesis`) read-aloud of selection or document      | 🔊 Read Aloud toggle button    |
 
-```ts
-{
-  mediaLibrary: {
-    resize: {
-      enabled: true,
-      alwaysPreserveAspectRatio: true,
-      minWidth: 50,
-      minHeight: 50,
-    },
-  },
-}
-```
+### Editor Modes & Footer
 
-| Option                              | Default | Description                                           |
-| ----------------------------------- | ------- | ----------------------------------------------------- |
-| `resize`                            | _none_  | Set to `false` or omit to disable resize entirely     |
-| `resize.enabled`                    | `true`  | Enable or disable resize when the object is present   |
-| `resize.alwaysPreserveAspectRatio`  | `true`  | Lock aspect ratio when resizing or editing dimensions |
-| `resize.minWidth`                   | `50`    | Minimum allowed width in pixels                       |
-| `resize.minHeight`                  | `50`    | Minimum allowed height in pixels                      |
+| Key              | Description                                                                                  | Toolbar / Footer                        |
+| ---------------- | -------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `characterCount` | Live word count, character counter, and estimated reading time (`~X min read`) with progress bar and warning/danger states (`{ limit: 500, wordsPerMinute: 200 }`) | Bottom status bar                       |
+| `fullscreen`     | Toggle Fullscreen (`Escape` exits), Edifice Read-Only Preview, and JSON/HTML/Markdown Source Inspector | Preview, `{}` Source, and Fullscreen buttons |
 
-#### Rendering images on the frontend
+---
 
-The plugin stores content as **Tiptap/ProseMirror JSON**. The `width`, `height`, `src`, `alt`, and `title` attributes are standard and will render automatically with `@tiptap/extension-image`. However, the custom `data-align` and `data-asset-id` attributes require extending the Image extension on your frontend:
+## Accessibility (WCAG 2.1 AA) & Security
 
-```ts
-import { generateHTML } from '@tiptap/html';
-import StarterKit from '@tiptap/starter-kit';
-import Image from '@tiptap/extension-image';
+- **WCAG 2.1 AA Toolbar Navigation (`useKeyboardNavigation`)**:
+  - Toolbar container exposes `role="toolbar"` and `aria-label`.
+  - Every toolbar button exposes `aria-label`. Toggle buttons (for example bold, text alignment, fullscreen) also expose `aria-pressed`.
+  - **Roving Keyboard Navigation**: `ArrowRight` / `ArrowLeft` cycle through enabled toolbar controls, `Home` / `End` jump to the first/last control, and `Escape` returns focus to the Tiptap editing canvas.
+  - **Screen Reader Announcements**: Speech tools and status indicators use `aria-live="polite"`.
+  - **Language of Parts (WCAG 3.1.2)**: The `language` mark wraps foreign phrases in `<span lang="..." dir="ltr|rtl">`.
+- **Defense-in-Depth Security**:
+  - **URL & Protocol Sanitization**: Blocks `javascript:`, `vbscript:`, protocol-relative (`//`, `/\`), and `data:text/html` across links, images, videos, audios, and attachments.
+  - **DNS-Aware SSRF Protection (`isSsrfSafeUrl` & `assertSafeResolvedHost`)**: Backend `/link-preview` and `/upload-by-url` routes validate both literal hostnames and DNS-resolved IPv4/IPv6 addresses (`dns.promises.lookup(..., { all: true })`), failing closed on DNS lookup errors and pinning the validated DNS records to an undici `Agent` fetch dispatcher to prevent DNS rebinding. Blocks `localhost`, `0.0.0.0/8`, `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `100.64.0.0/10` (CGNAT & cloud metadata `100.100.100.200`), `169.254.0.0/16`, IPv6 loopback/unique-local/link-local (`fe80::/10`)/IPv4-mapped ranges, `.local`/`.internal` hosts, URL credentials, automatic redirects (`redirect: 'manual'`), and unbounded response streams (capped at 64 KB for link previews and 25 MB for remote media uploads persisted via Strapi's Upload service).
 
-// Extend with the custom attributes used by this plugin
-const StrapiImage = Image.extend({
-  addAttributes() {
-    return {
-      ...this.parent?.(),
-      'data-align': { default: null },
-      'data-asset-id': { default: null },
-    };
-  },
-});
-
-// Convert the JSON from the Strapi API to HTML
-const html = generateHTML(apiResponse.content, [
-  StarterKit,
-  StrapiImage,
-  // ...other extensions you use
-]);
-```
-
-Then add CSS for alignment on your frontend:
-
-```css
-img[data-align="center"] {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-img[data-align="right"] {
-  display: block;
-  margin-left: auto;
-  margin-right: 0;
-}
-```
+---
 
 ## Theme
 
-The `theme` key in the plugin config lets you define colors for the color pickers and inject custom CSS into the editor.
-
 ### Colors
 
-Define a `colors` array to populate the text color and highlight color pickers. Each entry needs a `label` (shown as a tooltip) and a `color` value (hex, rgb, rgba, hsl, hsla, or CSS variable).
+Define `theme.colors` in `config/plugins.ts` to populate the text color and highlight color pickers:
 
 ```ts
 // config/plugins.ts
-
 export default () => ({
   'tiptap-editor': {
     config: {
@@ -533,14 +416,6 @@ export default () => ({
           { label: 'Brand primary', color: 'var(--color-primary)' },
         ],
       },
-      presets: {
-        blog: {
-          bold: true,
-          italic: true,
-          textColor: true,
-          highlightColor: true,
-        },
-      },
     },
   },
 });
@@ -548,11 +423,7 @@ export default () => ({
 
 ### Custom Stylesheet
 
-You can inject custom CSS to style the editor content area. There are two options — use one or the other, not both.
-
-**Option 1: `css`** — Inline CSS content (recommended for monorepos and production deployments)
-
-Read the file at Strapi startup so the CSS is captured as a string. This works reliably across all environments (local dev, Docker, Azure Container Apps, etc.) because the file is resolved in your app's Node process at boot time.
+Inject custom CSS into the editor content area via `theme.css` (inline CSS string) or `theme.stylesheet` (external URL):
 
 ```ts
 // config/plugins.ts
@@ -569,29 +440,11 @@ export default () => ({
 });
 ```
 
-**Option 2: `stylesheet`** — A URL the browser can fetch directly
-
-Use this when the stylesheet is hosted at a known URL (CDN, public path, etc.).
-
-```ts
-// config/plugins.ts
-
-export default () => ({
-  'tiptap-editor': {
-    config: {
-      theme: {
-        stylesheet: 'https://cdn.example.com/editor-styles.css',
-      },
-    },
-  },
-});
-```
+---
 
 ## Configuration Reference
 
 ### Feature Values
-
-Each feature key in a preset accepts one of these values:
 
 | Value           | Meaning                                                    |
 | --------------- | ---------------------------------------------------------- |
@@ -600,59 +453,72 @@ Each feature key in a preset accepts one of these values:
 | _(key omitted)_ | Feature disabled (absent keys are treated as disabled)     |
 | `{ ... }`       | Feature enabled with custom options (merged with defaults) |
 
-### Full Preset Example
-
-Here is a single preset with every available feature enabled and annotated:
+### Full 48-Feature Preset Example
 
 ```ts
 // config/plugins.ts
-
 export default () => ({
   'tiptap-editor': {
     config: {
       presets: {
-        everything: {
-          // Inline formatting
+        edifice: {
+          // Core inline & blocks
           bold: true,
           italic: true,
-          underline: true,
           strike: true,
+          underline: true,
           code: true,
-          superscript: true,
-          subscript: true,
-
-          // Block elements
-          blockquote: true,
           codeBlock: true,
+          blockquote: true,
           bulletList: true,
           orderedList: true,
-
-          // Headings — all levels (same as heading: true)
-          heading: {
-            levels: [1, 2, 3, 4, 5, 6],
-          },
-
-          // Links — custom HTML attributes
-          link: {
-            HTMLAttributes: {
-              rel: 'noopener noreferrer',
-            },
-          },
-
-          // Tables
-          table: true,
-
-          // Text alignment (left, center, right, justify)
-          textAlign: true,
-
-          // Text and highlight colors (requires theme.colors)
+          hardBreak: true,
+          horizontalRule: true,
+          history: true,
+          heading: { levels: [1, 2, 3, 4, 5, 6] },
+          link: { openOnClick: false },
+          table: { resizable: true },
+          textAlign: { types: ['heading', 'paragraph'] },
+          superscript: true,
+          subscript: true,
           textColor: true,
           highlightColor: true,
 
-          // Images from Strapi Media Library with resize enabled
-          mediaLibrary: {
-            resize: { enabled: true },
-          },
+          // Typography & semantic marks
+          fontFamily: true,
+          fontSize: true,
+          lineHeight: true,
+          clearFormatting: true,
+          typography: true,
+          leadParagraph: true,
+          language: true,
+          abbr: true,
+
+          // Edifice IO multimedia & internal linker
+          mediaLibrary: { resize: { enabled: true } },
+          video: true,
+          audio: true,
+          attachment: true,
+          iframe: { allowedDomains: ['youtube.com', 'youtube-nocookie.com', 'player.vimeo.com'] },
+          linker: true,
+
+          // Structured blocks & interactive tools
+          informationPane: true,
+          accordion: true,
+          conversationHistory: true,
+          columns: true,
+          taskList: true,
+          mathematics: true,
+          emoji: true,
+          slashCommands: true,
+          pageBreak: true,
+          tableOfContents: true,
+
+          // Speech & editor modes
+          speechToText: true,
+          textToSpeech: true,
+          characterCount: { limit: 25000 },
+          fullscreen: true,
         },
       },
     },
@@ -660,21 +526,28 @@ export default () => ({
 });
 ```
 
+### Backend API Routes
+
+All admin routes are mounted under `/tiptap-editor`:
+
+| Method | Path                                              | Description                                                |
+| ------ | ------------------------------------------------- | ---------------------------------------------------------- |
+| `GET`  | `/tiptap-editor/presets`                          | List all available preset names (built-in + custom)        |
+| `GET`  | `/tiptap-editor/presets/:preset`                  | Get resolved feature configuration for a preset            |
+| `GET`  | `/tiptap-editor/theme`                            | Get theme colors and custom CSS/stylesheet                 |
+| `GET`  | `/tiptap-editor/settings`                         | Get runtime settings from Strapi `core-store`              |
+| `PUT`  | `/tiptap-editor/settings`                         | Update runtime settings and preset overrides               |
+| `GET`  | `/tiptap-editor/search?q=<query>&locale=<locale>` | Search linkable Strapi collection documents                |
+| `GET`  | `/tiptap-editor/get/:collectionName/:documentId`  | Resolve a single Strapi document's label and publish state |
+| `GET`  | `/tiptap-editor/identify/:collectionName`         | Identify the human-readable title field for a collection   |
+| `GET`  | `/tiptap-editor/link-preview?url=<https_url>`     | DNS-aware SSRF-safe OpenGraph metadata preview (manual redirect, 64 KB stream cap) |
+| `POST` | `/tiptap-editor/upload-by-url`                    | DNS-aware SSRF-safe remote media URL validation and Upload plugin record registration |
+
 ### Config Validation
 
-The plugin validates your configuration at startup. If a preset contains an invalid feature key, Strapi will throw an error with a message listing the invalid keys and all allowed keys. This prevents typos from silently disabling features.
+The plugin validates `config/plugins.ts` at startup and validates runtime updates in `/tiptap-editor/settings`. Any unknown feature key throws a descriptive error listing all 48 valid keys.
 
-```ts
-// This will throw an error at startup:
-{
-  presets: {
-    blog: {
-      bold: true,
-      boldd: true,  // Typo! Not a valid feature key
-    },
-  },
-}
-```
+---
 
 ## 🤝 Community
 
@@ -695,6 +568,5 @@ Built and maintained by [Notum Technologies](https://notum.tech/?utm_source=stra
 ### Contributing
 
 Contributions of all kinds are welcome: code, documentation, bug reports, and feature ideas.
-<br> <br> Browse the [open issues](https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues) to find something to work on, or open a new one to start a discussion. Pull requests are always appreciated!
 
-If you'd like to directly contribute, check our [Contributions document](https://github.com/notum-cz/strapi-plugin-tiptap-editor?tab=contributing-ov-file).
+Browse the [open issues](https://github.com/notum-cz/strapi-plugin-tiptap-editor/issues) to find something to work on, or open a new one to start a discussion. Pull requests are always appreciated!
