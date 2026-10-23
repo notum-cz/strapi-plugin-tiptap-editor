@@ -1,0 +1,147 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// ─── Hoisted mock variables ───────────────────────────────────────────────────
+
+const { mockUseEditorState, mockUseThemeConfig, mockUseState, mockUseRef } = vi.hoisted(() => ({
+  mockUseEditorState: vi.fn(),
+  mockUseThemeConfig: vi.fn(),
+  mockUseState: vi.fn(),
+  mockUseRef: vi.fn(),
+}));
+
+// ─── Module mocks ─────────────────────────────────────────────────────────────
+
+vi.mock('@tiptap/react', () => ({ useEditorState: mockUseEditorState }));
+
+vi.mock('@strapi/design-system', () => ({
+  Popover: { Root: 'Popover.Root', Anchor: 'Popover.Anchor', Content: 'Popover.Content' },
+  Tooltip: 'Tooltip',
+  Button: 'Button',
+}));
+
+vi.mock('react', async () => {
+  const actual = await vi.importActual<typeof import('react')>('react');
+  return { ...actual, useState: mockUseState, useRef: mockUseRef };
+});
+
+vi.mock('react-intl', () => ({
+  useIntl: () => ({
+    formatMessage: ({ defaultMessage }: { defaultMessage: string }) => defaultMessage,
+  }),
+}));
+
+vi.mock('../../admin/src/hooks/useThemeConfig', () => ({ useThemeConfig: mockUseThemeConfig }));
+vi.mock('../../admin/src/components/ColorPickerPopover', () => ({
+  ColorPickerPopover: 'ColorPickerPopover',
+}));
+vi.mock('../../admin/src/components/ToolbarButton', () => ({ ToolbarButton: 'ToolbarButton' }));
+
+import { useTableCellBackground } from '../../admin/src/extensions/TableCellBackground';
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function findElement(element: any, type: string): any {
+  if (!element || typeof element !== 'object') return null;
+  if (element.type === type) return element;
+  const children = element.props?.children;
+  for (const child of Array.isArray(children) ? children : [children]) {
+    const found = findElement(child, type);
+    if (found) return found;
+  }
+  return null;
+}
+
+function makeEditor() {
+  const tr = { doc: 'doc', mapping: 'mapping', setSelection: vi.fn() };
+  const chain: any = {
+    command: vi.fn((fn: (props: any) => boolean) => {
+      fn({ tr });
+      return chain;
+    }),
+    focus: vi.fn(() => chain),
+    setCellAttribute: vi.fn(() => chain),
+    run: vi.fn(() => true),
+  };
+  const mappedSelection = { mapped: true };
+  const selection = { map: vi.fn(() => mappedSelection) };
+  const editor: any = {
+    state: { selection },
+    chain: vi.fn(() => chain),
+    isActive: vi.fn(() => false),
+    getAttributes: vi.fn(() => ({ backgroundColor: '#ff0000' })),
+  };
+  return { editor, chain, tr, selection, mappedSelection };
+}
+
+// ─── Tests ────────────────────────────────────────────────────────────────────
+
+describe('useTableCellBackground', () => {
+  let selectionRef: { current: any };
+  let setShowPicker: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    selectionRef = { current: null };
+    setShowPicker = vi.fn();
+    mockUseRef.mockReturnValue(selectionRef);
+    mockUseState.mockImplementation((initial: unknown) => [initial, setShowPicker]);
+    mockUseThemeConfig.mockReturnValue({ colors: [{ label: 'Red', color: '#ff0000' }] });
+    mockUseEditorState.mockReturnValue({ canSetBackground: true, activeColor: '#ff0000' });
+  });
+
+  it('selector reads the header cell attributes when the cursor is in a header', () => {
+    const { editor } = makeEditor();
+    editor.isActive.mockImplementation((name: string) => name === 'tableHeader');
+    let selector: ((ctx: any) => any) | undefined;
+    mockUseEditorState.mockImplementation((opts: any) => {
+      selector = opts.selector;
+      return {};
+    });
+
+    useTableCellBackground(editor);
+
+    expect(selector!({ editor })).toEqual({ canSetBackground: true, activeColor: '#ff0000' });
+    expect(editor.getAttributes).toHaveBeenCalledWith('tableHeader');
+
+    editor.isActive.mockImplementation((name: string) => name === 'tableCell');
+    editor.getAttributes.mockReturnValue({ backgroundColor: null });
+    expect(selector!({ editor })).toEqual({ canSetBackground: true, activeColor: null });
+
+    editor.isActive.mockReturnValue(false);
+    expect(selector!({ editor }).canSetBackground).toBe(false);
+    expect(selector!({ editor: null })).toEqual({ canSetBackground: false, activeColor: undefined });
+  });
+
+  it('hides the button outside a table', () => {
+    mockUseEditorState.mockReturnValue({ canSetBackground: false, activeColor: undefined });
+    const { editor } = makeEditor();
+
+    const button = findElement(useTableCellBackground(editor).cellBackgroundButton, 'ToolbarButton');
+
+    expect(button.props.hidden).toBe(true);
+  });
+
+  it('restores the saved selection and paints the cells with the picked color', () => {
+    const { editor, chain, tr, selection, mappedSelection } = makeEditor();
+    const result = useTableCellBackground(editor);
+
+    findElement(result.cellBackgroundButton, 'Popover.Root').props.onOpenChange(true);
+    expect(selectionRef.current).toBe(selection);
+
+    findElement(result.cellBackgroundButton, 'ColorPickerPopover').props.onSelect('#00ff00');
+
+    expect(selection.map).toHaveBeenCalledWith('doc', 'mapping');
+    expect(tr.setSelection).toHaveBeenCalledWith(mappedSelection);
+    expect(chain.setCellAttribute).toHaveBeenCalledWith('backgroundColor', '#00ff00');
+    expect(setShowPicker).toHaveBeenLastCalledWith(false);
+  });
+
+  it('clears the background on remove', () => {
+    const { editor, chain } = makeEditor();
+    const result = useTableCellBackground(editor);
+
+    findElement(result.cellBackgroundButton, 'ColorPickerPopover').props.onRemove();
+
+    expect(chain.setCellAttribute).toHaveBeenCalledWith('backgroundColor', null);
+  });
+});

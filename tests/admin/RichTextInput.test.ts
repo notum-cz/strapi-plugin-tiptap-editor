@@ -98,6 +98,10 @@ vi.mock('../../admin/src/extensions/Script', () => ({
 vi.mock('../../admin/src/extensions/Table', () => ({
   useTable: () => mockTable,
 }));
+const mockUseTableCellBackground = vi.fn(() => ({ cellBackgroundButton: 'CELL_BACKGROUND' }));
+vi.mock('../../admin/src/extensions/TableCellBackground', () => ({
+  useTableCellBackground: (...args: any[]) => mockUseTableCellBackground(...args),
+}));
 vi.mock('../../admin/src/extensions/TextAlign', () => ({
   useTextAlign: () => mockTextAlign,
 }));
@@ -311,6 +315,22 @@ describe('RichTextInput', () => {
     const featureGuards = findElements(result, 'FeatureGuard');
     const tableGuard = featureGuards.find((fg) => fg.props?.featureValue === config.table);
     expect(tableGuard).toBeDefined();
+  });
+
+  it.each([
+    [true, false],
+    [{ resizable: true }, false],
+    [{ cellBackground: true }, true],
+  ])('with table %j renders the cell background picker: %s', (table, expected) => {
+    // No other features, so `table: true` is the only guard whose featureValue is `true`.
+    const config = { table };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+    const tableGuard = findElements(result, 'FeatureGuard').find(
+      (fg) => fg.props?.featureValue === config.table
+    );
+    expect(tableGuard.props.children.includes('CELL_BACKGROUND')).toBe(expected);
   });
 
   it('calls useTextColor and useHighlightColor unconditionally (React rules of hooks)', () => {

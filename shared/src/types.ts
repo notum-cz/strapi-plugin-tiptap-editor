@@ -11,6 +11,8 @@ export type LinkConfig = {
 
 export type TableConfig = {
   resizable?: boolean;
+  /** Shows the cell background color picker, fed by `theme.colors`. */
+  cellBackground?: boolean;
 };
 
 export type TextAlignConfig = {

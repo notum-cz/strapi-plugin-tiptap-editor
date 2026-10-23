@@ -12,8 +12,14 @@ import { BaseHeadingWithSEOTag } from '../extensions/Heading';
 import { createComponentExtension } from '../extensions/Components';
 import { PasteStripper } from '../extensions/PasteStripper';
 import { StrapiImage } from '../extensions/Image';
+import { TableCellWithBackground, TableHeaderWithBackground } from '../extensions/TableCellBackground';
 import { resolveRichTextComponents } from '../registry/richTextComponents';
-import { TiptapPresetConfig, isFeatureEnabled, getFeatureOptions } from '../../../shared/src/types';
+import {
+  TableConfig,
+  TiptapPresetConfig,
+  isFeatureEnabled,
+  getFeatureOptions,
+} from '../../../shared/src/types';
 
 // Helper: converts a preset feature value to StarterKit's expected format
 // false = disable the sub-extension, {} = enable with defaults
@@ -71,13 +77,21 @@ export function buildExtensions(config: TiptapPresetConfig): Extensions {
   }
 
   if (isFeatureEnabled(config.table)) {
+    // cellBackground only gates the toolbar picker. The attribute is always in the schema so a
+    // painted cell written under a richer preset keeps its color when saved here.
+    const { cellBackground: _cellBackground, ...tableOptions } =
+      getFeatureOptions<TableConfig>(config.table, {}) ?? {};
     extensions.push(
       TableKit.configure({
         table: {
           resizable: true,
-          ...getFeatureOptions(config.table, {}),
+          ...tableOptions,
         },
-      })
+        tableCell: false,
+        tableHeader: false,
+      }),
+      TableCellWithBackground,
+      TableHeaderWithBackground
     );
   }
 
