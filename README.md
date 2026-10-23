@@ -115,7 +115,7 @@
 - **Rich text editing** powered by [TipTap](https://tiptap.dev/) - a modern, extensible WYSIWYG editor built on ProseMirror
 - **Headings** (H1–H6), **bold**, **italic**, **underline**, **strikethrough**
 - **Ordered & unordered lists**, task lists
-- **Links**, **tables**
+- **Links**, **tables** with an optional cell background picker
 - **Images** from Strapi Media Library with alt text editing and alignment
 - **Code blocks** with syntax highlighting
 - **Blockquotes**, **horizontal rules**
@@ -384,6 +384,35 @@ Enables table insertion with controls for adding/removing columns and rows. Tabl
 }
 ```
 
+Set `cellBackground: true` to add a **Cell background** picker next to the row/column controls. It paints the cell under the cursor, or every cell in a multi-cell selection, using the [theme colors](#colors).
+
+```ts
+{
+  table: { cellBackground: true },
+}
+```
+
+The color is stored as a `backgroundColor` attribute on `tableCell` and `tableHeader` nodes (`null` when unset). Both nodes always carry the attribute, so content painted under one preset keeps its colors when edited under a preset without the picker. A frontend that renders the JSON with its own Tiptap schema has to declare the attribute too, or Tiptap drops it:
+
+```ts
+import { TableCell, TableHeader, TableKit } from '@tiptap/extension-table';
+
+const withBackground = {
+  backgroundColor: {
+    default: null,
+    parseHTML: (element) => element.style.backgroundColor || null,
+    renderHTML: (attributes) =>
+      attributes.backgroundColor ? { style: `background-color: ${attributes.backgroundColor}` } : {},
+  },
+};
+
+const extensions = [
+  TableKit.configure({ tableCell: false, tableHeader: false }),
+  TableCell.extend({ addAttributes() { return { ...this.parent?.(), ...withBackground }; } }),
+  TableHeader.extend({ addAttributes() { return { ...this.parent?.(), ...withBackground }; } }),
+];
+```
+
 ### Text Alignment
 
 | Key         | Description             | Toolbar                              |
@@ -514,7 +543,7 @@ The `theme` key in the plugin config lets you define colors for the color picker
 
 ### Colors
 
-Define a `colors` array to populate the text color and highlight color pickers. Each entry needs a `label` (shown as a tooltip) and a `color` value (hex, rgb, rgba, hsl, hsla, or CSS variable).
+Define a `colors` array to populate the text color, highlight color and table cell background pickers. Each entry needs a `label` (shown as a tooltip) and a `color` value (hex, rgb, rgba, hsl, hsla, or CSS variable).
 
 ```ts
 // config/plugins.ts
@@ -639,8 +668,8 @@ export default () => ({
             },
           },
 
-          // Tables
-          table: true,
+          // Tables, with the cell background picker fed by theme.colors
+          table: { cellBackground: true },
 
           // Text alignment (left, center, right, justify)
           textAlign: true,

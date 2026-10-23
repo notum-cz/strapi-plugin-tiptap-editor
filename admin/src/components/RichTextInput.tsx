@@ -12,12 +12,18 @@ import { useHeading } from '../extensions/Heading';
 import { useImage } from '../extensions/Image';
 import { useScript } from '../extensions/Script';
 import { useTable } from '../extensions/Table';
+import { useTableCellBackground } from '../extensions/TableCellBackground';
 import { useTextAlign } from '../extensions/TextAlign';
 import { useTextColor } from '../extensions/TextColor';
 import { useHighlightColor } from '../extensions/HighlightColor';
 import { usePresetConfig } from '../hooks/usePresetConfig';
 import { buildExtensions } from '../utils/buildExtensions';
-import { TiptapPresetConfig, MINIMAL_PRESET_CONFIG, getFeatureOptions } from '../../../shared/types';
+import {
+  TableConfig,
+  TiptapPresetConfig,
+  MINIMAL_PRESET_CONFIG,
+  getFeatureOptions,
+} from '../../../shared/types';
 
 // ─── Inner editor ────────────────────────────────────────────────────────────
 // Mounted only AFTER preset config is resolved, so useEditor receives the
@@ -44,6 +50,8 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
     const image = useImage(editor, { disabled: props.disabled });
     const script = useScript(editor, { disabled: props.disabled });
     const table = useTable(editor, { disabled: props.disabled });
+    const tableOptions = getFeatureOptions<TableConfig>(config.table, {});
+    const cellBackground = useTableCellBackground(editor, { disabled: props.disabled });
     const textAlign = useTextAlign(editor, { disabled: props.disabled });
     const textColor = useTextColor(editor, { disabled: props.disabled, config: config.textColor });
     const highlightColor = useHighlightColor(editor, { disabled: props.disabled, config: config.highlightColor });
@@ -124,6 +132,7 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
             {table.removeColumnButton}
             {table.addRowButton}
             {table.removeRowButton}
+            {tableOptions?.cellBackground && cellBackground.cellBackgroundButton}
             {table.tableDialog}
           </FeatureGuard>
         </BaseTiptapInput>

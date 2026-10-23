@@ -9,6 +9,7 @@ vi.mock('@tiptap/react', () => ({
   useEditorState: vi.fn(),
 }));
 
+import { getSchema } from '@tiptap/core';
 import { buildExtensions } from '../../admin/src/utils/buildExtensions';
 import { TiptapPresetConfig } from '../../shared/types';
 
@@ -116,6 +117,26 @@ describe('buildExtensions', () => {
       (ext: any) => ext.name === 'tableKit'
     );
     expect(hasTable).toBe(true);
+  });
+
+  it('swaps the stock table cells for ones carrying backgroundColor, whatever cellBackground says', () => {
+    for (const table of [true, { cellBackground: false }, { cellBackground: true }]) {
+      const extensions = buildExtensions({ table });
+      const tableKit = extensions.find((ext: any) => ext.name === 'tableKit') as any;
+      expect(tableKit.options.tableCell).toBe(false);
+      expect(tableKit.options.tableHeader).toBe(false);
+      expect(tableKit.options.table).not.toHaveProperty('cellBackground');
+      const cellNames = extensions
+        .map((ext: any) => ext.name)
+        .filter((name: string) => name === 'tableCell' || name === 'tableHeader');
+      expect(cellNames).toEqual(['tableCell', 'tableHeader']);
+    }
+  });
+
+  it('puts backgroundColor on tableCell and tableHeader in the editor schema', () => {
+    const schema = getSchema(buildExtensions({ table: true }));
+    expect(schema.nodes.tableCell.spec.attrs).toHaveProperty('backgroundColor');
+    expect(schema.nodes.tableHeader.spec.attrs).toHaveProperty('backgroundColor');
   });
 
   it('does not include TableKit when table is false', () => {
