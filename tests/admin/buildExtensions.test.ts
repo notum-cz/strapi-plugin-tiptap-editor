@@ -1,18 +1,54 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock Strapi design system and React hooks used by Heading.tsx (not needed for buildExtensions)
 vi.mock('@strapi/design-system', () => ({
   SingleSelect: 'SingleSelect',
   SingleSelectOption: 'SingleSelectOption',
+  SimpleMenu: 'SimpleMenu',
+  MenuItem: 'MenuItem',
+  Flex: 'Flex',
+  IconButton: 'IconButton',
+  Status: 'Status',
+  Typography: 'Typography',
+}));
+vi.mock('@strapi/icons', () => ({
+  PuzzlePiece: 'PuzzlePiece',
+  Pencil: 'Pencil',
+  Trash: 'Trash',
+  Image: 'Image',
+}));
+vi.mock('react-intl', () => ({
+  useIntl: () => ({
+    formatMessage: ({ defaultMessage }: { id: string; defaultMessage: string }) => defaultMessage,
+  }),
 }));
 vi.mock('@tiptap/react', () => ({
   useEditorState: vi.fn(),
+  ReactNodeViewRenderer: vi.fn(() => 'nodeview'),
+  NodeViewWrapper: 'div',
+  NodeViewContent: 'div',
 }));
 
+// The component dialog and node view are React-only; buildExtensions just needs them to resolve.
+vi.mock('../../admin/src/components/ComponentDialog', () => ({ default: 'ComponentDialog' }));
+vi.mock('../../admin/src/components/ComponentNodeView', () => ({
+  GenericComponentNodeView: 'GenericComponentNodeView',
+}));
+
+import { getSchema } from '@tiptap/core';
 import { buildExtensions } from '../../admin/src/utils/buildExtensions';
-import { TiptapPresetConfig } from '../../shared/types';
+import {
+  clearRichTextComponents,
+  defineRichTextComponent,
+  registerRichTextComponent,
+} from '../../admin/src/registry/richTextComponents';
+import { TiptapPresetConfig } from '../../shared/src/types';
 
 describe('buildExtensions', () => {
+  beforeEach(() => {
+    clearRichTextComponents();
+  });
+
   it('always returns an array containing StarterKit', () => {
     const extensions = buildExtensions({});
     const hasStarterKit = extensions.some(
@@ -116,6 +152,26 @@ describe('buildExtensions', () => {
       (ext: any) => ext.name === 'tableKit'
     );
     expect(hasTable).toBe(true);
+  });
+
+  it('swaps the stock table cells for ones carrying backgroundColor, whatever cellBackground says', () => {
+    for (const table of [true, { cellBackground: false }, { cellBackground: true }]) {
+      const extensions = buildExtensions({ table });
+      const tableKit = extensions.find((ext: any) => ext.name === 'tableKit') as any;
+      expect(tableKit.options.tableCell).toBe(false);
+      expect(tableKit.options.tableHeader).toBe(false);
+      expect(tableKit.options.table).not.toHaveProperty('cellBackground');
+      const cellNames = extensions
+        .map((ext: any) => ext.name)
+        .filter((name: string) => name === 'tableCell' || name === 'tableHeader');
+      expect(cellNames).toEqual(['tableCell', 'tableHeader']);
+    }
+  });
+
+  it('puts backgroundColor on tableCell and tableHeader in the editor schema', () => {
+    const schema = getSchema(buildExtensions({ table: true }));
+    expect(schema.nodes.tableCell.spec.attrs).toHaveProperty('backgroundColor');
+    expect(schema.nodes.tableHeader.spec.attrs).toHaveProperty('backgroundColor');
   });
 
   it('does not include TableKit when table is false', () => {
@@ -311,5 +367,46 @@ describe('buildExtensions', () => {
 
     expect(names).toContain('highlight');
     expect(names).not.toContain('color');
+  });
+
+  // rich-text component nodes
+
+  it('adds a node for a registered component even when the preset does not enable it', () => {
+    registerRichTextComponent(
+      defineRichTextComponent({
+        name: 'callout',
+        label: 'Callout',
+        content: 'block+',
+        attributes: {},
+      })
+    );
+    const ext = buildExtensions({}).find((e: any) => e.name === 'callout') as any;
+    expect(ext).toBeDefined();
+    expect(ext.config.addOptions().enabled).toBe(false);
+  });
+
+  it('marks the node enabled when the preset enables it', () => {
+    registerRichTextComponent(
+      defineRichTextComponent({
+        name: 'callout',
+        label: 'Callout',
+        content: 'block+',
+        attributes: {},
+      })
+    );
+    const ext = buildExtensions({ components: { callout: { tones: ['info'] } } }).find(
+      (e: any) => e.name === 'callout'
+    ) as any;
+    expect(ext.config.addOptions()).toStrictEqual({
+      enabled: true,
+      component: { tones: ['info'] },
+    });
+  });
+
+  it('ignores enabled-but-unregistered names', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    expect(
+      buildExtensions({ components: { ghost: true } }).some((e: any) => e.name === 'ghost')
+    ).toBe(false);
   });
 });

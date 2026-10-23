@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { TiptapPresetConfig, isFeatureEnabled } from '../../../shared/types';
+import { TiptapPresetConfig, isFeatureEnabled } from '../../../shared/src/types';
 
 interface FeatureGuardProps {
   /** The feature config value from TiptapPresetConfig (e.g., config.bold, config.heading) */

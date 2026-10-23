@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { MINIMAL_PRESET_CONFIG } from '../../shared/types';
+import { MINIMAL_PRESET_CONFIG } from '../../shared/src/types';
 import controllers from '../../server/src/controllers';
 
 const makeStrapi = (presets: Record<string, unknown>) => ({
@@ -80,5 +80,15 @@ describe('preset controller (SERVER-03)', () => {
     const ctx: any = makeCtx({ params: { name: 'my_preset-1' } });
     await controller.findOne(ctx);
     expect(ctx.body).toStrictEqual(config);
+  });
+
+  it('findOne returns the components map unchanged', async () => {
+    const components = { button: true, callout: { tones: ['info'] } };
+    const richConfig = { bold: true, components };
+    const strapi = makeStrapi({ rich: richConfig }) as any;
+    const controller = controllers.preset({ strapi });
+    const ctx: any = makeCtx({ params: { name: 'rich' } });
+    await controller.findOne(ctx);
+    expect(ctx.body.components).toStrictEqual(components);
   });
 });

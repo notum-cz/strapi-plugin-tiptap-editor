@@ -1,6 +1,6 @@
 import { Tooltip, Button } from '@strapi/design-system';
 import { useIntl } from 'react-intl';
-import { ThemeColorEntry } from '../../../shared/types';
+import { ThemeColorEntry } from '../../../shared/src/types';
 
 interface ColorPickerPopoverProps {
   colors: ThemeColorEntry[];

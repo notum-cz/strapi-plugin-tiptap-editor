@@ -81,6 +81,13 @@
     - [Defining Presets](#defining-presets)
     - [Assigning a Preset to a Field](#assigning-a-preset-to-a-field)
     - [Multiple Presets](#multiple-presets)
+  - [Custom components](#custom-components)
+    - [The `components` Preset Key](#the-components-preset-key)
+    - [Registering a Component](#registering-a-component)
+    - [The `extension()` Escape Hatch](#the-extension-escape-hatch)
+    - [Editor UX](#editor-ux)
+    - [Rendering Components on the Frontend](#rendering-components-on-the-frontend)
+    - [The `richTextComponents` API](#the-richtextcomponents-api)
   - [Available Extensions](#available-extensions)
     - [Inline Formatting](#inline-formatting)
     - [Block Elements](#block-elements)
@@ -115,7 +122,7 @@
 - **Rich text editing** powered by [TipTap](https://tiptap.dev/) - a modern, extensible WYSIWYG editor built on ProseMirror
 - **Headings** (H1–H6), **bold**, **italic**, **underline**, **strikethrough**
 - **Ordered & unordered lists**, task lists
-- **Links**, **tables**
+- **Links**, **tables** with an optional cell background picker
 - **Images** from Strapi Media Library with alt text editing and alignment
 - **Code blocks** with syntax highlighting
 - **Blockquotes**, **horizontal rules**
@@ -263,6 +270,283 @@ export default () => ({
 });
 ```
 
+## Custom components
+
+On top of the built-in extensions above, the plugin supports **custom rich-text components**: named, schema-driven blocks (a call-to-action button, a callout box, a pricing table, anything your project needs) that plug into the same preset system, the same editor UI, and the same stored JSON as every built-in node. One component — `button` — ships with the plugin itself; everything else is defined by your project.
+
+> Adding a component **to the plugin itself** (a new built-in like `button`), or want the short version of everything below? See [docs/adding-a-component.md](docs/adding-a-component.md).
+
+### The `components` Preset Key
+
+Components are enabled per preset exactly like any other feature, under a `components` key. Its value is a map from component name to `true`, `false`, or an options object:
+
+```ts
+presets: {
+  blog: {
+    bold: true,
+    italic: true,
+    components: {
+      button: true,
+      callout: { tones: ['info', 'warning'] },
+    },
+  },
+},
+```
+
+`button` is registered by the plugin itself; `callout` here is a project-defined component (see [Registering a Component](#registering-a-component)). The object you write for a component (`{ tones: [...] }` above) is passed through unchanged to that component's `preview`, `form`, and `extension` as `options` — the preset only decides *who may insert and edit* a component, not what it renders as. See [Editor UX](#editor-ux) for what happens to a component a preset doesn't enable.
+
+The `components` key is validated at startup, independently of the feature-key check in [Config Validation](#config-validation):
+
+- It must be a plain object (or omitted entirely).
+- Each value must be `true`, `false`, or a plain object.
+- Each name must match `^[a-zA-Z][\w-]*$` — a letter, then any mix of letters, digits, `_`, and `-`.
+- A name the editor already uses internally (`doc`, `text`, `paragraph`, `heading`, `blockquote`, `codeBlock`, `bulletList`, `orderedList`, `listItem`, `hardBreak`, `horizontalRule`, `image`, `table`, `tableRow`, `tableCell`, `tableHeader`) is rejected — a component can never shadow a built-in node.
+- A well-formed name the plugin has never heard of is **accepted**. The component registry lives in the admin app (next section), not in this server-side config, so a name the config doesn't recognize yet just means nothing has registered it — the editor logs one console warning the first time it resolves that name, instead of failing to boot.
+
+Two small helpers read this key at runtime, exported from `./shared` alongside the config types: `isComponentEnabled(config, name)` returns whether the active preset lets editors insert/edit a given component, and `getComponentOptions(config, name)` returns its options object (or `null` when absent or disabled).
+
+### Registering a Component
+
+Register components from your Strapi admin customization entry point, `src/admin/app.tsx`, inside `register(app)` — before any rich-text field mounts:
+
+```tsx
+// src/admin/app.tsx
+import type { StrapiApp } from '@strapi/strapi/admin';
+import {
+  defineRichTextComponent,
+  registerRichTextComponent,
+} from '@notum-cz/strapi-plugin-tiptap-editor/strapi-admin';
+import type { RichTextComponentSchema } from '@notum-cz/strapi-plugin-tiptap-editor/shared';
+import { CalloutIcon } from './icons/CalloutIcon';
+import { CalloutPreview } from './components/CalloutPreview';
+
+// A plain schema — no React, no admin-only fields. Share this module with your
+// frontend renderer too (see "Rendering Components on the Frontend") so both sides
+// agree on the node's shape by construction.
+export const calloutSchema: RichTextComponentSchema = {
+  name: 'callout',
+  label: 'Callout',
+  content: 'block+', // present -> container with editable content; omit for an atom like `button`
+  attributes: {
+    tone: {
+      default: 'info',
+      form: {
+        type: 'select',
+        label: 'Tone',
+        options: [
+          { value: 'info', label: 'Info' },
+          { value: 'warning', label: 'Warning' },
+        ],
+      },
+    },
+  },
+};
+
+type CalloutAttrs = { tone: 'info' | 'warning' };
+
+const calloutComponent = defineRichTextComponent<CalloutAttrs>({
+  ...calloutSchema,
+  label: { id: 'app.components.callout.label', defaultMessage: 'Callout' },
+  icon: <CalloutIcon />,
+  preview: CalloutPreview,
+  defaultAttrs: { tone: 'info' },
+  validate: (attrs) => (attrs.tone ? null : { tone: 'Tone is required' }),
+});
+
+export default {
+  register(app: StrapiApp) {
+    registerRichTextComponent(calloutComponent);
+  },
+};
+```
+
+`defineRichTextComponent` does nothing at runtime — it just hands the definition object back with its attribute type (`CalloutAttrs`) attached, so the rest of the file is checked against it. `registerRichTextComponent` is what actually makes the component available; call it once per component, every time the admin app boots.
+
+A definition builds on the same `name` / `content` / `attributes` shape as `RichTextComponentSchema` (spread above from `calloutSchema`), plus admin-only fields:
+
+- **`label`** — a plain string, or `{ id, defaultMessage }` for `react-intl` — shown in the Insert menu and dialog title.
+- **`icon`** — a `ReactNode` shown next to the label in the menu and on the component's card.
+- **`defaultAttrs`** — overrides the schema's own attribute defaults for a freshly inserted node.
+- **`validate`** — runs after the generated field checks on submit; return `{ [attribute]: message }` for the ones that fail, or `null`/nothing.
+- **`preview`** — rendered inside the generic card instead of the default attribute summary. Receives `{ attrs, options, enabled, selected, colors, children }`; `children` is the editable content slot, passed only for containers (components with `content`):
+
+  ```tsx
+  // src/admin/components/CalloutPreview.tsx
+  import type { RichTextComponentPreviewProps } from '@notum-cz/strapi-plugin-tiptap-editor/strapi-admin';
+
+  type CalloutAttrs = { tone: 'info' | 'warning' };
+
+  export function CalloutPreview({ attrs, children }: RichTextComponentPreviewProps<CalloutAttrs>) {
+    return (
+      <div data-tone={attrs.tone} style={{ borderLeft: '4px solid', padding: '0.5rem 1rem' }}>
+        {children}
+      </div>
+    );
+  }
+  ```
+
+- **`form`** — replaces the generated dialog body entirely with your own component, receiving `{ attrs, onChange, errors, mode, options, colors }`. Use this when an attribute needs a control the generated dialog doesn't have (a media picker, a rich color swatch, cross-field logic); otherwise the generated form (see [Editor UX](#editor-ux)) is usually enough.
+- **`dialog`** — `{ width?: string }`; a CSS width for the insert/edit dialog when your `form` needs more room than the default Strapi Dialog (`max-width: 42rem`), e.g. `dialog: { width: 'min(80rem, 95vw)' }`. Only honoured when the definition has its own `form`; the dialog body scrolls vertically when the form is tall and horizontally when its content is wider than the dialog.
+
+### Inline components
+
+A schema with `inline: true` becomes an **inline atom** instead of a block: it sits inside a paragraph, a heading or a list item, between words, and is inserted at the cursor from the same Insert menu. Use it for a glyph, a badge, a footnote marker — anything that belongs in the flow of a sentence.
+
+```ts
+export const badgeSchema: RichTextComponentSchema = {
+  name: 'badge',
+  label: 'Badge',
+  inline: true,
+  attributes: {
+    tone: {
+      default: 'info',
+      form: { type: 'select', label: 'Tone', options: [{ value: 'info', label: 'Info' }] },
+    },
+  },
+};
+```
+
+What changes compared to a block component:
+
+- **Always an atom.** `inline` and `content` do not combine; `registerRichTextComponent` (and `toNodeSpec`) throw when a schema has both.
+- **No marks.** Bold, link, colour and highlight never stay on the node: an inline atom has nothing for a mark to style, and a link wrapped around a glyph would be an anchor without an accessible name. The node is created with `marks: ''`, and because that only governs a node's children, an appended transaction also strips any mark applied over a selection that spans the node. Linking such a selection links the text around it and leaves the node alone. Whatever styling the node needs (a colour, a size) belongs in its own attributes. In the editor the chip is middle-aligned to the line, the frontend decides the exact baseline.
+- **Markup.** Clipboard HTML is `<span data-type="name" data-…>` instead of a `div`, with the same `data-<attribute>` encoding.
+- **Chip instead of card.** The node renders as a compact `<span>` chip showing the definition's `preview` (which receives no `children`), or its icon and label when there is none. The chip is a button: clicking it opens the edit dialog when the active preset enables the component, and it is disabled (still visible, still deletable with Backspace/Delete) when the preset does not. There is no drag handle, nothing in the chip changes the line height of the surrounding text.
+
+### Palette in custom forms
+
+Both `form` and `preview` receive `colors`, the `theme.colors` palette from the plugin config (see [Colors](#colors)), as `ThemeColorEntry[]` (`{ label, color }`), empty when none is configured. The `./strapi-admin` entry also exports `ColorPickerPopover`, the same swatch grid the text-colour and highlight buttons use (`{ colors, activeColor, onSelect, onRemove }`), so a form can offer "pick from the brand palette" inside a `Popover` from `@strapi/design-system` without rebuilding it. Store the picked `color` string as-is, it is whatever the config lists (a hex value or a `var(--token)`), exactly as the text-colour mark stores it.
+
+### The `extension()` Escape Hatch
+
+For full control over the node — custom ProseMirror commands, keyboard shortcuts, a hand-built NodeView — skip the generated node and return your own Tiptap extension from `extension(helpers, ctx)`:
+
+```tsx
+const calloutComponent = defineRichTextComponent<CalloutAttrs>({
+  ...calloutSchema,
+  label: 'Callout',
+  extension: (helpers, ctx) => {
+    const { Node, mergeAttributes, ReactNodeViewRenderer } = helpers;
+    return Node.create({
+      name: calloutSchema.name,
+      group: 'block',
+      content: calloutSchema.content,
+      addOptions: () => ({ enabled: ctx.enabled, component: ctx.options }),
+      addAttributes: () => ({ tone: { default: 'info' } }),
+      parseHTML: () => [{ tag: 'div[data-type="callout"]' }],
+      renderHTML: ({ HTMLAttributes }) => [
+        'div',
+        mergeAttributes({ 'data-type': 'callout' }, HTMLAttributes),
+        0,
+      ],
+      addNodeView: () => ReactNodeViewRenderer(MyCalloutNodeView),
+    });
+  },
+});
+```
+
+`helpers` bundles every Tiptap primitive the plugin itself uses — `Node`, `Mark`, `Extension`, `mergeAttributes`, `ReactNodeViewRenderer`, `NodeViewWrapper`, `NodeViewContent` — and `ctx` carries the same `{ enabled, options }` the generic card receives for the active preset. `name`/`label`/`icon` on the definition still drive the Insert menu regardless of `extension`; everything about the node itself is up to you.
+
+**Never import `@tiptap/*` packages directly in host admin code — always go through `helpers`.** The rich-text input (and everything it imports, including all of Tiptap) loads through a dynamic `import()` only when a field actually mounts; `src/admin/app.tsx` is loaded eagerly at admin boot. Importing `@tiptap/core` (or any other `@tiptap/*` package) directly there would pull a second copy of Tiptap into that eager bundle and risk it drifting out of sync with the version the plugin ships.
+
+### Editor UX
+
+- **Insert menu** — when the active preset enables at least one component, the toolbar shows an **Insert component** button. It lists every enabled component by icon and label; picking one opens the insert dialog.
+- **Generated dialog** — when a definition has no `form`, the insert/edit dialog is generated from `attributes[*].form`:
+
+  | `form.type` | Renders as |
+  | --- | --- |
+  | `text` / `url` | Single-line text input (`url` uses the browser's URL input type) |
+  | `textarea` | Multi-line text input |
+  | `number` | Number input, with optional `min`/`max` |
+  | `boolean` | Toggle |
+  | `select` | Single-select dropdown built from `options` |
+  | `json` | Multi-line input edited as raw JSON text, parsed (and validated) on submit |
+
+  An attribute with no `form` is stored and round-tripped but never shown in the dialog.
+
+- **Generic card** — every block component node renders inside the same card shape: a header (drag handle, icon, label, and Edit/Delete actions) and a body (the definition's `preview`, or a generated "Label: value" summary of its form-visible attributes when there's no `preview`). A container's editable ProseMirror content flows into `preview` as `children`; without a `preview`, it renders directly below the summary. Inline components render as a chip instead, see [Inline components](#inline-components).
+- **Read-only behaviour** — a component your project has registered but the *active preset* doesn't enable still renders: its card shows a "Read-only in this preset" badge, the Edit button is hidden, and Delete stays available. This is because **every registered component is always part of the editor's schema** — the preset only gates *inserting and editing*, never *reading*. A document written under a richer preset (or before a component was disabled) keeps round-tripping through a narrower one instead of silently losing nodes on save.
+- **Unknown content notice** — if a stored document contains a node or mark the editor doesn't know (for example a component that was unregistered or renamed), the editor hides it, shows a warning above the toolbar, and removes it permanently only when the entry is saved. `stripUnknownContent` from `@notum-cz/strapi-plugin-tiptap-editor/shared` gives the frontend the same behaviour.
+
+Under the hood, a component's clipboard HTML is `<div data-type="name">` (`<span data-type="name">` for an inline component) with one `data-<attribute-in-kebab-case>` attribute per schema attribute (e.g. `openInNewTab` becomes `data-open-in-new-tab`) — attributes whose schema default is a string are written raw, everything else (including strings under a `null` default) as JSON. Clearing an attribute back to `null` still writes `data-open-in-new-tab="null"` rather than dropping the attribute, for any attribute whose schema default isn't itself a string; for a string-typed attribute, clearing it is indistinguishable from leaving it at the default, so the attribute is simply omitted.
+
+### Rendering Components on the Frontend
+
+The published `@notum-cz/strapi-plugin-tiptap-editor/shared` entry is meant to be imported from both your Strapi admin customizations and your frontend, so a component's shape is defined exactly once. Alongside the config helpers above, it exports:
+
+- **`RichTextComponentSchema`**, **`RichTextAttributeSpec`**, **`RichTextAttributeFormField`** — the plain-object schema shape (no React, no Tiptap) used to register a component and, via `toNodeSpec`, to render it.
+- **`toNodeSpec(schema)`** — reduces a `RichTextComponentSchema` to a `RichTextNodeSpec`: `name`, `group` (`'block'`, or `'inline'` for an inline component), `inline`, `atom` (true when there's no `content`), `marks: ''` for inline components, the `content` expression if any, and attribute defaults with the `form` metadata dropped — everything a ProseMirror schema needs, nothing else. `isInlineComponent(schema)` reads the flag.
+- **`buttonSchema`** (and `BUILT_IN_COMPONENT_SCHEMAS`) — the plugin's own built-in schemas, so a frontend can render `button` without redefining it.
+- **`isValidComponentName`**, **`isReservedNodeName`**, **`RESERVED_NODE_NAMES`** — the same name rules [Config Validation](#config-validation) enforces on the server.
+
+A frontend renderer built on [`@tiptap/static-renderer`](https://tiptap.dev/docs/editor/api/utilities/static-renderer) turns a schema into a schema-only extension with `toNodeSpec`, then maps the node name to a component with `nodeMapping`:
+
+```tsx
+import { Node, getSchema } from '@tiptap/core';
+import type { NodeProps } from '@tiptap/static-renderer';
+import { renderToReactElement } from '@tiptap/static-renderer/pm/react';
+import type { Node as ProseMirrorNode } from 'prosemirror-model';
+import type { ReactNode } from 'react';
+import {
+  stripUnknownContent,
+  toNodeSpec,
+  type RichTextComponentSchema,
+} from '@notum-cz/strapi-plugin-tiptap-editor/shared';
+
+// The same schema registered in src/admin/app.tsx — keep it in a shared module.
+const calloutSchema: RichTextComponentSchema = {
+  name: 'callout',
+  label: 'Callout',
+  content: 'block+',
+  attributes: { tone: { default: 'info' } },
+};
+
+// Schema-only node: enough for the renderer's ProseMirror schema, no editing behaviour.
+function rendererNode(schema: RichTextComponentSchema) {
+  const spec = toNodeSpec(schema);
+  return Node.create({
+    name: spec.name,
+    group: spec.group,
+    inline: spec.inline,
+    atom: spec.atom,
+    marks: spec.marks,
+    content: spec.content,
+    addAttributes: () => spec.attributes,
+  });
+}
+
+const extensions = [/* StarterKit, your other extensions, */ rendererNode(calloutSchema)];
+const schema = getSchema(extensions);
+
+function renderCallout({ node, children }: NodeProps<ProseMirrorNode, ReactNode | ReactNode[]>) {
+  return <aside data-tone={node.attrs.tone as string}>{children}</aside>;
+}
+
+// `storedContent` is the Tiptap/ProseMirror JSON straight from the Strapi API.
+const rendered = renderToReactElement({
+  extensions,
+  content: stripUnknownContent(storedContent, schema).content, // see note below
+  options: { nodeMapping: { callout: renderCallout } },
+});
+```
+
+(`@tiptap/html`'s `generateHTML(content, extensions)` follows the same idea if you need an HTML string instead of React elements — see [Rendering images on the frontend](#rendering-images-on-the-frontend) for that style with a built-in node.)
+
+**Strip unknown nodes before rendering.** `Node.fromJSON` — called internally by both `renderToReactElement` and `generateHTML` — throws if the stored JSON references a node type your `extensions` array doesn't define. That happens whenever the frontend's extension list doesn't exactly mirror what a document was written with (a component enabled in Strapi but not yet wired up on the frontend, or removed later). `stripUnknownContent(content, schema)`, exported from `@notum-cz/strapi-plugin-tiptap-editor/shared` and imported above, walks the JSON first and drops — or, for a container, unwraps into its children — any node or mark type absent from your renderer's `schema.nodes` / `schema.marks`. It returns `{ content, unknownNodeTypes, unknownMarkTypes }` — the sanitized document plus the two lists, so callers can log a warning when either is non-empty (that's what the `.content` above picks out). The admin editor runs stored content through the same function.
+
+### The `richTextComponents` API
+
+The same three functions are also exposed on the plugin object, for admin customizations that would rather not add a direct package import:
+
+```ts
+const { register, define, list } = app.getPlugin('tiptap-editor').apis.richTextComponents;
+```
+
+- **`register(definition)`** — same as `registerRichTextComponent`: registers or replaces a definition by name.
+- **`define(definition)`** — same as `defineRichTextComponent`: the identity helper that types a definition object.
+- **`list()`** — same as `listRichTextComponents`: every currently registered definition, in registration order.
+
 ## Available Extensions
 
 ### Inline Formatting
@@ -382,6 +666,29 @@ Enables table insertion with controls for adding/removing columns and rows. Tabl
 {
   table: true,
 }
+```
+
+Set `cellBackground: true` to add a **Cell background** picker next to the row/column controls. It paints the cell under the cursor, or every cell in a multi-cell selection, using the [theme colors](#colors).
+
+```ts
+{
+  table: { cellBackground: true },
+}
+```
+
+The color is stored as a `backgroundColor` attribute on `tableCell` and `tableHeader` nodes (`null` when unset). Both nodes always carry the attribute, so content painted under one preset keeps its colors when edited under a preset without the picker. A frontend that renders the JSON with its own Tiptap schema has to declare the attribute too, or Tiptap drops it. The `./shared` entry exports the exact spec for that:
+
+```ts
+import { TableCell, TableHeader, TableKit } from '@tiptap/extension-table';
+import { CELL_BACKGROUND_ATTRIBUTE, cellBackgroundAttribute } from '@notum-cz/strapi-plugin-tiptap-editor/shared';
+
+const withBackground = { [CELL_BACKGROUND_ATTRIBUTE]: cellBackgroundAttribute };
+
+const extensions = [
+  TableKit.configure({ tableCell: false, tableHeader: false }),
+  TableCell.extend({ addAttributes() { return { ...this.parent?.(), ...withBackground }; } }),
+  TableHeader.extend({ addAttributes() { return { ...this.parent?.(), ...withBackground }; } }),
+];
 ```
 
 ### Text Alignment
@@ -514,7 +821,7 @@ The `theme` key in the plugin config lets you define colors for the color picker
 
 ### Colors
 
-Define a `colors` array to populate the text color and highlight color pickers. Each entry needs a `label` (shown as a tooltip) and a `color` value (hex, rgb, rgba, hsl, hsla, or CSS variable).
+Define a `colors` array to populate the text color, highlight color and table cell background pickers. Each entry needs a `label` (shown as a tooltip) and a `color` value (hex, rgb, rgba, hsl, hsla, or CSS variable).
 
 ```ts
 // config/plugins.ts
@@ -639,8 +946,8 @@ export default () => ({
             },
           },
 
-          // Tables
-          table: true,
+          // Tables, with the cell background picker fed by theme.colors
+          table: { cellBackground: true },
 
           // Text alignment (left, center, right, justify)
           textAlign: true,
@@ -652,6 +959,11 @@ export default () => ({
           // Images from Strapi Media Library with resize enabled
           mediaLibrary: {
             resize: { enabled: true },
+          },
+
+          // Custom components — see "Custom components" below
+          components: {
+            button: true,
           },
         },
       },
@@ -671,6 +983,19 @@ The plugin validates your configuration at startup. If a preset contains an inva
     blog: {
       bold: true,
       boldd: true,  // Typo! Not a valid feature key
+    },
+  },
+}
+```
+
+The `components` key has its own validation, independent of the feature-key check above: it must be a plain object; each value must be `true`, `false`, or a plain object; each name must match `^[a-zA-Z][\w-]*$`; and it may not reuse a name the editor already defines internally. See [Custom components](#custom-components) for the full rule set.
+
+```ts
+// This also throws at startup — "paragraph" is a reserved node name:
+{
+  presets: {
+    blog: {
+      components: { paragraph: true },
     },
   },
 }

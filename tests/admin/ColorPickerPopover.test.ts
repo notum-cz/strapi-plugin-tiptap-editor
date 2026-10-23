@@ -32,7 +32,7 @@ vi.mock('react-intl', () => ({
 
 // ─── Import module under test ─────────────────────────────────────────────────
 import { ColorPickerPopover } from '../../admin/src/components/ColorPickerPopover';
-import type { ThemeColorEntry } from '../../shared/types';
+import type { ThemeColorEntry } from '../../shared/src/types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 

@@ -174,4 +174,44 @@ describe('BaseTiptapInput', () => {
     const result = BaseTiptapInput(props as any, null) as any;
     expect(findTextContent(result, 'No editor preset configured — showing minimal editor')).toBe(true);
   });
+
+  describe('unknown-content notice', () => {
+    it('is not shown when nothing was removed', () => {
+      for (const removedContent of [undefined, null, { nodeTypes: [], markTypes: [] }]) {
+        const result = BaseTiptapInput({ ...defaultProps, removedContent } as any, null) as any;
+        expect(findTextContent(result, 'no longer supports')).toBe(false);
+      }
+    });
+
+    it('shows a warning Status above the toolbar when content was removed', () => {
+      const props = { ...defaultProps, removedContent: { nodeTypes: ['callout'], markTypes: [] } };
+      const result = BaseTiptapInput(props as any, null) as any;
+      expect(findTextContent(result, 'no longer supports')).toBe(true);
+
+      const wrapperBox = findElements(result, 'TiptapInputStyles')[0].props.children;
+      const childArray = wrapperBox.props.children;
+      const noticeIdx = childArray.findIndex((child: any) =>
+        findElements(child, 'Status').some((s: any) => s.props.variant === 'warning')
+      );
+      const toolbarIdx = childArray.findIndex((child: any) =>
+        child?.props?.className?.includes?.('editor-toolbar')
+      );
+      expect(noticeIdx).toBeGreaterThanOrEqual(0);
+      expect(noticeIdx).toBeLessThan(toolbarIdx);
+    });
+  });
+
+  describe('content-error notice', () => {
+    it('is not shown when the content loaded cleanly', () => {
+      const result = BaseTiptapInput({ ...defaultProps, contentError: false } as any, null) as any;
+      expect(findTextContent(result, 'could not be loaded')).toBe(false);
+    });
+
+    it('shows a warning Status when the editor reported invalid content', () => {
+      const result = BaseTiptapInput({ ...defaultProps, contentError: true } as any, null) as any;
+      expect(findTextContent(result, 'could not be loaded')).toBe(true);
+      const warnings = findElements(result, 'Status').filter((s: any) => s.props.variant === 'warning');
+      expect(warnings.length).toBe(1);
+    });
+  });
 });

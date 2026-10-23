@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MINIMAL_PRESET_CONFIG } from '../../shared/types';
+import { MINIMAL_PRESET_CONFIG } from '../../shared/src/types';
 
 // ─── Mock React ───────────────────────────────────────────────────────────────
 let capturedUseMemoFactory: (() => any) | null = null;
@@ -98,6 +98,10 @@ vi.mock('../../admin/src/extensions/Script', () => ({
 vi.mock('../../admin/src/extensions/Table', () => ({
   useTable: () => mockTable,
 }));
+const mockUseTableCellBackground = vi.fn(() => ({ cellBackgroundButton: 'CELL_BACKGROUND' }));
+vi.mock('../../admin/src/extensions/TableCellBackground', () => ({
+  useTableCellBackground: (...args: any[]) => mockUseTableCellBackground(...args),
+}));
 vi.mock('../../admin/src/extensions/TextAlign', () => ({
   useTextAlign: () => mockTextAlign,
 }));
@@ -116,6 +120,14 @@ const mockImage = { imageButton: null, imageDialog: null };
 vi.mock('../../admin/src/extensions/Image', () => ({
   useImage: () => mockImage,
   StrapiImage: { configure: vi.fn(() => ({})) },
+}));
+
+const mockUseRichTextComponents = vi.fn(() => ({
+  componentsMenu: 'MENU',
+  componentDialog: 'DIALOG',
+}));
+vi.mock('../../admin/src/extensions/Components', () => ({
+  useRichTextComponents: (...args: any[]) => mockUseRichTextComponents(...args),
 }));
 
 // ─── Mock components ──────────────────────────────────────────────────────────
@@ -305,6 +317,22 @@ describe('RichTextInput', () => {
     expect(tableGuard).toBeDefined();
   });
 
+  it.each([
+    [true, false],
+    [{ resizable: true }, false],
+    [{ cellBackground: true }, true],
+  ])('with table %j renders the cell background picker: %s', (table, expected) => {
+    // No other features, so `table: true` is the only guard whose featureValue is `true`.
+    const config = { table };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+    const tableGuard = findElements(result, 'FeatureGuard').find(
+      (fg) => fg.props?.featureValue === config.table
+    );
+    expect(tableGuard.props.children.includes('CELL_BACKGROUND')).toBe(expected);
+  });
+
   it('calls useTextColor and useHighlightColor unconditionally (React rules of hooks)', () => {
     const props = { name: 'content' };
     shallowRender(RichTextInput(props as any, null));
@@ -358,5 +386,40 @@ describe('RichTextInput', () => {
     const result = RichTextInput(props as any, null) as any;
     const featureGuards = findElements(result, 'FeatureGuard');
     expect(featureGuards.some((fg) => fg.props?.featureValue === config.highlightColor)).toBe(true);
+  });
+
+  it("passes the hook's contentError flag to BaseTiptapInput", () => {
+    mockUseTiptapEditor.mockReturnValueOnce({
+      editor: mockEditor,
+      field: mockField,
+      removedContent: null,
+      contentError: true,
+    } as any);
+    const result = RichTextInput({ name: 'content' } as any, null) as any;
+    const [base] = findElements(result, 'BaseTiptapInput');
+    expect(base.props.contentError).toBe(true);
+  });
+
+  it('wraps the components menu in a FeatureGuard keyed on config.components', () => {
+    const config = { ...MINIMAL_PRESET_CONFIG, components: { button: true } };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+
+    const featureGuards = findElements(result, 'FeatureGuard');
+    const componentsGuard = featureGuards.find(
+      (fg) => fg.props?.featureValue === config.components
+    );
+    expect(componentsGuard).toBeDefined();
+    const children = Array.isArray(componentsGuard.props.children)
+      ? componentsGuard.props.children
+      : [componentsGuard.props.children];
+    expect(children).toContain('MENU');
+    expect(children).toContain('DIALOG');
+
+    expect(mockUseRichTextComponents).toHaveBeenCalledWith(mockEditor, {
+      config,
+      disabled: undefined,
+    });
   });
 });

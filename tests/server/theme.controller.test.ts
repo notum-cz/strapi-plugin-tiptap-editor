@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import controllers from '../../server/src/controllers';
-import { TiptapThemeConfig } from '../../shared/types';
+import { TiptapThemeConfig } from '../../shared/src/types';
 
 const makeStrapi = (theme: TiptapThemeConfig | undefined) => ({
   config: {

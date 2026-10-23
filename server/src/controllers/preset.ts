@@ -1,6 +1,6 @@
 import type { Core } from '@strapi/strapi';
 import type { Context } from 'koa';
-import { MINIMAL_PRESET_CONFIG, TiptapPresetConfig } from '../../../shared/types';
+import { MINIMAL_PRESET_CONFIG, TiptapPresetConfig } from '../../../shared/src/types';
 
 interface PresetService {
   listPresetNames(): string[];
