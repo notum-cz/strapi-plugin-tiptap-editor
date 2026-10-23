@@ -69,6 +69,7 @@ export const StrapiImage = Image.extend<StrapiImageOptions>({
           return { 'data-align': align };
         },
       },
+      caption: { default: null },
     };
   },
 
@@ -109,7 +110,7 @@ export function useImage(
     editor
       .chain()
       .focus()
-      .setImage({ src, alt: altText, 'data-asset-id': asset.id } as any)
+      .setImage({ src, alt: altText, caption: asset.caption || null, 'data-asset-id': asset.id } as any)
       .createParagraphNear()
       .run();
 

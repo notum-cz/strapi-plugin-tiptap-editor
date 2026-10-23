@@ -2,24 +2,35 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
 import type { ImageOptions } from '@tiptap/extension-image';
-import { Popover, TextInput, IconButton } from '@strapi/design-system';
-import { Trash, Cross } from '@strapi/icons';
+import { Popover, TextInput, IconButton, Field, Button } from '@strapi/design-system';
+import { Trash, Cross, ArrowClockwise } from '@strapi/icons';
+import { useFetchClient } from '@strapi/strapi/admin';
 import { useIntl } from 'react-intl';
 import { ToolbarButton } from './ToolbarButton';
 import { TextAlignLeft } from '../icons/TextAlignLeft';
 import { TextAlignCenter } from '../icons/TextAlignCenter';
 import { TextAlignRight } from '../icons/TextAlignRight';
 
-export function ImageNodeView({ node, updateAttributes, deleteNode, selected, extension }: NodeViewProps) {
+export function ImageNodeView({
+  node,
+  updateAttributes,
+  deleteNode,
+  selected,
+  extension,
+}: NodeViewProps) {
   const { formatMessage } = useIntl();
+  const { get } = useFetchClient();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [altText, setAltText] = useState<string>(node.attrs.alt ?? '');
+  const [title, setTitle] = useState<string>(String(node.attrs.title ?? ''));
+  const [caption, setCaption] = useState<string>(node.attrs.caption ?? '');
   const imgRef = useRef<HTMLImageElement>(null);
   const isResizingRef = useRef(false);
   const resizeCleanupRef = useRef<(() => void) | null>(null);
 
   const rawResize = (extension.options as ImageOptions).resize;
-  const resizeEnabled = typeof rawResize === 'object' && !!rawResize ? rawResize.enabled : !!rawResize;
+  const resizeEnabled =
+    typeof rawResize === 'object' && !!rawResize ? rawResize.enabled : !!rawResize;
   const resizeOpts = resizeEnabled && typeof rawResize === 'object' ? rawResize : undefined;
   const preserveAspectRatio = resizeOpts?.alwaysPreserveAspectRatio ?? true;
   const minWidth = resizeOpts?.minWidth ?? 50;
@@ -28,12 +39,22 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
   const currentWidth = node.attrs.width;
   const currentHeight = node.attrs.height;
   const [widthInput, setWidthInput] = useState<string>(currentWidth ? String(currentWidth) : '');
-  const [heightInput, setHeightInput] = useState<string>(currentHeight ? String(currentHeight) : '');
+  const [heightInput, setHeightInput] = useState<string>(
+    currentHeight ? String(currentHeight) : ''
+  );
 
   // Sync local alt text state when node attrs change externally (undo/redo safety)
   useEffect(() => {
     setAltText(node.attrs.alt ?? '');
   }, [node.attrs.alt]);
+
+  useEffect(() => {
+    setTitle(String(node.attrs.title ?? ''));
+  }, [node.attrs.title]);
+
+  useEffect(() => {
+    setCaption(node.attrs.caption ?? '');
+  }, [node.attrs.caption]);
 
   // Sync dimension inputs when node attrs change (undo/redo, resize handle)
   useEffect(() => {
@@ -68,6 +89,34 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
 
   function handleCommit() {
     updateAttributes({ alt: altText });
+  }
+
+  function handleTitleCommit() {
+    updateAttributes({ title: title.trim() || null });
+  }
+
+  function handleCaptionCommit() {
+    updateAttributes({ caption: caption.trim() || null });
+  }
+
+  const assetId = node.attrs['data-asset-id'] as number | null;
+
+  function handleFillFromMediaLibrary() {
+    if (!assetId) return;
+    get(`/upload/files/${assetId}`)
+      .then(
+        (res: {
+          data?: { name?: string; alternativeText?: string | null; caption?: string | null };
+        }) => {
+          const file = res.data;
+          if (!file) return;
+          updateAttributes({
+            alt: file.alternativeText ?? file.name ?? '',
+            caption: file.caption || null,
+          });
+        }
+      )
+      .catch(() => {});
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -131,9 +180,8 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
       const img = imgRef.current;
       if (!img) return;
       const startWidth = img.offsetWidth;
-      const ratio = img.naturalWidth && img.naturalHeight
-        ? img.naturalWidth / img.naturalHeight
-        : null;
+      const ratio =
+        img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : null;
 
       function onMouseMove(moveEvent: MouseEvent) {
         const diff = moveEvent.clientX - startX;
@@ -170,17 +218,14 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
       document.addEventListener('mouseup', onMouseUp);
       resizeCleanupRef.current = cleanup;
     },
-    [updateAttributes, preserveAspectRatio, minWidth],
+    [updateAttributes, preserveAspectRatio, minWidth]
   );
 
   return (
     <NodeViewWrapper data-drag-handle data-align={node.attrs['data-align'] ?? undefined}>
       <Popover.Root open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <Popover.Anchor>
-          <div
-            className="image-wrapper"
-            data-selected={selected || isPopoverOpen || undefined}
-          >
+          <div className="image-wrapper" data-selected={selected || isPopoverOpen || undefined}>
             <img
               ref={imgRef}
               src={node.attrs.src}
@@ -196,84 +241,170 @@ export function ImageNodeView({ node, updateAttributes, deleteNode, selected, ex
                 if (!isResizingRef.current) setIsPopoverOpen(true);
               }}
             />
-            {resizeEnabled && <div className="image-resize-handle" onMouseDown={handleResizeStart} />}
+            {resizeEnabled && (
+              <div className="image-resize-handle" onMouseDown={handleResizeStart} />
+            )}
           </div>
         </Popover.Anchor>
         <Popover.Content side="bottom">
-          <div style={{ display: 'flex', gap: '4px', padding: '8px', paddingBottom: '0' }}>
-            <ToolbarButton
-              onClick={() => handleAlign('left')}
-              icon={<TextAlignLeft />}
-              active={currentAlign === 'left'}
-              disabled={false}
-              tooltip={formatMessage({ id: 'tiptap-editor.image.alignLeft', defaultMessage: 'Align left' })}
-              marginLeft={0}
-            />
-            <ToolbarButton
-              onClick={() => handleAlign('center')}
-              icon={<TextAlignCenter />}
-              active={currentAlign === 'center'}
-              disabled={false}
-              tooltip={formatMessage({ id: 'tiptap-editor.image.alignCenter', defaultMessage: 'Align center' })}
-              marginLeft={0}
-            />
-            <ToolbarButton
-              onClick={() => handleAlign('right')}
-              icon={<TextAlignRight />}
-              active={currentAlign === 'right'}
-              disabled={false}
-              tooltip={formatMessage({ id: 'tiptap-editor.image.alignRight', defaultMessage: 'Align right' })}
-              marginLeft={0}
-            />
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+              padding: '8px',
+              paddingBottom: '0',
+            }}
+          >
+            <Field.Root>
+              <Field.Label>
+                {formatMessage({
+                  id: 'tiptap-editor.image.alignment',
+                  defaultMessage: 'Alignment',
+                })}
+              </Field.Label>
+              <div style={{ display: 'flex', gap: '4px' }}>
+                <ToolbarButton
+                  onClick={() => handleAlign('left')}
+                  icon={<TextAlignLeft />}
+                  active={currentAlign === 'left'}
+                  disabled={false}
+                  tooltip={formatMessage({
+                    id: 'tiptap-editor.image.alignLeft',
+                    defaultMessage: 'Align left',
+                  })}
+                  marginLeft={0}
+                />
+                <ToolbarButton
+                  onClick={() => handleAlign('center')}
+                  icon={<TextAlignCenter />}
+                  active={currentAlign === 'center'}
+                  disabled={false}
+                  tooltip={formatMessage({
+                    id: 'tiptap-editor.image.alignCenter',
+                    defaultMessage: 'Align center',
+                  })}
+                  marginLeft={0}
+                />
+                <ToolbarButton
+                  onClick={() => handleAlign('right')}
+                  icon={<TextAlignRight />}
+                  active={currentAlign === 'right'}
+                  disabled={false}
+                  tooltip={formatMessage({
+                    id: 'tiptap-editor.image.alignRight',
+                    defaultMessage: 'Align right',
+                  })}
+                  marginLeft={0}
+                />
+              </div>
+            </Field.Root>
+            {resizeEnabled && (
+              <Field.Root>
+                <Field.Label>
+                  {formatMessage({ id: 'tiptap-editor.image.size', defaultMessage: 'Size (px)' })}
+                </Field.Label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <TextInput
+                    type="number"
+                    placeholder="W"
+                    value={widthInput}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setWidthInput(e.target.value)
+                    }
+                    onBlur={handleWidthCommit}
+                    onKeyDown={handleKeyDown}
+                    aria-label={formatMessage({
+                      id: 'tiptap-editor.image.width',
+                      defaultMessage: 'Width (px)',
+                    })}
+                    style={{ minWidth: '62px', flexGrow: 1 }}
+                  />
+                  <span style={{ fontSize: '1.1rem', color: '#999' }}>&times;</span>
+                  <TextInput
+                    type="number"
+                    placeholder="H"
+                    value={heightInput}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setHeightInput(e.target.value)
+                    }
+                    onBlur={handleHeightCommit}
+                    onKeyDown={handleKeyDown}
+                    aria-label={formatMessage({
+                      id: 'tiptap-editor.image.height',
+                      defaultMessage: 'Height (px)',
+                    })}
+                    style={{ minWidth: '62px', flexGrow: 1 }}
+                  />
+                  {(currentWidth || currentHeight) && (
+                    <IconButton
+                      onClick={() => updateAttributes({ width: null, height: null })}
+                      label={formatMessage({
+                        id: 'tiptap-editor.image.resetSize',
+                        defaultMessage: 'Reset size',
+                      })}
+                    >
+                      <Cross />
+                    </IconButton>
+                  )}
+                </div>
+              </Field.Root>
+            )}
+            <Field.Root>
+              <Field.Label>
+                {formatMessage({ id: 'tiptap-editor.image.altText', defaultMessage: 'Alt text' })}
+              </Field.Label>
+              <TextInput
+                value={altText}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAltText(e.target.value)}
+                onBlur={handleCommit}
+                onKeyDown={handleKeyDown}
+              />
+            </Field.Root>
+            <Field.Root>
+              <Field.Label>
+                {formatMessage({ id: 'tiptap-editor.image.title', defaultMessage: 'Title' })}
+              </Field.Label>
+              <TextInput
+                value={title}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+                onBlur={handleTitleCommit}
+                onKeyDown={handleKeyDown}
+              />
+            </Field.Root>
+            <Field.Root>
+              <Field.Label>
+                {formatMessage({ id: 'tiptap-editor.image.caption', defaultMessage: 'Caption' })}
+              </Field.Label>
+              <TextInput
+                value={caption}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCaption(e.target.value)}
+                onBlur={handleCaptionCommit}
+                onKeyDown={handleKeyDown}
+              />
+            </Field.Root>
           </div>
-          {resizeEnabled && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '8px', paddingBottom: '0' }}>
-              <TextInput
-                type="number"
-                placeholder="W"
-                value={widthInput}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setWidthInput(e.target.value)}
-                onBlur={handleWidthCommit}
-                onKeyDown={handleKeyDown}
-                aria-label={formatMessage({ id: 'tiptap-editor.image.width', defaultMessage: 'Width (px)' })}
-                style={{ minWidth: '62px', flexGrow: 1 }}
-              />
-              <span style={{ fontSize: '1.1rem', color: '#999' }}>&times;</span>
-              <TextInput
-                type="number"
-                placeholder="H"
-                value={heightInput}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setHeightInput(e.target.value)}
-                onBlur={handleHeightCommit}
-                onKeyDown={handleKeyDown}
-                aria-label={formatMessage({ id: 'tiptap-editor.image.height', defaultMessage: 'Height (px)' })}
-                style={{ minWidth: '62px', flexGrow: 1 }}
-              />
-              {(currentWidth || currentHeight) && (
-                <IconButton
-                  onClick={() => updateAttributes({ width: null, height: null })}
-                  label={formatMessage({ id: 'tiptap-editor.image.resetSize', defaultMessage: 'Reset size' })}
-                >
-                  <Cross />
-                </IconButton>
-              )}
-            </div>
-          )}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px' }}>
-            <TextInput
-              placeholder={formatMessage({ id: 'tiptap-editor.image.altText', defaultMessage: 'Alt text' })}
-              value={altText}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAltText(e.target.value)}
-              onBlur={handleCommit}
-              onKeyDown={handleKeyDown}
-              aria-label={formatMessage({ id: 'tiptap-editor.image.altText', defaultMessage: 'Alt text' })}
-            />
-            <IconButton
-              onClick={deleteNode}
-              label={formatMessage({ id: 'tiptap-editor.image.deleteImage', defaultMessage: 'Delete image' })}
+          <div
+            style={{ display: 'flex', justifyContent: 'space-between', gap: '8px', padding: '8px' }}
+          >
+            <Button
+              variant="tertiary"
+              size="S"
+              startIcon={<ArrowClockwise />}
+              disabled={!assetId}
+              onClick={handleFillFromMediaLibrary}
             >
-              <Trash />
-            </IconButton>
+              {formatMessage({
+                id: 'tiptap-editor.image.fillFromMediaLibrary',
+                defaultMessage: 'Use Media Library data',
+              })}
+            </Button>
+            <Button variant="danger-light" size="S" startIcon={<Trash />} onClick={deleteNode}>
+              {formatMessage({
+                id: 'tiptap-editor.image.deleteImage',
+                defaultMessage: 'Delete image',
+              })}
+            </Button>
           </div>
         </Popover.Content>
       </Popover.Root>

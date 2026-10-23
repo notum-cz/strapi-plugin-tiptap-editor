@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 
 // Image.tsx now imports React components; mock them so pure attribute tests still run in node env
+vi.mock('@strapi/strapi/admin', () => ({ useFetchClient: () => ({ get: vi.fn() }) }));
 vi.mock('@strapi/design-system', () => ({
   Tooltip: 'div',
   Button: 'button',
@@ -140,6 +141,11 @@ describe('StrapiImage extension', () => {
       it('returns {} for empty string', () => {
         expect(renderHTML({ 'data-align': '' })).toEqual({});
       });
+    });
+
+    it('includes caption attribute with default null', () => {
+      expect(attrs).toHaveProperty('caption');
+      expect((attrs.caption as any).default).toBeNull();
     });
 
     // width and height are inherited from the parent Image extension (not custom-defined)

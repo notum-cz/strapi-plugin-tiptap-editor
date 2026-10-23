@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 
 // Mock Strapi design system and React hooks used by Heading.tsx (not needed for buildExtensions)
+vi.mock('@strapi/strapi/admin', () => ({ useFetchClient: () => ({ get: vi.fn() }) }));
 vi.mock('@strapi/design-system', () => ({
   SingleSelect: 'SingleSelect',
   SingleSelectOption: 'SingleSelectOption',

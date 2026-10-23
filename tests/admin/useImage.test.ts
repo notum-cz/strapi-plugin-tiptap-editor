@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 
+vi.mock('@strapi/strapi/admin', () => ({ useFetchClient: () => ({ get: vi.fn() }) }));
 vi.mock('@strapi/admin/strapi-admin', () => ({ useStrapiApp: vi.fn() }));
 vi.mock('@tiptap/react', () => ({
   useEditorState: vi.fn(() => ({ isInCodeBlock: false })),
