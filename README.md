@@ -725,20 +725,21 @@ Both features use a color picker popover that displays the colors defined in the
 
 | Key            | Description                      | Toolbar                                                   |
 | -------------- | -------------------------------- | --------------------------------------------------------- |
-| `mediaLibrary` | Images from Strapi Media Library | Image button + alt text popover + alignment + resize handle |
+| `mediaLibrary` | Images from Strapi Media Library | Image button + alt/title/caption popover + alignment + resize handle |
 
 Enables image insertion from the Strapi Media Library. When enabled, the toolbar shows an image button that opens the Media Library picker. After selecting an image:
 
 - The image appears in the editor at its natural size (constrained to editor width)
-- Alt text is prefilled from the asset's `alternativeText` metadata
+- Alt text is prefilled from the asset's `alternativeText` metadata, caption from its `caption`
 - Clicking a selected image opens a popover with:
   - Three **alignment** buttons (left, center, right)
   - **Width** and **Height** inputs (in pixels) for precise sizing
   - A **reset** button to restore the original dimensions
-  - **Alt text** input and a **delete** button
+  - **Alt text**, **Title** and **Caption** inputs
+  - A **Use Media Library data** button that re-reads `alternativeText` and `caption` from the asset, and a **delete** button
 - A **resize handle** (blue dot) appears at the bottom-right corner on hover — drag it to resize the image
 
-The image stores the URL (`src`), Strapi asset ID (`data-asset-id`), alignment (`data-align`), and dimensions (`width`, `height`) in the Tiptap JSON output.
+The image stores the URL (`src`), Strapi asset ID (`data-asset-id`), alignment (`data-align`), dimensions (`width`, `height`), alt text (`alt`), title (`title`, the `<img title>` tooltip) and caption (`caption`, meant for a `<figcaption>`) in the Tiptap JSON output.
 
 **Content safety:** If you remove `mediaLibrary` from a preset, existing images in content are preserved and rendered read-only — they are never silently deleted.
 
@@ -773,7 +774,7 @@ The image stores the URL (`src`), Strapi asset ID (`data-asset-id`), alignment (
 
 #### Rendering images on the frontend
 
-The plugin stores content as **Tiptap/ProseMirror JSON**. The `width`, `height`, `src`, `alt`, and `title` attributes are standard and will render automatically with `@tiptap/extension-image`. However, the custom `data-align` and `data-asset-id` attributes require extending the Image extension on your frontend:
+The plugin stores content as **Tiptap/ProseMirror JSON**. The `width`, `height`, `src`, `alt`, and `title` attributes are standard and will render automatically with `@tiptap/extension-image`. However, the custom `data-align`, `data-asset-id` and `caption` attributes require extending the Image extension on your frontend (render `caption` as a `<figcaption>` yourself):
 
 ```ts
 import { generateHTML } from '@tiptap/html';
@@ -787,6 +788,7 @@ const StrapiImage = Image.extend({
       ...this.parent?.(),
       'data-align': { default: null },
       'data-asset-id': { default: null },
+      caption: { default: null },
     };
   },
 });

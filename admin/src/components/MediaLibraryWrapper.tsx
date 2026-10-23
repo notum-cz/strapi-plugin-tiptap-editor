@@ -5,6 +5,7 @@ export interface StrapiFile {
   id: number;
   name: string;
   alternativeText?: string | null;
+  caption?: string | null;
   url?: string;
 }
 
