@@ -51,7 +51,7 @@ const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
                 </Status>
               </Box>
             )}
-            <Box className="editor-toolbar" paddingLeft={2} paddingRight={2} paddingBottom={2}>
+            <Box className="editor-toolbar" paddingLeft={1} paddingRight={1} paddingBottom={2}>
               <Flex gap={1} wrap="wrap">
                 {children}
               </Flex>
