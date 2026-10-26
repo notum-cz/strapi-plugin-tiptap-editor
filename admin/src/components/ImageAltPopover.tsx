@@ -100,14 +100,23 @@ export function ImageNodeView({
   }
 
   const assetId = node.attrs['data-asset-id'] as number | null;
+  const assetIdRef = useRef(assetId);
+  assetIdRef.current = assetId;
+  // Bumped on each fill request and on alt/caption edits so stale responses are dropped
+  const fillRequestRef = useRef(0);
 
   function handleFillFromMediaLibrary() {
     if (!assetId) return;
-    get(`/upload/files/${assetId}`)
+    const requestId = ++fillRequestRef.current;
+    const requestedAssetId = assetId;
+    get(`/upload/files/${requestedAssetId}`)
       .then(
         (res: {
           data?: { name?: string; alternativeText?: string | null; caption?: string | null };
         }) => {
+          if (requestId !== fillRequestRef.current || requestedAssetId !== assetIdRef.current) {
+            return;
+          }
           const file = res.data;
           if (!file) return;
           updateAttributes({
@@ -356,7 +365,10 @@ export function ImageNodeView({
               </Field.Label>
               <TextInput
                 value={altText}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAltText(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  fillRequestRef.current++;
+                  setAltText(e.target.value);
+                }}
                 onBlur={handleCommit}
                 onKeyDown={handleKeyDown}
               />
@@ -378,7 +390,10 @@ export function ImageNodeView({
               </Field.Label>
               <TextInput
                 value={caption}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCaption(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  fillRequestRef.current++;
+                  setCaption(e.target.value);
+                }}
                 onBlur={handleCaptionCommit}
                 onKeyDown={handleKeyDown}
               />
