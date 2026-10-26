@@ -65,7 +65,10 @@ function makeEditor() {
     doc: 'doc',
     mapping: 'mapping',
     selection: {},
-    setSelection: vi.fn(),
+    setSelection: vi.fn((sel: unknown) => {
+      tr.selection = sel;
+      return tr;
+    }),
     setNodeMarkup: vi.fn(),
   };
   const commands = { setCellAttribute: vi.fn(() => true) };
@@ -150,7 +153,10 @@ describe('useTableCellBackground', () => {
     mockUseEditorState.mockReturnValue({ canSetBackground: false, activeColor: undefined });
     const { editor } = makeEditor();
 
-    const button = findElement(useTableCellBackground(editor).cellBackgroundButton, 'ToolbarButton');
+    const button = findElement(
+      useTableCellBackground(editor).cellBackgroundButton,
+      'ToolbarButton'
+    );
 
     expect(button.props.hidden).toBe(true);
   });
@@ -181,14 +187,19 @@ describe('useTableCellBackground', () => {
 
   it('paints every differing cell of a CellSelection, even when the anchor already matches', () => {
     const { editor, commands, tr } = makeEditor();
-    tr.selection = makeCellSelection([
+    const cellSelection = makeCellSelection([
       { backgroundColor: '#00ff00' },
       { backgroundColor: null, colspan: 2 },
     ]);
+    cellSelection.map = vi.fn(() => cellSelection);
+    editor.state.selection = cellSelection;
     const result = useTableCellBackground(editor);
 
+    findElement(result.cellBackgroundButton, 'Popover.Root').props.onOpenChange(true);
     findElement(result.cellBackgroundButton, 'ColorPickerPopover').props.onSelect('#00ff00');
 
+    expect(tr.setSelection).toHaveBeenCalledWith(cellSelection);
+    expect(tr.selection).toBe(cellSelection);
     expect(commands.setCellAttribute).not.toHaveBeenCalled();
     expect(tr.setNodeMarkup).toHaveBeenCalledTimes(1);
     expect(tr.setNodeMarkup).toHaveBeenCalledWith(10, undefined, {
