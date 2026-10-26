@@ -36,6 +36,7 @@ vi.mock('../../admin/src/components/ColorPickerPopover', () => ({
 }));
 vi.mock('../../admin/src/components/ToolbarButton', () => ({ ToolbarButton: 'ToolbarButton' }));
 
+import { CellSelection } from '@tiptap/pm/tables';
 import { useTableCellBackground } from '../../admin/src/extensions/TableCellBackground';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -51,26 +52,40 @@ function findElement(element: any, type: string): any {
   return null;
 }
 
+/** A CellSelection stand-in over cells with the given attrs, enough for `instanceof`. */
+function makeCellSelection(cells: Record<string, unknown>[]) {
+  const selection = Object.create(CellSelection.prototype);
+  selection.forEachCell = (f: (node: any, pos: number) => void) =>
+    cells.forEach((attrs, i) => f({ attrs }, i * 10));
+  return selection;
+}
+
 function makeEditor() {
-  const tr = { doc: 'doc', mapping: 'mapping', setSelection: vi.fn() };
+  const tr: any = {
+    doc: 'doc',
+    mapping: 'mapping',
+    selection: {},
+    setSelection: vi.fn(),
+    setNodeMarkup: vi.fn(),
+  };
+  const commands = { setCellAttribute: vi.fn(() => true) };
   const chain: any = {
     command: vi.fn((fn: (props: any) => boolean) => {
-      fn({ tr });
+      fn({ tr, commands });
       return chain;
     }),
     focus: vi.fn(() => chain),
-    setCellAttribute: vi.fn(() => chain),
     run: vi.fn(() => true),
   };
   const mappedSelection = { mapped: true };
-  const selection = { map: vi.fn(() => mappedSelection) };
+  const selection: any = { map: vi.fn(() => mappedSelection) };
   const editor: any = {
     state: { selection },
     chain: vi.fn(() => chain),
     isActive: vi.fn(() => false),
     getAttributes: vi.fn(() => ({ backgroundColor: '#ff0000' })),
   };
-  return { editor, chain, tr, selection, mappedSelection };
+  return { editor, commands, tr, selection, mappedSelection };
 }
 
 // ─── Tests ────────────────────────────────────────────────────────────────────
@@ -100,16 +115,35 @@ describe('useTableCellBackground', () => {
 
     useTableCellBackground(editor);
 
-    expect(selector!({ editor })).toEqual({ canSetBackground: true, activeColor: '#ff0000' });
+    expect(selector!({ editor })).toEqual({
+      canSetBackground: true,
+      activeColor: '#ff0000',
+      hasBackground: true,
+    });
     expect(editor.getAttributes).toHaveBeenCalledWith('tableHeader');
 
     editor.isActive.mockImplementation((name: string) => name === 'tableCell');
     editor.getAttributes.mockReturnValue({ backgroundColor: null });
-    expect(selector!({ editor })).toEqual({ canSetBackground: true, activeColor: null });
+    expect(selector!({ editor })).toEqual({
+      canSetBackground: true,
+      activeColor: null,
+      hasBackground: false,
+    });
+
+    // Unpainted anchor, but another selected cell is painted: still removable.
+    editor.state.selection = makeCellSelection([
+      { backgroundColor: null },
+      { backgroundColor: '#00ff00' },
+    ]);
+    expect(selector!({ editor }).hasBackground).toBe(true);
 
     editor.isActive.mockReturnValue(false);
     expect(selector!({ editor }).canSetBackground).toBe(false);
-    expect(selector!({ editor: null })).toEqual({ canSetBackground: false, activeColor: undefined });
+    expect(selector!({ editor: null })).toEqual({
+      canSetBackground: false,
+      activeColor: undefined,
+      hasBackground: false,
+    });
   });
 
   it('hides the button outside a table', () => {
@@ -122,7 +156,7 @@ describe('useTableCellBackground', () => {
   });
 
   it('restores the saved selection and paints the cells with the picked color', () => {
-    const { editor, chain, tr, selection, mappedSelection } = makeEditor();
+    const { editor, commands, tr, selection, mappedSelection } = makeEditor();
     const result = useTableCellBackground(editor);
 
     findElement(result.cellBackgroundButton, 'Popover.Root').props.onOpenChange(true);
@@ -132,16 +166,51 @@ describe('useTableCellBackground', () => {
 
     expect(selection.map).toHaveBeenCalledWith('doc', 'mapping');
     expect(tr.setSelection).toHaveBeenCalledWith(mappedSelection);
-    expect(chain.setCellAttribute).toHaveBeenCalledWith('backgroundColor', '#00ff00');
+    expect(commands.setCellAttribute).toHaveBeenCalledWith('backgroundColor', '#00ff00');
     expect(setShowPicker).toHaveBeenLastCalledWith(false);
   });
 
   it('clears the background on remove', () => {
-    const { editor, chain } = makeEditor();
+    const { editor, commands } = makeEditor();
     const result = useTableCellBackground(editor);
 
     findElement(result.cellBackgroundButton, 'ColorPickerPopover').props.onRemove();
 
-    expect(chain.setCellAttribute).toHaveBeenCalledWith('backgroundColor', null);
+    expect(commands.setCellAttribute).toHaveBeenCalledWith('backgroundColor', null);
+  });
+
+  it('paints every differing cell of a CellSelection, even when the anchor already matches', () => {
+    const { editor, commands, tr } = makeEditor();
+    tr.selection = makeCellSelection([
+      { backgroundColor: '#00ff00' },
+      { backgroundColor: null, colspan: 2 },
+    ]);
+    const result = useTableCellBackground(editor);
+
+    findElement(result.cellBackgroundButton, 'ColorPickerPopover').props.onSelect('#00ff00');
+
+    expect(commands.setCellAttribute).not.toHaveBeenCalled();
+    expect(tr.setNodeMarkup).toHaveBeenCalledTimes(1);
+    expect(tr.setNodeMarkup).toHaveBeenCalledWith(10, undefined, {
+      backgroundColor: '#00ff00',
+      colspan: 2,
+    });
+  });
+
+  it('keeps remove enabled when only a non-anchor cell is painted', () => {
+    mockUseEditorState.mockReturnValue({
+      canSetBackground: true,
+      activeColor: null,
+      hasBackground: true,
+    });
+    const { editor } = makeEditor();
+
+    const picker = findElement(
+      useTableCellBackground(editor).cellBackgroundButton,
+      'ColorPickerPopover'
+    );
+
+    expect(picker.props.activeColor).toBeUndefined();
+    expect(picker.props.canRemove).toBe(true);
   });
 });

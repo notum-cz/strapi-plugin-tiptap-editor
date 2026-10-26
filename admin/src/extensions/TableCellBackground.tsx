@@ -1,5 +1,6 @@
 import { Editor } from '@tiptap/core';
 import { Selection } from '@tiptap/pm/state';
+import { CellSelection } from '@tiptap/pm/tables';
 import { useEditorState } from '@tiptap/react';
 import { TableCell, TableHeader } from '@tiptap/extension-table';
 import { useRef, useState } from 'react';
@@ -47,17 +48,29 @@ export function useTableCellBackground(editor: Editor | null, props: { disabled?
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
-      if (!ctx.editor) return { canSetBackground: false, activeColor: undefined };
+      if (!ctx.editor) {
+        return { canSetBackground: false, activeColor: undefined, hasBackground: false };
+      }
       const inHeader = ctx.editor.isActive('tableHeader');
       const cellType = inHeader ? 'tableHeader' : 'tableCell';
+      const activeColor = ctx.editor.getAttributes(cellType)[CELL_BACKGROUND_ATTRIBUTE] as
+        | string
+        | undefined;
+      // activeColor is the anchor cell only; a mixed selection can still have paint to remove.
+      const { selection } = ctx.editor.state;
+      let hasBackground = !!activeColor;
+      if (selection instanceof CellSelection) {
+        selection.forEachCell((cell) => {
+          if (cell.attrs[CELL_BACKGROUND_ATTRIBUTE]) hasBackground = true;
+        });
+      }
       // Not `can().setCellAttribute(...)`: it reports false when the cell already holds that
       // value, which would hide the button on every unpainted cell. Custom component nodes
       // (a pricing table, say) are not tableCell/tableHeader, so the picker never shows there.
       return {
         canSetBackground: inHeader || ctx.editor.isActive('tableCell'),
-        activeColor: ctx.editor.getAttributes(cellType)[CELL_BACKGROUND_ATTRIBUTE] as
-          | string
-          | undefined,
+        activeColor,
+        hasBackground,
       };
     },
   });
@@ -83,7 +96,19 @@ export function useTableCellBackground(editor: Editor | null, props: { disabled?
         return true;
       })
       .focus()
-      .setCellAttribute(CELL_BACKGROUND_ATTRIBUTE, color)
+      .command(({ tr, commands }) => {
+        if (!(tr.selection instanceof CellSelection)) {
+          return commands.setCellAttribute(CELL_BACKGROUND_ATTRIBUTE, color);
+        }
+        // Not setCellAttribute: it does nothing when the anchor cell already holds `color`,
+        // leaving the rest of a mixed selection unpainted.
+        tr.selection.forEachCell((cell, pos) => {
+          if (cell.attrs[CELL_BACKGROUND_ATTRIBUTE] !== color) {
+            tr.setNodeMarkup(pos, undefined, { ...cell.attrs, [CELL_BACKGROUND_ATTRIBUTE]: color });
+          }
+        });
+        return true;
+      })
       .run();
     setShowPicker(false);
   };
@@ -122,6 +147,7 @@ export function useTableCellBackground(editor: Editor | null, props: { disabled?
           <ColorPickerPopover
             colors={colors}
             activeColor={activeColor}
+            canRemove={!!editorState?.hasBackground}
             onSelect={(color) => applyColor(color)}
             onRemove={() => applyColor(null)}
           />

@@ -6,6 +6,8 @@ import { useTheme } from 'styled-components';
 interface ColorPickerPopoverProps {
   colors: ThemeColorEntry[];
   activeColor: string | undefined;
+  /** Enables "Remove color"; defaults to whether `activeColor` is set. */
+  canRemove?: boolean;
   onSelect: (color: string) => void;
   onRemove: () => void;
   showCustomColorPicker?: boolean;
@@ -15,6 +17,7 @@ interface ColorPickerPopoverProps {
 export function ColorPickerPopover({
   colors,
   activeColor,
+  canRemove = !!activeColor,
   onSelect,
   onRemove,
   showCustomColorPicker = false,
@@ -32,7 +35,7 @@ export function ColorPickerPopover({
 
   return (
     <Box padding={3} style={{ width: 280, maxHeight: 400, overflowY: 'auto' }}>
-      <Button variant="tertiary" size="S" onClick={onRemove} disabled={!activeColor} fullWidth>
+      <Button variant="tertiary" size="S" onClick={onRemove} disabled={!canRemove} fullWidth>
         {formatMessage({
           id: 'tiptap-editor.color.remove',
           defaultMessage: 'Remove color',
