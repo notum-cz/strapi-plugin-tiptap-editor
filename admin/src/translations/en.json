@@ -52,5 +52,8 @@
   "tiptap-editor.table.minMax": "Min {min}, max {max}",
   "tiptap-editor.table.cancel": "Cancel",
   "tiptap-editor.table.insert": "Insert",
-  "tiptap-editor.more": "More"
+  "tiptap-editor.more": "More",
+  "tiptap-editor.color.remove": "Remove color",
+  "tiptap-editor.color.theme": "Theme colors",
+  "tiptap-editor.color.custom": "Custom color"
 }

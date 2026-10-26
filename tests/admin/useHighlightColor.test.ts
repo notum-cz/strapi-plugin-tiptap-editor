@@ -4,9 +4,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const { mockUseEditorState } = vi.hoisted(() => ({ mockUseEditorState: vi.fn() }));
 const { mockUseThemeConfig } = vi.hoisted(() => ({ mockUseThemeConfig: vi.fn() }));
-const { mockUseState, mockUseRef } = vi.hoisted(() => ({
+const { mockUseState, mockUseRef, mockUseEffect } = vi.hoisted(() => ({
   mockUseState: vi.fn(),
   mockUseRef: vi.fn(),
+  mockUseEffect: vi.fn(),
 }));
 const { mockPopoverRoot } = vi.hoisted(() => ({ mockPopoverRoot: vi.fn() }));
 
@@ -30,6 +31,7 @@ vi.mock('react', () => ({
   default: { createElement: vi.fn() },
   useState: mockUseState,
   useRef: mockUseRef,
+  useEffect: mockUseEffect,
 }));
 
 vi.mock('../../admin/src/hooks/useThemeConfig', () => ({
