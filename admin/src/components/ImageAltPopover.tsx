@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback } from 'react';
 import { NodeViewWrapper } from '@tiptap/react';
 import type { NodeViewProps } from '@tiptap/react';
 import type { ImageOptions } from '@tiptap/extension-image';
@@ -101,9 +101,15 @@ export function ImageNodeView({
 
   const assetId = node.attrs['data-asset-id'] as number | null;
   const assetIdRef = useRef(assetId);
-  assetIdRef.current = assetId;
-  // Bumped on each fill request and on alt/caption edits so stale responses are dropped
+  // Bumped on each fill request, on alt/caption edits and on asset changes so stale responses are dropped
   const fillRequestRef = useRef(0);
+
+  // Synced after commit, not during render, so an abandoned render can't affect pending fills
+  useLayoutEffect(() => {
+    if (assetIdRef.current === assetId) return;
+    assetIdRef.current = assetId;
+    fillRequestRef.current++;
+  }, [assetId]);
 
   function handleFillFromMediaLibrary() {
     if (!assetId) return;
