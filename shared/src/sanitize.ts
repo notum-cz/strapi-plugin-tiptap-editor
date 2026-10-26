@@ -102,9 +102,12 @@ export function stripUnknownContent(content: JSONContent, schema: SanitizeSchema
     return [next];
   };
 
-  const [root] = visit(content, true);
+  const nodes = visit(content, false);
   return {
-    content: root ?? { type: 'doc', content: [] },
+    content:
+      nodes.length === 1 && nodes[0].type === 'doc'
+        ? nodes[0]
+        : { type: 'doc', content: promote(nodes, false) },
     unknownNodeTypes: [...unknownNodeTypes],
     unknownMarkTypes: [...unknownMarkTypes],
   };

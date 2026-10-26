@@ -67,6 +67,12 @@ describe('registry', () => {
       })
     ).toThrow('[TiptapEditor] "badge" cannot be both inline and a container');
   });
+
+  it('refuses an attribute that would encode onto the data-type marker', () => {
+    expect(() =>
+      registerRichTextComponent({ ...button, attributes: { type: { default: '' } } })
+    ).toThrow('[TiptapEditor] "button" attribute "type" would overwrite the reserved data-type marker');
+  });
 });
 
 describe('resolveRichTextComponents', () => {

@@ -118,4 +118,14 @@ describe('stripUnknownContent', () => {
     );
     expect(result.content).toEqual(doc(paragraph(text('a'))));
   });
+
+  it('keeps every child of an unknown root, wrapped in a doc', () => {
+    const result = stripUnknownContent(
+      { type: 'mystery', content: [paragraph(text('a')), text('b'), paragraph(text('c'))] },
+      schema
+    );
+    expect(result.content).toEqual(
+      doc(paragraph(text('a')), paragraph(text('b')), paragraph(text('c')))
+    );
+  });
 });

@@ -5,6 +5,7 @@ import {
 } from '../../../shared/src/types';
 import { isReservedNodeName, isValidComponentName } from '../../../shared/src/components/names';
 import { isInlineComponent } from '../../../shared/src/components/toNodeSpec';
+import { dataAttributeName } from '../utils/attributeCodec';
 import type {
   AnyRichTextComponentDefinition,
   ResolvedRichTextComponent,
@@ -32,6 +33,14 @@ export function registerRichTextComponent(definition: AnyRichTextComponentDefini
   }
   if (isInlineComponent(definition) && definition.content) {
     throw new Error(`[TiptapEditor] "${name}" cannot be both inline and a container`);
+  }
+  // `data-type` marks the node in clipboard HTML; an attribute encoded onto it would override that.
+  for (const key of Object.keys(definition.attributes ?? {})) {
+    if (dataAttributeName(key) === 'data-type') {
+      throw new Error(
+        `[TiptapEditor] "${name}" attribute "${key}" would overwrite the reserved data-type marker`
+      );
+    }
   }
   if (registry.has(name)) {
     console.info(`[TiptapEditor] Replacing rich-text component "${name}"`);
