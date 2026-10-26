@@ -102,4 +102,20 @@ describe('stripUnknownContent', () => {
       content: [],
     });
   });
+
+  it('wraps inline content promoted out of an unknown block in a paragraph', () => {
+    const result = stripUnknownContent(
+      doc({ type: 'banner', content: [text('a'), text('b')] }, paragraph(text('c'))),
+      schema
+    );
+    expect(result.content).toEqual(doc(paragraph(text('a'), text('b')), paragraph(text('c'))));
+  });
+
+  it('keeps inline content promoted into an inline-content parent unwrapped', () => {
+    const result = stripUnknownContent(
+      doc(paragraph({ type: 'chip', content: [text('a')] })),
+      schema
+    );
+    expect(result.content).toEqual(doc(paragraph(text('a'))));
+  });
 });

@@ -1,11 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
+// The node views' only state is `editing`; tests flip it to mount the dialog.
+const state = vi.hoisted(() => ({ editing: false }));
+
 // ─── Mock React ───────────────────────────────────────────────────────────────
 vi.mock('react', async () => {
   const actual = await vi.importActual<typeof import('react')>('react');
   return {
     ...actual,
-    useState: (initial: any) => [initial, vi.fn()],
+    useState: () => [state.editing, vi.fn()],
     forwardRef: (fn: any) => fn,
     createElement: (type: any, props: any, ...children: any[]) => ({
       type,
@@ -101,6 +104,7 @@ function buildProps(
 }
 
 beforeEach(() => {
+  state.editing = false;
   clearRichTextComponents();
   registerRichTextComponent({
     name: 'callout',
@@ -176,5 +180,14 @@ describe('GenericComponentNodeView', () => {
     } as any);
     const preview = find(GenericComponentNodeView(buildProps('swatch', {})), byType('SwatchPreview'));
     expect(preview.props.colors).toStrictEqual(PALETTE);
+  });
+
+  it('mounts the edit dialog only while editing, with the node attrs', () => {
+    const props = buildProps('button', { label: 'Read more' });
+    expect(find(GenericComponentNodeView(props), byType('ComponentDialog'))).toBeUndefined();
+    state.editing = true;
+    const dialog = find(GenericComponentNodeView(props), byType('ComponentDialog'));
+    expect(dialog.props.open).toBe(true);
+    expect(dialog.props.initialAttrs).toStrictEqual(props.node.attrs);
   });
 });

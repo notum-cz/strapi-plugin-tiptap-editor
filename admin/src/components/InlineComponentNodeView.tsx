@@ -61,9 +61,9 @@ export function InlineComponentNodeView(props: NodeViewProps) {
           </>
         )}
       </button>
-      {definition && (
+      {definition && editing && (
         <ComponentDialog
-          open={editing}
+          open
           mode="edit"
           definition={definition}
           options={options}

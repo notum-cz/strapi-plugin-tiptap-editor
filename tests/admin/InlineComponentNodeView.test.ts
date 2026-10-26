@@ -1,11 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
+// The node views' only state is `editing`; tests flip it to mount the dialog.
+const state = vi.hoisted(() => ({ editing: false }));
+
 // ─── Mock React ───────────────────────────────────────────────────────────────
 vi.mock('react', async () => {
   const actual = await vi.importActual<typeof import('react')>('react');
   return {
     ...actual,
-    useState: (initial: any) => [initial, vi.fn()],
+    useState: () => [state.editing, vi.fn()],
     forwardRef: (fn: any) => fn,
     createElement: (type: any, props: any, ...children: any[]) => ({
       type,
@@ -94,6 +97,7 @@ function register(extra: Record<string, unknown> = {}) {
 }
 
 beforeEach(() => {
+  state.editing = false;
   clearRichTextComponents();
   register();
 });
@@ -143,10 +147,12 @@ describe('InlineComponentNodeView', () => {
     expect(button.props.disabled).toBe(true);
   });
 
-  it('mounts the edit dialog with the node attrs', () => {
+  it('mounts the edit dialog only while editing, with the node attrs', () => {
+    expect(find(InlineComponentNodeView(buildProps()), byType('ComponentDialog'))).toBeUndefined();
+    state.editing = true;
     const dialog = find(InlineComponentNodeView(buildProps()), byType('ComponentDialog'));
     expect(dialog.props.mode).toBe('edit');
-    expect(dialog.props.open).toBe(false);
+    expect(dialog.props.open).toBe(true);
     expect(dialog.props.initialAttrs).toStrictEqual({ tone: 'warn' });
   });
 

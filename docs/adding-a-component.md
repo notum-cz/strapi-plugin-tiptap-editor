@@ -471,7 +471,7 @@ import type { CalloutAttrs } from './callout';
 export function CalloutPreview({ attrs, children }: RichTextComponentPreviewProps<CalloutAttrs>) {
   return (
     <div className="callout-preview" data-tone={attrs.tone}>
-      {attrs.title && <strong>{attrs.title}</strong>}
+      {attrs.title && <strong contentEditable={false}>{attrs.title}</strong>}
       {children}
     </div>
   );
@@ -544,6 +544,8 @@ function rendererNode(schema) {
   return Node.create({
     name: spec.name,
     group: spec.group,
+    inline: spec.inline,
+    marks: spec.marks,
     atom: spec.atom,
     content: spec.content,
     addAttributes: () => spec.attributes,
@@ -557,6 +559,7 @@ const html = renderToReactElement({
   content: stripUnknownContent(storedContent, getSchema(extensions)).content,
   options: {
     nodeMapping: {
+      button: ({ node }) => <Button {...node.attrs} />,
       callout: ({ node, children }) => <Callout tone={node.attrs.tone}>{children}</Callout>,
     },
   },

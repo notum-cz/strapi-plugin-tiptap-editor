@@ -22,7 +22,10 @@ interface ComponentDialogProps {
   onSubmit: (attrs: AttributeValues) => void;
 }
 
-/** Insert/edit dialog for one rich-text component: the definition's own form when it has one, the generated one otherwise. */
+/**
+ * Insert/edit dialog for one rich-text component: the definition's own form when it has one, the generated one otherwise.
+ * Mount it only while it is open, so each session starts from the current `initialAttrs`.
+ */
 export const ComponentDialog: React.FC<ComponentDialogProps> = ({
   open,
   mode,
@@ -38,15 +41,6 @@ export const ComponentDialog: React.FC<ComponentDialogProps> = ({
     toFormValues(definition, initialAttrs)
   );
   const [errors, setErrors] = React.useState<AttributeErrors>({});
-
-  // Only `open` is a dependency: `initialAttrs` is a fresh object on every render of the node view,
-  // so reacting to it would wipe the editor's in-progress input on each keystroke.
-  React.useEffect(() => {
-    if (open) {
-      setAttrs(toFormValues(definition, initialAttrs));
-      setErrors({});
-    }
-  }, [open]);
 
   const label = formatLabel(definition.label, formatMessage);
   const title =
