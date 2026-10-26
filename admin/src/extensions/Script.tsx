@@ -2,6 +2,8 @@ import { Editor } from '@tiptap/core';
 import { useEditorState } from '@tiptap/react';
 import { ToolbarButton } from '../components/ToolbarButton';
 import { useIntl } from 'react-intl';
+import { SubScript } from '../icons/SubScript';
+import { SuperScript } from '../icons/SuperScript';
 
 export function useScript(
   editor: Editor | null,
@@ -45,11 +47,7 @@ export function useScript(
     superscriptButton: (
       <ToolbarButton
         onClick={toggleSuperscript}
-        icon={
-          <>
-            x<sup>2</sup>
-          </>
-        }
+        icon={<SuperScript />}
         active={editorState?.isSuperscript ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleSuperscript}
         tooltip={formatMessage({
@@ -61,11 +59,7 @@ export function useScript(
     subscriptButton: (
       <ToolbarButton
         onClick={toggleSubscript}
-        icon={
-          <>
-            x<sub>2</sub>
-          </>
-        }
+        icon={<SubScript />}
         active={editorState?.isSubscript ?? false}
         disabled={props.disabled || !editor || !editorState?.canToggleSubscript}
         tooltip={formatMessage({
