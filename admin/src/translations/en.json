@@ -24,6 +24,7 @@
   "tiptap-editor.toolbar.textAlignJustify": "Text Align Justify",
   "tiptap-editor.toolbar.insertImage": "Insert image",
   "tiptap-editor.toolbar.table": "Table",
+  "tiptap-editor.toolbar.cellBackground": "Cell background",
   "tiptap-editor.toolbar.addColumn": "Add column (to the right)",
   "tiptap-editor.toolbar.removeColumn": "Remove column",
   "tiptap-editor.toolbar.addRow": "Add row (below)",

@@ -98,6 +98,10 @@ vi.mock('../../admin/src/extensions/Script', () => ({
 vi.mock('../../admin/src/extensions/Table', () => ({
   useTable: () => mockTable,
 }));
+const mockUseTableCellBackground = vi.fn(() => ({ cellBackgroundButton: 'CELL_BACKGROUND' }));
+vi.mock('../../admin/src/extensions/TableCellBackground', () => ({
+  useTableCellBackground: (...args: any[]) => mockUseTableCellBackground(...args),
+}));
 vi.mock('../../admin/src/extensions/TextAlign', () => ({
   useTextAlign: () => mockTextAlign,
 }));
@@ -357,5 +361,20 @@ describe('RichTextInput', () => {
     const itemIds = responsiveToolbars[0].props.items.map((i: any) => i.id);
     expect(itemIds).not.toContain('textColor');
     expect(itemIds).not.toContain('highlightColor');
+  });
+
+  it.each([
+    [true, false],
+    [{ resizable: true }, false],
+    [{ cellBackground: true }, true],
+  ])('with table %j renders the cell background picker: %s', (table, expected) => {
+    const config = { table };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+    const tableItem = findElements(result, 'ResponsiveToolbar')[0].props.items.find(
+      (i: any) => i.id === 'table'
+    );
+    expect(tableItem.content.props.children.includes('CELL_BACKGROUND')).toBe(expected);
   });
 });

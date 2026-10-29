@@ -311,7 +311,7 @@
           "content": [
             {
               "type": "tableHeader",
-              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null, "backgroundColor": "#EDF2F7" },
               "content": [
                 {
                   "type": "paragraph",
@@ -351,7 +351,7 @@
           "content": [
             {
               "type": "tableCell",
-              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null },
+              "attrs": { "colspan": 1, "rowspan": 1, "colwidth": null, "backgroundColor": "#FEFCBF" },
               "content": [
                 {
                   "type": "paragraph",
