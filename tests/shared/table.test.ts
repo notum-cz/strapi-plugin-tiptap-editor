@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cellBackgroundAttribute } from '../../shared/table';
+import { cellBackgroundAttribute } from '../../shared/src/table';
 
 describe('cellBackgroundAttribute', () => {
   it('defaults to no background', () => {

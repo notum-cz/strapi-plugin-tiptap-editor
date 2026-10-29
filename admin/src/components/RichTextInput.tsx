@@ -7,6 +7,7 @@ import { Spacer } from './Spacer';
 import { TiptapInputProps, useTiptapEditor } from '../utils/tiptapUtils';
 import { ResponsiveToolbar } from './ResponsiveToolbar';
 import { useStarterKit } from '../extensions/StarterKit';
+import { useRichTextComponents } from '../extensions/Components';
 import { useLink } from '../extensions/Link';
 import { useHeading } from '../extensions/Heading';
 import { useImage } from '../extensions/Image';
@@ -23,7 +24,7 @@ import {
   TiptapPresetConfig,
   MINIMAL_PRESET_CONFIG,
   getFeatureOptions,
-} from '../../../shared/types';
+} from '../../../shared/src/types';
 import type { ToolbarItem } from './ResponsiveToolbar';
 
 // ─── Inner editor ────────────────────────────────────────────────────────────
@@ -49,7 +50,11 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
       return buildExtensions(config);
     }, [presetName]); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const { editor, field } = useTiptapEditor(props.name, '', extensions);
+    const { editor, field, removedContent, contentError } = useTiptapEditor(
+      props.name,
+      '',
+      extensions
+    );
 
     const starterKit = useStarterKit(editor, { disabled: props.disabled });
     const headingOptions = getFeatureOptions(config.heading, { levels: [1, 2, 3, 4, 5, 6] });
@@ -63,6 +68,7 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
     const textAlign = useTextAlign(editor, { disabled: props.disabled });
     const textColor = useTextColor(editor, { disabled: props.disabled, config: config.textColor });
     const highlightColor = useHighlightColor(editor, { disabled: props.disabled, config: config.highlightColor });
+    const components = useRichTextComponents(editor, { config, disabled: props.disabled });
 
     const toolbarItemCandidates: Array<ToolbarItem | false | undefined> = [
       config.heading && {
@@ -146,6 +152,9 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           </>
         ),
       },
+      config.table && { id: 'tableSpacer', content: <Spacer margin={1} /> },
+      // Dialog renders outside the toolbar so it survives the overflow popover closing
+      Boolean(components.componentsMenu) && { id: 'components', content: components.componentsMenu },
     ];
 
     const rawToolbarItems = toolbarItemCandidates.filter(isToolbarItem);
@@ -171,8 +180,11 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           {...props}
           ref={forwardedRef}
           noPresetConfigured={!presetName}
+          removedContent={removedContent}
+          contentError={contentError}
         >
           <ResponsiveToolbar items={toolbarItems} />
+          {components.componentDialog}
         </BaseTiptapInput>
       </EditorErrorBoundary>
     );

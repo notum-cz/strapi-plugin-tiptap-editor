@@ -3,7 +3,7 @@ import { Box, Field, Flex, Status, Typography } from '@strapi/design-system';
 import { EditorContent } from '@tiptap/react';
 import { Editor } from '@tiptap/core';
 import { TiptapInputStyles } from './TiptapInputStyles';
-import { FieldValue } from '../utils/tiptapUtils';
+import type { FieldValue, RemovedContent } from '../utils/tiptapUtils';
 import { forwardRef } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -13,14 +13,20 @@ type TiptapInputProps = InputProps & {
   field: FieldValue;
   children?: React.ReactNode;
   noPresetConfigured?: boolean;
+  removedContent?: RemovedContent | null;
+  /** True when Tiptap rejected part of the stored content and mounted what it could recover. */
+  contentError?: boolean;
 };
 
 const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
   (
-    { hint, disabled = false, labelAction, label, name, required = false, editor, field, children, noPresetConfigured },
+    { hint, disabled = false, labelAction, label, name, required = false, editor, field, children, noPresetConfigured, removedContent, contentError },
     forwardedRef
   ) => {
     const { formatMessage } = useIntl();
+    const removedTypes = removedContent
+      ? [...removedContent.nodeTypes, ...removedContent.markTypes]
+      : [];
     const borderColor = field.error ? 'danger600' : 'neutral200';
     const background = disabled ? 'neutral200' : 'neutral100';
 
@@ -46,6 +52,35 @@ const BaseTiptapInput = forwardRef<HTMLDivElement, TiptapInputProps>(
                     {formatMessage({
                       id: 'tiptap-editor.noPreset.message',
                       defaultMessage: 'No editor preset configured — showing minimal editor',
+                    })}
+                  </Typography>
+                </Status>
+              </Box>
+            )}
+            {removedTypes.length > 0 && (
+              <Box paddingLeft={2} paddingRight={2} paddingTop={2}>
+                <Status variant="warning">
+                  <Typography variant="pi">
+                    {formatMessage(
+                      {
+                        id: 'tiptap-editor.content.unknownRemoved',
+                        defaultMessage:
+                          'This content contains elements this editor no longer supports ({types}). They are hidden here and will be permanently removed when you save.',
+                      },
+                      { types: removedTypes.join(', ') }
+                    )}
+                  </Typography>
+                </Status>
+              </Box>
+            )}
+            {contentError && (
+              <Box paddingLeft={2} paddingRight={2} paddingTop={2}>
+                <Status variant="warning">
+                  <Typography variant="pi">
+                    {formatMessage({
+                      id: 'tiptap-editor.content.invalid',
+                      defaultMessage:
+                        'Part of this content is invalid and could not be loaded. Saving will replace the stored content with what is shown here.',
                     })}
                   </Typography>
                 </Status>

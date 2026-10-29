@@ -61,5 +61,22 @@
   "tiptap-editor.more": "More",
   "tiptap-editor.color.remove": "Remove color",
   "tiptap-editor.color.theme": "Theme colors",
-  "tiptap-editor.color.custom": "Custom color"
+  "tiptap-editor.color.custom": "Custom color",
+  "tiptap-editor.components.insert": "Insert component",
+  "tiptap-editor.components.dialog.insertTitle": "Insert {label}",
+  "tiptap-editor.components.dialog.editTitle": "Edit {label}",
+  "tiptap-editor.components.dialog.insert": "Insert",
+  "tiptap-editor.components.dialog.save": "Save",
+  "tiptap-editor.components.dialog.cancel": "Cancel",
+  "tiptap-editor.components.dialog.required": "This field is required",
+  "tiptap-editor.components.dialog.invalidJson": "Enter valid JSON",
+  "tiptap-editor.components.dialog.invalidNumber": "Enter a number",
+  "tiptap-editor.components.dialog.outOfRange": "Enter a number within the allowed range",
+  "tiptap-editor.components.nodeView.edit": "Edit component",
+  "tiptap-editor.components.nodeView.editInline": "Edit {label}",
+  "tiptap-editor.components.nodeView.delete": "Delete component",
+  "tiptap-editor.components.nodeView.readOnly": "Read-only in this preset",
+  "tiptap-editor.components.button.label": "Button",
+  "tiptap-editor.content.unknownRemoved": "This content contains elements this editor no longer supports ({types}). They are hidden here and will be permanently removed when you save.",
+  "tiptap-editor.content.invalid": "Part of this content is invalid and could not be loaded. Saving will replace the stored content with what is shown here."
 }

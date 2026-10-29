@@ -22,7 +22,8 @@
       "subscript": true,
       "textColor": { "customColorPicker": true },
       "highlightColor": { "customColorPicker": true },
-      "mediaLibrary": true
+      "mediaLibrary": true,
+      "components": { "button": true }
     }
   }
 }

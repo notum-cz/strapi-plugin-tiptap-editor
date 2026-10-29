@@ -253,4 +253,57 @@ export const TiptapInputStyles = styled.div`
     font-style: italic;
     font-weight: bold;
   }
+
+  /* --- Rich-text components --- */
+  .rich-text-component {
+    border: 1px solid ${({ theme }) => theme.colors.neutral200};
+    border-radius: 4px;
+    margin: 0.75em 0;
+    background: ${({ theme }) => theme.colors.neutral0};
+  }
+  .rich-text-component[data-selected] {
+    outline: 2px solid #4945ff;
+    outline-offset: 2px;
+  }
+  .rich-text-component__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: ${({ theme }) => theme.colors.neutral150};
+    cursor: grab;
+    user-select: none;
+  }
+  .rich-text-component__body {
+    padding: 8px;
+  }
+  .rich-text-component__content {
+    min-height: 1.5em;
+  }
+  /* Inline components sit inside running text, so nothing here may change the line height. */
+  .rich-text-component--inline {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0 2px;
+    line-height: 1;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+  }
+  .rich-text-component__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .rich-text-component__chip:disabled {
+    cursor: default;
+  }
 `;

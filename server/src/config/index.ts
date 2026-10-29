@@ -2,7 +2,12 @@ import {
   PRESET_FEATURE_KEYS,
   TiptapPluginConfig,
   TiptapPresetConfig,
-} from '../../../shared/types';
+} from '../../../shared/src/types';
+import {
+  COMPONENT_NAME_RE,
+  isReservedNodeName,
+  isValidComponentName,
+} from '../../../shared/src/components/names';
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
@@ -24,6 +29,31 @@ const getInvalidKeys = (presetConfig: unknown): string[] => {
   return Object.keys(presetConfig).filter(
     (key) => !FEATURE_KEYS.has(key as keyof TiptapPresetConfig)
   );
+};
+
+const validateComponents = (presetName: string, components: unknown): void => {
+  if (components === undefined) return;
+  if (!isPlainObject(components)) {
+    throw new Error(`tiptap-editor config.presets.${presetName}.components must be a plain object`);
+  }
+  for (const [name, value] of Object.entries(components)) {
+    if (isReservedNodeName(name)) {
+      throw new Error(
+        `tiptap-editor config.presets.${presetName}.components: "${name}" is a reserved node name`
+      );
+    }
+    if (!isValidComponentName(name)) {
+      throw new Error(
+        `tiptap-editor config.presets.${presetName}.components has invalid component name "${name}". ` +
+          `Names must match ${COMPONENT_NAME_RE}`
+      );
+    }
+    if (typeof value !== 'boolean' && !isPlainObject(value)) {
+      throw new Error(
+        `tiptap-editor config.presets.${presetName}.components.${name} must be a boolean or a plain object`
+      );
+    }
+  }
 };
 
 const config = {
@@ -52,6 +82,7 @@ const config = {
             `tiptap-editor config.presets.${presetName} must be a plain object, got ${typeof presetConfig}`
           );
         }
+        validateComponents(presetName, (presetConfig as Record<string, unknown>).components);
         const invalidKeys = getInvalidKeys(presetConfig);
         if (invalidKeys.length > 0) {
           allInvalidKeys.push(...invalidKeys);

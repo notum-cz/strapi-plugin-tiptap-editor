@@ -1,5 +1,5 @@
 import type { Core } from '@strapi/strapi';
-import { TiptapPluginConfig, TiptapThemeConfig } from '../../../shared/types';
+import { TiptapPluginConfig, TiptapThemeConfig } from '../../../shared/src/types';
 
 const DEFAULT_CONFIG: TiptapPluginConfig = { presets: {} };
 

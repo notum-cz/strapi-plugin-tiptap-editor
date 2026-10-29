@@ -1,9 +1,6 @@
 import { useFetchClient } from '@strapi/strapi/admin';
 import { useState, useEffect, useMemo } from 'react';
-import {
-  TiptapPresetConfig,
-  MINIMAL_PRESET_CONFIG,
-} from '../../../shared/types';
+import { TiptapPresetConfig, MINIMAL_PRESET_CONFIG } from '../../../shared/src/types';
 
 export type PresetConfigResult = {
   config: TiptapPresetConfig | null;

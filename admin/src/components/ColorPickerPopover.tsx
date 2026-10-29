@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Flex, Tooltip, Typography } from '@strapi/design-system';
 import { useIntl } from 'react-intl';
-import { ThemeColorEntry } from '../../../shared/types';
+import { ThemeColorEntry } from '../../../shared/src/types';
 import { useTheme } from 'styled-components';
 
 interface ColorPickerPopoverProps {

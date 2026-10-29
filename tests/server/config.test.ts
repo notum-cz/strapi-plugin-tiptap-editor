@@ -178,3 +178,45 @@ describe('config validator — theme (THEME-04)', () => {
     );
   });
 });
+
+describe('config validator — components', () => {
+  it('accepts a components map with booleans and option objects', () => {
+    expect(() =>
+      config.validator({
+        presets: {
+          rich: { bold: true, components: { button: true, callout: { tones: ['info'] } } },
+        },
+      })
+    ).not.toThrow();
+  });
+
+  it('accepts well-formed names it has never heard of (registry lives in the admin)', () => {
+    expect(() =>
+      config.validator({ presets: { rich: { components: { pricingTable: true } } } })
+    ).not.toThrow();
+  });
+
+  it('rejects components given as an array', () => {
+    expect(() => config.validator({ presets: { rich: { components: ['button'] } } })).toThrowError(
+      /presets\.rich\.components must be a plain object/
+    );
+  });
+
+  it('rejects a component value that is a string', () => {
+    expect(() =>
+      config.validator({ presets: { rich: { components: { button: 'yes' } } } })
+    ).toThrowError(/components\.button must be a boolean or a plain object/);
+  });
+
+  it('rejects a component name that does not match the name pattern', () => {
+    expect(() =>
+      config.validator({ presets: { rich: { components: { '1bad name': true } } } })
+    ).toThrowError(/invalid component name "1bad name"/);
+  });
+
+  it('rejects a reserved node name', () => {
+    expect(() =>
+      config.validator({ presets: { rich: { components: { paragraph: true } } } })
+    ).toThrowError(/"paragraph" is a reserved node name/);
+  });
+});

@@ -1,6 +1,6 @@
 import { Paragraph } from '@strapi/icons';
-import { RICH_TEXT_FIELD_NAME } from '../../../shared/fields';
-import { PLUGIN_ID } from '../../../shared/pluginId';
+import { RICH_TEXT_FIELD_NAME } from '../../../shared/src/fields';
+import { PLUGIN_ID } from '../../../shared/src/pluginId';
 import { ComponentType } from 'react';
 
 export const richTextField = {

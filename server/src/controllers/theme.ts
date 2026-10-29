@@ -1,6 +1,6 @@
 import type { Core } from '@strapi/strapi';
 import type { Context } from 'koa';
-import { TiptapThemeConfig } from '../../../shared/types';
+import { TiptapThemeConfig } from '../../../shared/src/types';
 
 interface ThemeService {
   getTheme(): TiptapThemeConfig | undefined;

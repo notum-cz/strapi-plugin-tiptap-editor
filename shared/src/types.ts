@@ -1,4 +1,4 @@
-// shared/types.ts
+// shared/src/types.ts
 
 // ─── Option types ───────────────────────────────────────────────────────────
 
@@ -31,6 +31,9 @@ export type TextColorConfig = {
 export type HighlightColorConfig = {
   customColorPicker?: boolean | { enabled?: boolean };
 };
+
+/** Per-preset switch map for rich-text components: `true`, `false`, or an options object. */
+export type RichTextComponentsConfig = Record<string, boolean | Record<string, unknown>>;
 
 // ─── Theme types ─────────────────────────────────────────────────────────────
 
@@ -79,6 +82,7 @@ export interface TiptapPresetConfig {
   textColor?: boolean | TextColorConfig;
   highlightColor?: boolean | HighlightColorConfig;
   mediaLibrary?: boolean | Record<string, unknown>;
+  components?: RichTextComponentsConfig;
 }
 
 export interface TiptapPluginConfig {
@@ -110,6 +114,7 @@ export const PRESET_FEATURE_KEYS: Array<keyof TiptapPresetConfig> = [
   'textColor',
   'highlightColor',
   'mediaLibrary',
+  'components',
 ];
 
 // Fallback for unconfigured fields — deliberately minimal to prompt developers to configure
@@ -172,4 +177,20 @@ export const getFeatureOptions = <T extends Record<string, unknown>>(
   }
   const { enabled: _e, disabled: _d, ...rest } = value as Record<string, unknown>;
   return { ...defaults, ...rest } as T;
+};
+
+/** True when the preset lists `name` under `components` with an enabled value. */
+export const isComponentEnabled = (config: TiptapPresetConfig, name: string): boolean =>
+  isFeatureEnabled(config.components?.[name]);
+
+/** Options for one component: `{}` for `true`, the object minus enabled/disabled, null when absent or disabled. */
+export const getComponentOptions = (
+  config: TiptapPresetConfig,
+  name: string
+): Record<string, unknown> | null => {
+  const value = config.components?.[name];
+  if (value === undefined || !isComponentEnabled(config, name)) {
+    return null;
+  }
+  return getFeatureOptions(value, {});
 };

@@ -5,7 +5,7 @@ import { Popover } from '@strapi/design-system';
 import { ToolbarButton } from '../components/ToolbarButton';
 import { ColorPickerPopover } from '../components/ColorPickerPopover';
 import { useThemeConfig } from '../hooks/useThemeConfig';
-import { TiptapPresetConfig, getFeatureOptions, isFeatureEnabled } from '../../../shared/types';
+import { TiptapPresetConfig, getFeatureOptions, isFeatureEnabled } from '../../../shared/src/types';
 
 // ─── Icon ─────────────────────────────────────────────────────────────────────
 

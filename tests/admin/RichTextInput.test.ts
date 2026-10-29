@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { MINIMAL_PRESET_CONFIG } from '../../shared/types';
+import { MINIMAL_PRESET_CONFIG } from '../../shared/src/types';
 
 // ─── Mock React ───────────────────────────────────────────────────────────────
 let capturedUseMemoFactory: (() => any) | null = null;
@@ -120,6 +120,14 @@ const mockImage = { imageButton: null, imageDialog: null };
 vi.mock('../../admin/src/extensions/Image', () => ({
   useImage: () => mockImage,
   StrapiImage: { configure: vi.fn(() => ({})) },
+}));
+
+const mockUseRichTextComponents = vi.fn(() => ({
+  componentsMenu: 'MENU',
+  componentDialog: 'DIALOG',
+}));
+vi.mock('../../admin/src/extensions/Components', () => ({
+  useRichTextComponents: (...args: any[]) => mockUseRichTextComponents(...args),
 }));
 
 // ─── Mock components ──────────────────────────────────────────────────────────
@@ -376,5 +384,45 @@ describe('RichTextInput', () => {
       (i: any) => i.id === 'table'
     );
     expect(tableItem.content.props.children.includes('CELL_BACKGROUND')).toBe(expected);
+  });
+
+  it("passes the hook's contentError flag to BaseTiptapInput", () => {
+    mockUseTiptapEditor.mockReturnValueOnce({
+      editor: mockEditor,
+      field: mockField,
+      removedContent: null,
+      contentError: true,
+    } as any);
+    const result = RichTextInput({ name: 'content' } as any, null) as any;
+    const [base] = findElements(result, 'BaseTiptapInput');
+    expect(base.props.contentError).toBe(true);
+  });
+
+  it('adds the components menu as a toolbar item and renders its dialog outside the toolbar', () => {
+    const config = { ...MINIMAL_PRESET_CONFIG, components: { button: true } };
+    mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+
+    const items = findElements(result, 'ResponsiveToolbar')[0].props.items;
+    expect(items.find((i: any) => i.id === 'components')?.content).toBe('MENU');
+
+    const base = findElements(result, 'BaseTiptapInput')[0];
+    expect(base.props.children).toContain('DIALOG');
+
+    expect(mockUseRichTextComponents).toHaveBeenCalledWith(mockEditor, {
+      config,
+      disabled: undefined,
+    });
+  });
+
+  it('omits the components toolbar item when no component is enabled', () => {
+    mockUseRichTextComponents.mockReturnValueOnce({ componentsMenu: null, componentDialog: null } as any);
+    mockUsePresetConfig.mockReturnValue({ config: MINIMAL_PRESET_CONFIG, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+
+    const itemIds = findElements(result, 'ResponsiveToolbar')[0].props.items.map((i: any) => i.id);
+    expect(itemIds).not.toContain('components');
   });
 });
