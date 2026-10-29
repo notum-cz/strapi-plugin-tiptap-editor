@@ -152,16 +152,9 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           </>
         ),
       },
-      config.components && { id: 'componentsSpacer', content: <Spacer margin={1} /> },
-      config.components && {
-        id: 'components',
-        content: (
-          <>
-            {components.componentsMenu}
-            {components.componentDialog}
-          </>
-        ),
-      },
+      config.table && { id: 'tableSpacer', content: <Spacer margin={1} /> },
+      // Dialog renders outside the toolbar so it survives the overflow popover closing
+      Boolean(components.componentsMenu) && { id: 'components', content: components.componentsMenu },
     ];
 
     const rawToolbarItems = toolbarItemCandidates.filter(isToolbarItem);
@@ -191,6 +184,7 @@ const InnerEditor = forwardRef<HTMLDivElement, InnerEditorProps>(
           contentError={contentError}
         >
           <ResponsiveToolbar items={toolbarItems} />
+          {components.componentDialog}
         </BaseTiptapInput>
       </EditorErrorBoundary>
     );

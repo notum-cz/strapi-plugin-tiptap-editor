@@ -398,26 +398,31 @@ describe('RichTextInput', () => {
     expect(base.props.contentError).toBe(true);
   });
 
-  it('wraps the components menu in a FeatureGuard keyed on config.components', () => {
+  it('adds the components menu as a toolbar item and renders its dialog outside the toolbar', () => {
     const config = { ...MINIMAL_PRESET_CONFIG, components: { button: true } };
     mockUsePresetConfig.mockReturnValue({ config, isLoading: false });
     const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
     const result = RichTextInput(props as any, null) as any;
 
-    const featureGuards = findElements(result, 'FeatureGuard');
-    const componentsGuard = featureGuards.find(
-      (fg) => fg.props?.featureValue === config.components
-    );
-    expect(componentsGuard).toBeDefined();
-    const children = Array.isArray(componentsGuard.props.children)
-      ? componentsGuard.props.children
-      : [componentsGuard.props.children];
-    expect(children).toContain('MENU');
-    expect(children).toContain('DIALOG');
+    const items = findElements(result, 'ResponsiveToolbar')[0].props.items;
+    expect(items.find((i: any) => i.id === 'components')?.content).toBe('MENU');
+
+    const base = findElements(result, 'BaseTiptapInput')[0];
+    expect(base.props.children).toContain('DIALOG');
 
     expect(mockUseRichTextComponents).toHaveBeenCalledWith(mockEditor, {
       config,
       disabled: undefined,
     });
+  });
+
+  it('omits the components toolbar item when no component is enabled', () => {
+    mockUseRichTextComponents.mockReturnValueOnce({ componentsMenu: null, componentDialog: null } as any);
+    mockUsePresetConfig.mockReturnValue({ config: MINIMAL_PRESET_CONFIG, isLoading: false });
+    const props = { name: 'content', attribute: { options: { preset: 'blog' } } };
+    const result = RichTextInput(props as any, null) as any;
+
+    const itemIds = findElements(result, 'ResponsiveToolbar')[0].props.items.map((i: any) => i.id);
+    expect(itemIds).not.toContain('components');
   });
 });
