@@ -1,0 +1,56 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", ":semanticCommits"],
+  "timezone": "Europe/Prague",
+  "schedule": ["before 6am on monday"],
+  "minimumReleaseAge": "3 days",
+  "labels": ["dependencies"],
+  "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "minimumReleaseAge": "0 days",
+    "schedule": ["at any time"],
+    "addLabels": ["security"]
+  },
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["before 6am on the first day of the month"],
+    "automerge": true
+  },
+  "packageRules": [
+    {
+      "description": "peerDependencies define what users must install — bumping them is a release decision, not a chore",
+      "matchDepTypes": ["peerDependencies"],
+      "enabled": false
+    },
+    {
+      "description": "Strapi 5 admin runs on React 18 and react-router 6",
+      "matchPackageNames": ["react", "react-dom"],
+      "allowedVersions": "<19"
+    },
+    {
+      "matchPackageNames": ["react-router-dom"],
+      "allowedVersions": "<7"
+    },
+    {
+      "description": "Strapi packages move together",
+      "matchPackageNames": ["@strapi/**"],
+      "groupName": "strapi"
+    },
+    {
+      "description": "Tiptap is bundled into dist — all packages share a version",
+      "matchPackageNames": ["@tiptap/**"],
+      "groupName": "tiptap"
+    },
+    {
+      "description": "Low-risk dev tooling, non-major — one PR",
+      "matchDepTypes": ["devDependencies"],
+      "matchPackageNames": ["typescript", "vitest", "prettier", "@types/**"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "dev tooling"
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions"
+    }
+  ]
+}
